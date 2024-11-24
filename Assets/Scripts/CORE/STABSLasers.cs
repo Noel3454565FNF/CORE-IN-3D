@@ -5,9 +5,9 @@ using UnityEngine;
 public class STABSLasers : MonoBehaviour
 {
     [Header("Component")]
-    [HideInInspector] public MeshRenderer MR;
     public GameObject[] GMstabsParts;
-    [HideInInspector] public MeshRenderer[] MRstabsParts;
+    public MeshRenderer[] MRstabsParts;
+    [HideInInspector] public GameObject Rotor;
     public COREManager Cm;
 
 
@@ -25,12 +25,15 @@ public class STABSLasers : MonoBehaviour
 
     void Start()
     {
-        MR = gameObject.GetComponent<MeshRenderer>();
         var lol = 0;
         foreach(GameObject gm in GMstabsParts)
         {
             MRstabsParts[lol] = gm.GetComponent<MeshRenderer>();
             lol++;
+            if (gm.name == "Rotor")
+            {
+                Rotor = gm;
+            }
         }
     }
 
@@ -39,12 +42,20 @@ public class STABSLasers : MonoBehaviour
 
     }
 
+
+    public IEnumerator STABTEMPCHECK()
+    {
+
+
+        yield return new WaitForSeconds(1f);
+    }
+
     private void FixedUpdate()
     {
         if (StabStatus == "ONLINE" | StabStatus == "OVERLOADED")
         {
             float rotationSpeed = RPM * Time.deltaTime;
-            transform.Rotate(rotationAxis * rotationSpeed);
+            Rotor.transform.Rotate(rotationAxis * rotationSpeed);
         }
     }
 }
