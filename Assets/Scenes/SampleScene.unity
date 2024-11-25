@@ -1309,10 +1309,30 @@ MonoBehaviour:
   Rotor: {fileID: 0}
   Cm: {fileID: 45969259}
   StabStatus: OFFLINE
+  PendingEvent: none
   StabTemp: 26
   RPM: 0
-  PendingEvent: none
   Power: 0
+  CoolantInput: 0
+  StructuralIntegrity: 100
+  LowTempWarning: 0
+  HighTempWarning: 0
+  StabOverHeat: 0
+  LowRPM: 0
+  HighRPM: 0
+  RotorOverLoad: 0
+  LowFuel: 0
+  LowIntegrity: 0
+  EBrakeActive: 0
+  EOverloadActive: 0
+  StabTrip: 0
+  EMode: 0
+  StabDamaged: 0
+  StabERROR: 0
+  StabAdminLock: 0
+  OverHeatCol: {r: 1, g: 0, b: 0, a: 1}
+  NormalCol: {r: 1, g: 1, b: 1, a: 1}
+  FreezeCol: {r: 0, g: 0, b: 1, a: 1}
   rotationAxis: {x: 1, y: 0, z: 0}
 --- !u!1 &1125620746
 GameObject:
@@ -1737,7 +1757,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7837f72ee40ccfc4eaf45a4d56fa778d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1978,7 +1998,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7837f72ee40ccfc4eaf45a4d56fa778d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2174,10 +2194,30 @@ MonoBehaviour:
   Rotor: {fileID: 0}
   Cm: {fileID: 45969259}
   StabStatus: OFFLINE
+  PendingEvent: none
   StabTemp: 26
   RPM: 0
-  PendingEvent: none
   Power: 0
+  CoolantInput: 0
+  StructuralIntegrity: 100
+  LowTempWarning: 0
+  HighTempWarning: 0
+  StabOverHeat: 0
+  LowRPM: 0
+  HighRPM: 0
+  RotorOverLoad: 0
+  LowFuel: 0
+  LowIntegrity: 0
+  EBrakeActive: 0
+  EOverloadActive: 0
+  StabTrip: 0
+  EMode: 0
+  StabDamaged: 0
+  StabERROR: 0
+  StabAdminLock: 0
+  OverHeatCol: {r: 1, g: 0, b: 0, a: 1}
+  NormalCol: {r: 1, g: 1, b: 1, a: 1}
+  FreezeCol: {r: 0, g: 0, b: 1, a: 1}
   rotationAxis: {x: 1, y: 0, z: 0}
 --- !u!1 &1571488467
 GameObject:
