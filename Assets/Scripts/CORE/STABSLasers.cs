@@ -54,6 +54,7 @@ public class STABSLasers : MonoBehaviour
 
     void Start()
     {
+        
         StartCoroutine(STABTEMPCHECK());
         StartCoroutine(STABINTCHECK());
         var lol = 0;
@@ -109,6 +110,7 @@ public class STABSLasers : MonoBehaviour
         if (StabTemp < 400 && StabOverHeat)
         {
             StabOverHeat = false;
+            ROF();
         }
 
         if (RPM >= 370 && HighRPM == false)
@@ -136,14 +138,33 @@ public class STABSLasers : MonoBehaviour
     {
         var RoT = Rotor.gameObject.GetComponent<MeshRenderer>();
         var RoM = Rotor.gameObject.GetComponent<Material>();
+        RoT.material.EnableKeyword("_EMISSION");
+
 
         if (StabOverHeat)
         {
-            RoT.material.color = Color.Lerp(RoT.material.color, OverHeatCol, 100000f);
+            LeanTween.value(Rotor, 0f, 1f, 20f)
+           .setOnUpdate((float t) =>
+           {
+               // Lerp the emission color based on t
+               Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 0f, 0f), t);
+               RoT.material.SetColor("_EmissionColor", currentColor * 0.1f);
+               RoT.material.SetColor("_Color", currentColor);
+           });
+            print("overheat color");
         }
         if (StabOverHeat == false)
         {
             RoT.material.color = Color.Lerp(RoT.material.color, NormalCol, 10f);
+            LeanTween.value(Rotor, 0f, 1f, 10f)
+    .setOnUpdate((float t) =>
+    {
+        // Lerp the emission color based on t
+    Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 255f, 255f), t);
+    RoT.material.SetColor("_EmissionColor", currentColor * 0.01f);
+    RoT.material.SetColor("_Color", currentColor);
+    });
+
         }
 
 
