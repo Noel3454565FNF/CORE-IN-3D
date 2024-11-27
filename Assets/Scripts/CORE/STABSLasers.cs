@@ -9,6 +9,7 @@ public class STABSLasers : MonoBehaviour
     public MeshRenderer[] MRstabsParts;
     [HideInInspector] public GameObject Rotor;
     public COREManager Cm;
+    public ParticleSystem PSStab;
 
 
     [Header("Vars")]
@@ -19,6 +20,9 @@ public class STABSLasers : MonoBehaviour
     public float Power = 0;
     public float CoolantInput = 0;
     public float StructuralIntegrity = 100;
+    public bool CanGetDamaged = true;
+    public bool CanHeat = true;
+    public bool CanKys = true;
 
 
     [Header("Warning")]
@@ -143,6 +147,7 @@ public class STABSLasers : MonoBehaviour
 
         if (StabOverHeat)
         {
+            PSStab.Play();
             LeanTween.value(Rotor, 0f, 1f, 20f)
            .setOnUpdate((float t) =>
            {
@@ -155,15 +160,16 @@ public class STABSLasers : MonoBehaviour
         }
         if (StabOverHeat == false)
         {
-            RoT.material.color = Color.Lerp(RoT.material.color, NormalCol, 10f);
+            PSStab.Stop();
             LeanTween.value(Rotor, 0f, 1f, 10f)
-    .setOnUpdate((float t) =>
-    {
-        // Lerp the emission color based on t
-    Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 255f, 255f), t);
-    RoT.material.SetColor("_EmissionColor", currentColor * 0.01f);
-    RoT.material.SetColor("_Color", currentColor);
-    });
+            .setOnUpdate((float t) =>
+            {
+                // Lerp the emission color based on t
+                Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 255f, 255f), t);
+                RoT.material.SetColor("_EmissionColor", currentColor * 0.01f);
+                RoT.material.SetColor("_Color", currentColor);
+            });
+            print("unoverheat your stab >:(");
 
         }
 
@@ -226,5 +232,11 @@ public class STABSLasers : MonoBehaviour
         {
 
         }
+    }
+
+
+    public void StabKys()
+    {
+
     }
 }

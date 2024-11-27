@@ -1311,6 +1311,7 @@ MonoBehaviour:
   - {fileID: 0}
   Rotor: {fileID: 0}
   Cm: {fileID: 45969259}
+  PSStab: {fileID: 1909570401}
   StabStatus: OFFLINE
   PendingEvent: none
   StabTemp: 26
@@ -2199,6 +2200,7 @@ MonoBehaviour:
   - {fileID: 0}
   Rotor: {fileID: 0}
   Cm: {fileID: 45969259}
+  PSStab: {fileID: 0}
   StabStatus: OFFLINE
   PendingEvent: none
   StabTemp: 26
@@ -2625,7 +2627,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
