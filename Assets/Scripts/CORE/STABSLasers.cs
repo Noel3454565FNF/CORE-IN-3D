@@ -10,6 +10,9 @@ public class STABSLasers : MonoBehaviour
     [HideInInspector] public GameObject Rotor;
     public COREManager Cm;
     public ParticleSystem PSStab;
+    public GameObject Laser;
+
+    [HideInInspector] public int LTColorCurTween;
 
 
     [Header("Vars")]
@@ -58,7 +61,6 @@ public class STABSLasers : MonoBehaviour
 
     void Start()
     {
-        
         StartCoroutine(STABTEMPCHECK());
         StartCoroutine(STABINTCHECK());
         var lol = 0;
@@ -144,31 +146,35 @@ public class STABSLasers : MonoBehaviour
         var RoM = Rotor.gameObject.GetComponent<Material>();
         RoT.material.EnableKeyword("_EMISSION");
 
+        if (LTColorCurTween != null | LTColorCurTween != 0)
+        {
+            LeanTween.cancel(Rotor);
+        }
 
         if (StabOverHeat)
         {
-            PSStab.Play();
-            LeanTween.value(Rotor, 0f, 1f, 20f)
+           PSStab.Play();
+           LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 20f)
            .setOnUpdate((float t) =>
            {
                // Lerp the emission color based on t
                Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 0f, 0f), t);
                RoT.material.SetColor("_EmissionColor", currentColor * 0.1f);
                RoT.material.SetColor("_Color", currentColor);
-           });
+           }).id;
             print("overheat color");
         }
         if (StabOverHeat == false)
         {
             PSStab.Stop();
-            LeanTween.value(Rotor, 0f, 1f, 10f)
+            LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 10f)
             .setOnUpdate((float t) =>
             {
                 // Lerp the emission color based on t
                 Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 255f, 255f), t);
                 RoT.material.SetColor("_EmissionColor", currentColor * 0.01f);
                 RoT.material.SetColor("_Color", currentColor);
-            });
+            }).id;
             print("unoverheat your stab >:(");
 
         }
@@ -239,4 +245,12 @@ public class STABSLasers : MonoBehaviour
     {
 
     }
+}
+
+public enum StabStatusEnum
+{
+    ONLINE,
+    OFFLINE,
+    OVERLOAD,
+    DESTROYED,
 }
