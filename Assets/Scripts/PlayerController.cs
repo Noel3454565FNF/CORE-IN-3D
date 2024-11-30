@@ -36,19 +36,19 @@ public class PlayerController : MonoBehaviour
             float vertical = 0f;
             float jump = 0f;
 
-            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.RightArrow) | Input.GetKey(KeyCode.D))
             {
                 horizontal = 1f;
             }
-            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+            if (Input.GetKey(KeyCode.LeftArrow) | Input.GetKey(KeyCode.A))
             {
                 horizontal = -1f;
             }
-            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+            if (Input.GetKey(KeyCode.UpArrow) | Input.GetKey(KeyCode.W))
             {
                 vertical = 1f;
             }
-            if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.DownArrow) | Input.GetKey(KeyCode.S))
             {
                 vertical = -1f;
             }

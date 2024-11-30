@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraFollowAndControl : MonoBehaviour
@@ -6,69 +8,90 @@ public class CameraFollowAndControl : MonoBehaviour
     public Vector3 offset;             // Offset from the player
     public float sensitivity = 100f;   // Mouse sensitivity
     public float followSpeed = 10f;    // Speed of camera follow
-    public float rotationSmoothTime = 0.1f; // Smoothness for rotation adjustments
 
-    public float pitch = 40f;          // Vertical rotation (up/down)
+    public float pitch = 0f;           // Vertical rotation (up/down)
     public float yaw = 0f;             // Horizontal rotation (left/right)
 
-    private bool anch = false;         // Anchor mode toggle
-    private Vector3 currentOffset;     // Smoothly transitioning offset
-    private Vector3 rotationVelocity;  // Velocity for smooth rotation
-
+    private bool isMouseControlActive = true; // Toggle for mouse control
     private float shakeDuration = 0f;  // Duration of the screen shake
     private float shakeMagnitude = 0.1f; // Magnitude of the screen shake
     private float dampingSpeed = 1.0f;   // Speed at which the shake diminishes
     private Vector3 shakeOffset;       // Offset for the screen shake
 
+    public bool locked = false;
+    private bool oncooldown = false;
+    private float Orfs = 200f;
+
+    private bool lateApplying = false;
+
     private void Start()
     {
-        currentOffset = offset;
+        // Initialize the yaw to match the player's horizontal rotation
         yaw = player.eulerAngles.y;
+
+        // Lock and hide the cursor initially
     }
 
     private void Update()
     {
         HandleMouseInput();
+        ApplyScreenShake();
     }
 
     private void LateUpdate()
     {
         SmoothFollow();
-        ApplyScreenShake();
     }
 
     private void HandleMouseInput()
     {
-        if (anch)
+        if (locked)
         {
+            // Get mouse input for rotation
             float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
 
+            // Adjust yaw and pitch based on mouse movement
             yaw += mouseX;
             pitch -= mouseY;
+
+            // Clamp pitch to prevent the camera from flipping
             pitch = Mathf.Clamp(pitch, -30f, 60f);
+
+            // Rotate the player to match the horizontal yaw
+            player.rotation = Quaternion.Euler(0f, yaw, 0f);
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
+        // Toggle mouse control with Escape key
+
+        if (Input.GetKeyDown(KeyCode.L) && locked == false && oncooldown == false)
         {
-            anch = !anch;
-            Cursor.lockState = anch ? CursorLockMode.Locked : CursorLockMode.None;
-            Cursor.visible = !anch;
+            locked = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            oncooldown = true;
+        }
+        if (Input.GetKeyDown(KeyCode.L) && locked == true && oncooldown == false)
+        {
+            locked = false;
+            Cursor.lockState = CursorLockMode.None;
+            oncooldown = true;
+        }
+        if (oncooldown)
+        {
+            oncooldown = false;
         }
     }
 
     private void SmoothFollow()
     {
-        // Calculate target position based on player position and offset
-        Vector3 targetPosition = player.position + Quaternion.Euler(0f, yaw, 0f) * currentOffset;
+        // Calculate the target position of the camera based on the player's position and offset
+        Vector3 targetPosition = player.position + Quaternion.Euler(0f, yaw, 0f) * offset;
 
         // Smoothly move the camera to the target position
         transform.position = Vector3.Lerp(transform.position, targetPosition, followSpeed * Time.deltaTime);
 
-        // Smoothly adjust rotation
-        float smoothYaw = Mathf.SmoothDampAngle(transform.eulerAngles.y, yaw, ref rotationVelocity.y, rotationSmoothTime);
-        float smoothPitch = Mathf.SmoothDampAngle(transform.eulerAngles.x, pitch, ref rotationVelocity.x, rotationSmoothTime);
-        transform.rotation = Quaternion.Euler(smoothPitch, smoothYaw, 0f);
+        // Set the camera's rotation based on pitch and yaw
+        transform.rotation = Quaternion.Euler(pitch, yaw, 0f);
     }
 
     private void ApplyScreenShake()
@@ -84,6 +107,12 @@ public class CameraFollowAndControl : MonoBehaviour
         else
         {
             shakeOffset = Vector3.zero; // Reset shake offset when shake ends
+
+            if (lateApplying)
+            {
+                followSpeed = Orfs;
+                lateApplying = false;
+            }
         }
 
         // Apply the shake offset on top of the current position
@@ -99,5 +128,8 @@ public class CameraFollowAndControl : MonoBehaviour
     {
         shakeDuration = duration;
         shakeMagnitude = magnitude;
+        Orfs = followSpeed;
+        followSpeed = 50f;
+        lateApplying = true;
     }
 }

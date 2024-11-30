@@ -1,6 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Unity.Mathematics;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 public class STABSLasers : MonoBehaviour
 {
@@ -11,6 +16,7 @@ public class STABSLasers : MonoBehaviour
     public COREManager Cm;
     public ParticleSystem PSStab;
     public GameObject Laser;
+    public AudioSource ASSTAB;
 
     [HideInInspector] public int LTColorCurTween;
 
@@ -57,10 +63,22 @@ public class STABSLasers : MonoBehaviour
 
     [Header("Optional Vars")]
     public Vector3 rotationAxis = Vector3.up;
+    public int STABStatupEventID;
+    private Utility WW;
+
+
+    [Header("Audio")]
+    public AudioClip StabDie;
+
 
 
     void Start()
     {
+        ASSTAB = gameObject.AddComponent<AudioSource>();
+        ASSTAB.playOnAwake = false;
+        ASSTAB.volume = 1;
+
+        WW = new Utility();
         StartCoroutine(STABTEMPCHECK());
         StartCoroutine(STABINTCHECK());
         var lol = 0;
@@ -73,7 +91,6 @@ public class STABSLasers : MonoBehaviour
                 Rotor = gm;
             }
         }
-        
     }
 
     void Update()
@@ -148,7 +165,7 @@ public class STABSLasers : MonoBehaviour
 
         if (LTColorCurTween != null | LTColorCurTween != 0)
         {
-            LeanTween.cancel(Rotor);
+            LeanTween.pause(Rotor);
         }
 
         if (StabOverHeat)
@@ -167,12 +184,12 @@ public class STABSLasers : MonoBehaviour
         if (StabOverHeat == false)
         {
             PSStab.Stop();
-            LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 10f)
+            LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 20f)
             .setOnUpdate((float t) =>
             {
                 // Lerp the emission color based on t
                 Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 255f, 255f), t);
-                RoT.material.SetColor("_EmissionColor", currentColor * 0.01f);
+                RoT.material.SetColor("_EmissionColor", currentColor * 0.1f);
                 RoT.material.SetColor("_Color", currentColor);
             }).id;
             print("unoverheat your stab >:(");
@@ -187,13 +204,19 @@ public class STABSLasers : MonoBehaviour
         float integrityLoss = 0;
         if (HighTempWarning && StabOverHeat == false) { integrityLoss += 0.3f; }
         if (HighTempWarning && StabOverHeat) { integrityLoss += 0.7f; }
+        if (StabTemp > 700) { integrityLoss += 1.3f; }
+        if (StabTemp > 900) { integrityLoss += 1.7f; }
 
         if (HighRPM && RotorOverLoad == false) { integrityLoss += 0.2f; }
         if (HighRPM && RotorOverLoad) { integrityLoss += 0.5f; }
 
-        if (StabStatus == "ONLINE")
+        if (StabStatus == "ONLINE" && CanGetDamaged)
         {
             StructuralIntegrity -= integrityLoss;
+            if (StructuralIntegrity < 15f)
+            {
+                STABESHUTDOWN();
+            }
             print(integrityLoss);
         }
         yield return new WaitForSeconds(1f);
@@ -226,24 +249,80 @@ public class STABSLasers : MonoBehaviour
         }
     }
 
-    public void STABESHUTDOWN()
+    public async void STABESHUTDOWN()
     {
+        CanGetDamaged = false;
+        PendingEvent = "SHUTDOWN";
         //Attempting Stab shutdown...
-        bool SYes = false;
         if (StructuralIntegrity == 100)
         {
-
+            await StabRpmTweenDown(0);
+            StabStatus = "OFFLINE";
+            PendingEvent = "none";
+            Laser.SetActive(false);
         }
-        if (StructuralIntegrity > 100)
+        if (StructuralIntegrity < 100)
         {
-
+            if (WW.ChanceMath(50f) == true)
+            {
+                print("kys");
+                StabKys();
+            }
+            else
+            {
+                print("lucky enough");
+                await StabRpmTweenDown(0);
+                StabStatus = "OFFLINE";
+                PendingEvent = "none";
+                Laser.SetActive(false);
+            }
         }
     }
 
 
     public void StabKys()
     {
+        ASSTAB.clip = StabDie;
+        ASSTAB.Play();
+        Laser.gameObject.SetActive(false);
+        foreach (GameObject rg in GMstabsParts)
+        {
+            rg.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+        }
+    }
 
+    public async Task StabStart()
+    {
+        print("bend over");
+        if (StabStatus != "DESTROYED" && Rotor != null)
+        {
+            PendingEvent = "STARTUP";
+            StabStatus = "ONLINE";
+            for(int i = 250; RPM < i;)
+            {
+                RPM++;
+                await Task.Delay(100);
+            }
+            PendingEvent = "none";
+        }
+    }
+
+
+    public async Task StabRpmTweenUp(int to)
+    {
+        for (int i = to; RPM < i;)
+        {
+            RPM++;
+            await Task.Delay(100);
+        }
+    }
+    public async Task StabRpmTweenDown(int to)
+    {
+        for (int i = to; RPM > i;)
+        {
+            RPM--;
+            await Task.Delay(100);
+        }
     }
 }
 
@@ -253,4 +332,48 @@ public enum StabStatusEnum
     OFFLINE,
     OVERLOAD,
     DESTROYED,
+}
+
+
+public class Utility
+{
+
+    public async Task WaitedWalter(int Timetowait)
+    {
+        Task.Delay(Timetowait);
+        
+    }
+
+    public bool ChanceMath(float pourcent)
+    {
+        var tempV = UnityEngine.Random.Range(0, 100);
+
+        if(pourcent >= tempV)
+        {
+            Debug.Log(pourcent + "% | " + tempV + " float");
+            return false;
+        }
+        if(pourcent <= tempV)
+        {
+            Debug.Log(pourcent + "% | " + tempV + " float");
+            return true;
+        }
+        return false;
+    }
+
+    //public void TweenLightsIntensity(Light light, float to, float DimFactor)
+    //{
+    //    if (to > light.intensity)
+    //    {
+    //        for (float f = to;  f > light.intensity; 0f)
+    //        {
+
+    //        }
+    //    }
+    //    if (to < light.intensity)
+    //    {
+
+    //    }
+    //}
+
 }
