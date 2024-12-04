@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Unity.Mathematics;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
+using DG.Tweening;
 
 public class STABSLasers : MonoBehaviour
 {
@@ -58,17 +59,20 @@ public class STABSLasers : MonoBehaviour
     public Color FreezeCol = Color.blue;
 
 
-    [HideInInspector]public IEnumerator stabtempcheckvar;
-    [HideInInspector]public IEnumerator stabintcheckvar;
+    [HideInInspector] public IEnumerator stabtempcheckvar;
+    [HideInInspector] public IEnumerator stabintcheckvar;
 
     [Header("Optional Vars")]
     public Vector3 rotationAxis = Vector3.up;
     public int STABStatupEventID;
     private Utility WW;
+    [HideInInspector] public AnimationCurve curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
 
     [Header("Audio")]
     public AudioClip StabDie;
+    public AudioClip StabTogetherIgnit;
+    public AudioClip StabSoloIgnit;
 
 
 
@@ -82,7 +86,7 @@ public class STABSLasers : MonoBehaviour
         StartCoroutine(STABTEMPCHECK());
         StartCoroutine(STABINTCHECK());
         var lol = 0;
-        foreach(GameObject gm in GMstabsParts)
+        foreach (GameObject gm in GMstabsParts)
         {
             MRstabsParts[lol] = gm.GetComponent<MeshRenderer>();
             lol++;
@@ -126,7 +130,7 @@ public class STABSLasers : MonoBehaviour
         }
 
         if (StabTemp >= 400 && StabOverHeat == false)
-        { 
+        {
             StabOverHeat = true;
             ROF();
         }
@@ -170,15 +174,15 @@ public class STABSLasers : MonoBehaviour
 
         if (StabOverHeat)
         {
-           PSStab.Play();
-           LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 20f)
-           .setOnUpdate((float t) =>
-           {
-               // Lerp the emission color based on t
-               Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 0f, 0f), t);
-               RoT.material.SetColor("_EmissionColor", currentColor * 0.1f);
-               RoT.material.SetColor("_Color", currentColor);
-           }).id;
+            PSStab.Play();
+            LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 20f)
+            .setOnUpdate((float t) =>
+            {
+                // Lerp the emission color based on t
+                Color currentColor = Color.Lerp(RoT.material.color, new Color(255f, 0f, 0f), t);
+                RoT.material.SetColor("_EmissionColor", currentColor * 0.1f);
+                RoT.material.SetColor("_Color", currentColor);
+            }).id;
             print("overheat color");
         }
         if (StabOverHeat == false)
@@ -256,7 +260,7 @@ public class STABSLasers : MonoBehaviour
         //Attempting Stab shutdown...
         if (StructuralIntegrity == 100)
         {
-            await StabRpmTweenDown(0);
+            await StabRpmTweenDown(0, 100);
             StabStatus = "OFFLINE";
             PendingEvent = "none";
             Laser.SetActive(false);
@@ -271,7 +275,7 @@ public class STABSLasers : MonoBehaviour
             else
             {
                 print("lucky enough");
-                await StabRpmTweenDown(0);
+                await StabRpmTweenDown(0, 100);
                 StabStatus = "OFFLINE";
                 PendingEvent = "none";
                 Laser.SetActive(false);
@@ -298,82 +302,76 @@ public class STABSLasers : MonoBehaviour
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";
-            for(int i = 250; RPM < i;)
-            {
-                RPM++;
-                await Task.Delay(100);
-            }
+            await StabRpmTweenUp(250, 90);
             PendingEvent = "none";
         }
     }
-
-
-    public async Task StabRpmTweenUp(int to)
+    public async Task StabRpmTweenUp(int to, int TimeinMS)
     {
         for (int i = to; RPM < i;)
         {
             RPM++;
-            await Task.Delay(100);
+            await Task.Delay(TimeinMS);
         }
     }
-    public async Task StabRpmTweenDown(int to)
+    public async Task StabRpmTweenDown(int to, int TimeinMS)
     {
         for (int i = to; RPM > i;)
         {
             RPM--;
-            await Task.Delay(100);
+            await Task.Delay(TimeinMS);
         }
-    }
-}
 
-public enum StabStatusEnum
-{
-    ONLINE,
-    OFFLINE,
-    OVERLOAD,
-    DESTROYED,
-}
-
-
-public class Utility
-{
-
-    public async Task WaitedWalter(int Timetowait)
-    {
-        Task.Delay(Timetowait);
-        
     }
 
-    public bool ChanceMath(float pourcent)
+    public enum StabStatusEnum
     {
-        var tempV = UnityEngine.Random.Range(0, 100);
+        ONLINE,
+        OFFLINE,
+        OVERLOAD,
+        DESTROYED,
+    }
 
-        if(pourcent >= tempV)
+}
+    public class Utility
+    {
+
+        public async Task WaitedWalter(int Timetowait)
         {
-            Debug.Log(pourcent + "% | " + tempV + " float");
+            Task.Delay(Timetowait);
+
+        }
+
+        public bool ChanceMath(float pourcent)
+        {
+            var tempV = UnityEngine.Random.Range(0, 100);
+
+            if (pourcent >= tempV)
+            {
+                Debug.Log(pourcent + "% | " + tempV + " float");
+                return false;
+            }
+            if (pourcent <= tempV)
+            {
+                Debug.Log(pourcent + "% | " + tempV + " float");
+                return true;
+            }
             return false;
         }
-        if(pourcent <= tempV)
-        {
-            Debug.Log(pourcent + "% | " + tempV + " float");
-            return true;
-        }
-        return false;
+
+        //public void TweenLightsIntensity(Light light, float to, float DimFactor)
+        //{
+        //    if (to > light.intensity)
+        //    {
+        //        for (float f = to;  f > light.intensity; 0f)
+        //        {
+
+        //        }
+        //    }
+        //    if (to < light.intensity)
+        //    {
+
+        //    }
+        //}
+
     }
-
-    //public void TweenLightsIntensity(Light light, float to, float DimFactor)
-    //{
-    //    if (to > light.intensity)
-    //    {
-    //        for (float f = to;  f > light.intensity; 0f)
-    //        {
-
-    //        }
-    //    }
-    //    if (to < light.intensity)
-    //    {
-
-    //    }
-    //}
-
-}

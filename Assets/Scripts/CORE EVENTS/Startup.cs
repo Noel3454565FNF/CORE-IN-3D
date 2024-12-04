@@ -13,6 +13,7 @@ public class Startup : MonoBehaviour
     [Header("Stuff")]
     public COREManager CM;
     private Utility utility;
+    public AudioSource audioSource;
 
     [Header("Plr")]
     public CameraFollowAndControl plrCAM;
@@ -32,6 +33,9 @@ public class Startup : MonoBehaviour
     [Header("Lights")]
     public Light light;
 
+    [Header("Audios")]
+    public AudioClip StartupThingi;
+
     public void Start()
     {
         utility = new Utility();
@@ -42,9 +46,11 @@ public class Startup : MonoBehaviour
     {
         await Task.Delay(5000);
 
-        Mathf.Lerp(light.intensity, 0f, Time.deltaTime);
+        Mathf.Lerp(light.intensity, 0f, 0f);
 
         CM.CoreEvent = "STARTUP";
+        audioSource.clip = StartupThingi;
+        audioSource.Play();
         Task.Run(Stab1.StabStart);
         await Task.Run(Stab2.StabStart);
         Stab1.Laser.gameObject.SetActive(true);

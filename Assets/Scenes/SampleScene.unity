@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CM: {fileID: 45969259}
+  audioSource: {fileID: 460791169}
   plrCAM: {fileID: 330585548}
   Stab1: {fileID: 993715339}
   Stab2: {fileID: 1509911879}
@@ -330,6 +331,7 @@ MonoBehaviour:
   CoreSize: {x: 7, y: 7, z: 7}
   CoreShieldSize: {x: 9, y: 9, z: 9}
   light: {fileID: 410087040}
+  StartupThingi: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
 --- !u!1 &125679251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,6 +1258,7 @@ GameObject:
   - component: {fileID: 460791168}
   - component: {fileID: 460791167}
   - component: {fileID: 460791166}
+  - component: {fileID: 460791169}
   m_Layer: 0
   m_Name: COREC
   m_TagString: Untagged
@@ -1349,6 +1352,102 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 460791164}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!82 &460791169
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460791164}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &666148572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1867,7 +1966,33 @@ MonoBehaviour:
   FreezeCol: {r: 0, g: 0, b: 1, a: 1}
   rotationAxis: {x: 1, y: 0, z: 0}
   STABStatupEventID: 0
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
+  StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
+  StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
 --- !u!1 &1153309805
 GameObject:
   m_ObjectHideFlags: 0
@@ -2705,7 +2830,33 @@ MonoBehaviour:
   FreezeCol: {r: 0, g: 0, b: 1, a: 1}
   rotationAxis: {x: 1, y: 0, z: 0}
   STABStatupEventID: 0
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
+  StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
+  StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
 --- !u!1 &1535259570
 GameObject:
   m_ObjectHideFlags: 0
