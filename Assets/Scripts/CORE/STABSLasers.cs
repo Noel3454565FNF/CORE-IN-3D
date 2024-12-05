@@ -237,6 +237,14 @@ public class STABSLasers : MonoBehaviour
 
 
 
+    public bool StabCheckForCoreVal()
+    {
+        if (StabStatus != "DESTROYED" && StabStatus != "OFFLINE")
+        {
+            return true;
+        }
+        return false;
+    }
 
 
     //FUNC FOR EVENTS
@@ -342,6 +350,18 @@ public class STABSLasers : MonoBehaviour
             Task.Delay(Timetowait);
 
         }
+
+        //public Task TweenValue(int startV, int EndV, int awaittime)
+        //{
+        //    while (startV < EndV)
+        //    {
+        //    startV++;
+        //    Task.Delay(awaittime);
+        //    }
+
+
+        //return 
+        //}
 
         public bool ChanceMath(float pourcent)
         {

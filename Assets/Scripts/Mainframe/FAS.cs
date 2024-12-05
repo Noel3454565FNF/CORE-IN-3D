@@ -15,6 +15,7 @@ public class FAS : MonoBehaviour
     private void Awake()
     {
         GFAS = this;
+        
     }
 
 

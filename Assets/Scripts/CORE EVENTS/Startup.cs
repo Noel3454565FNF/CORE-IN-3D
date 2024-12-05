@@ -40,12 +40,19 @@ public class Startup : MonoBehaviour
     public void Start()
     {
         utility = new Utility();
-        CoreStarup();
+    }
+
+    public void CoreStartupCaller()
+    {
+        Task.Run(CoreStarup);
     }
 
     public async Task CoreStarup()
     {
         await Task.Delay(5000);
+
+        ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
+
 
         LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
 
@@ -57,10 +64,12 @@ public class Startup : MonoBehaviour
 
         await Task.Delay(21000);
 
+        ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
+
         Stab1.Laser.gameObject.SetActive(true);
         Stab2.Laser.gameObject.SetActive(true);
 
-        plrCAM.TriggerScreenShake(5f, 7f);
+        plrCAM.TriggerScreenShake(5f, 4f);
 
         CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f);
         Core.gameObject.transform.LeanScale(CoreSize, 5f);
@@ -70,6 +79,9 @@ public class Startup : MonoBehaviour
 
         CM.CoreStatus = "ONLINE";
         CM.CoreEvent = "none";
+        CM.CAH = 10;
+        CM.changeSpeedCoreInfluence = 1;
+        CM.CoreTempChange = 1;
 
     }
 
