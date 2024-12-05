@@ -302,12 +302,13 @@ public class STABSLasers : MonoBehaviour
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";
-            await StabRpmTweenUp(250, 90);
+            await StabRpmTweenUp(250, 85);
             PendingEvent = "none";
         }
     }
     public async Task StabRpmTweenUp(int to, int TimeinMS)
     {
+
         for (int i = to; RPM < i;)
         {
             RPM++;

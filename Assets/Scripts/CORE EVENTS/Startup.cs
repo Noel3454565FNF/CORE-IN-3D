@@ -35,6 +35,7 @@ public class Startup : MonoBehaviour
 
     [Header("Audios")]
     public AudioClip StartupThingi;
+    public AudioClip lightsSound;
 
     public void Start()
     {
@@ -46,20 +47,26 @@ public class Startup : MonoBehaviour
     {
         await Task.Delay(5000);
 
-        Mathf.Lerp(light.intensity, 0f, 0f);
+        LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
 
         CM.CoreEvent = "STARTUP";
         audioSource.clip = StartupThingi;
         audioSource.Play();
         Task.Run(Stab1.StabStart);
-        await Task.Run(Stab2.StabStart);
+        Task.Run(Stab2.StabStart);
+
+        await Task.Delay(21000);
+
         Stab1.Laser.gameObject.SetActive(true);
         Stab2.Laser.gameObject.SetActive(true);
 
-        plrCAM.TriggerScreenShake(1.7f, 7f);
+        plrCAM.TriggerScreenShake(5f, 7f);
 
-        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 1.5f);
-        Core.gameObject.transform.LeanScale(CoreSize, 1.5f);
+        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f);
+        Core.gameObject.transform.LeanScale(CoreSize, 5f);
+        await Task.Delay(9000);
+
+        LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
 
         CM.CoreStatus = "ONLINE";
         CM.CoreEvent = "none";
