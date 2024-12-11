@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 [System.Serializable]
 public class Startup : MonoBehaviour
