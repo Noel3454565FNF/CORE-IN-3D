@@ -330,6 +330,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CM: {fileID: 45969259}
   audioSource: {fileID: 460791169}
+  l: {fileID: 906418702}
+  sk: {fileID: 906418700}
   plrCAM: {fileID: 330585548}
   Stab1: {fileID: 993715339}
   Stab2: {fileID: 1509911879}
@@ -544,7 +546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &247823484
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1760,7 +1762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &723419678
 Transform:
   m_ObjectHideFlags: 0
@@ -2253,6 +2255,7 @@ GameObject:
   - component: {fileID: 906418698}
   - component: {fileID: 906418700}
   - component: {fileID: 906418701}
+  - component: {fileID: 906418702}
   m_Layer: 0
   m_Name: MANAGERS
   m_TagString: Untagged
@@ -2323,6 +2326,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   image: {fileID: 784960891}
+--- !u!114 &906418702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906418697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07d96650ef784f442b774366d22cfee5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultMaterial: {fileID: 2100000, guid: 2de294025ac3a374a8810a5975ec9d14, type: 2}
+  DefaultGameObject: {fileID: 5276484042011418999, guid: 60940c480e782a745956c94f6f25b44b,
+    type: 3}
+  SWExpansion: 0
 --- !u!1 &960816196
 GameObject:
   m_ObjectHideFlags: 0
@@ -2413,7 +2432,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "ei\"heuiifu\xE9\"hfo\xE9\"_hf\xE9u\"efhu'hfu\"'hfu\"hf\"u'hfu\"'hfo&\"i'fh&i\"hui\"h'fui\"hf&iu\"hfui&\"h'f&"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2476,7 +2495,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 74.55304, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2627,7 +2646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1094190232
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3807,7 +3826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1535259571
 Transform:
   m_ObjectHideFlags: 0
@@ -4291,12 +4310,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
         type: 3}
-      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
-        type: 3}
-      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      propertyPath: haveTrigger
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
@@ -4307,22 +4321,7 @@ PrefabInstance:
     - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
         type: 3}
       propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
-        type: 3}
-      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: CoreStartupCaller
-      objectReference: {fileID: 0}
-    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
-        type: 3}
-      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Startup, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
-        type: 3}
-      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

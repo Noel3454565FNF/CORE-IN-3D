@@ -21,22 +21,29 @@ public class FAS : MonoBehaviour
 
     public void WriteAnAnnouncement(string tle, string txt, int vanishTime)
     {
+        print("FAS called");
         StopCoroutine(VanishAnn(0));
-        bg.gameObject.SetActive(false);
-        auxBg.gameObject.SetActive(false);
-        title.gameObject.SetActive(false);
-        text.gameObject.SetActive(false);
+        print("FAS called");
+        bg.gameObject.SetActive(true);
+        auxBg.gameObject.SetActive(true);
+        title.gameObject.SetActive(true);
+        text.gameObject.SetActive(true);
+        print("FAS called");
 
-        title.gameObject.GetComponent<TMPro.TextMeshPro>().text = tle;
-        text.gameObject.GetComponent<TMPro.TextMeshPro>().text = txt;
+
+        title.gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = tle;
+        text.gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = txt;
+
+        print("FAS called");
 
         StartCoroutine(VanishAnn(vanishTime));
+        print("FAS called");
     }
 
     public void Clear()
     {
-        title.gameObject.GetComponent<TMPro.TextMeshPro>().text = "";
-        text.gameObject.GetComponent<TMPro.TextMeshPro>().text = "";
+        title.gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = "";
+        text.gameObject.GetComponent<TMPro.TextMeshProUGUI>().text = "";
     }
 
     IEnumerator VanishAnn(int waitbeforevanishtime)

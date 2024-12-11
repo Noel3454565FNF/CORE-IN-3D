@@ -19,7 +19,7 @@ public class ButtonHandler : MonoBehaviour
     public bool haveTrigger = false;
     public bool TriggerUsed = false;
     
-    [Description("caca")]public bool haveCooldown = true;
+    public bool haveCooldown = true;
     public bool onCooldown = false;
     /// <summary>
     /// in milliseconds btw
@@ -42,29 +42,32 @@ public class ButtonHandler : MonoBehaviour
     private void OnMouseOver()
     {
         //Cursor.SetCursor()
-        Debug.LogError("Overed");
+        //Debug.LogError("Overed");
 
     }
     private void OnMouseDown()
     {
-        Debug.LogError("Button Pressed");
-        if (canBePressed && onCooldown == false && TriggerUsed)
+        if (canBePressed && onCooldown == false && TriggerUsed == false)
         {
             canBePressed = false;
+            ButtonAnimator.SetTrigger("CanClickAnim");
+            CallOnPress.Invoke();
             if (haveTrigger)
             {
                 TriggerUsed = true;
-            }
-            if (haveCooldown)
-            {
-                Task.Run(CooldownRegen);
             }
             if(ButtonAudioSource.clip != null)
             {
                 ButtonAudioSource.Play();
             }
-            ButtonAnimator.Play("Clicked");
-            CallOnPress.Invoke();
+            if (haveCooldown)
+            {
+                Task.Run(CooldownRegen);
+            }
+            else if (!haveCooldown)
+            {
+                canBePressed = true;
+            }
 
         }
     }
