@@ -310,7 +310,7 @@ public class STABSLasers : MonoBehaviour
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";
-            await StabRpmTweenUp(250, 85);
+            await StabRpmTweenUp(500, 40);
             PendingEvent = "none";
         }
     }

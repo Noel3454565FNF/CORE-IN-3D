@@ -68,9 +68,6 @@ public class Startup : MonoBehaviour
         print("hello there");
 
 
-        ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
-
-
         LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
 
         CM.CoreEvent = "STARTUP";
@@ -104,6 +101,8 @@ public class Startup : MonoBehaviour
         CM.CAH = 10;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
+        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true;
+        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true;
 
     }
 
