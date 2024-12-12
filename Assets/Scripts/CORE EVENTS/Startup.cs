@@ -104,6 +104,7 @@ public class Startup : MonoBehaviour
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true;
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true;
 
+
     }
 
 }
