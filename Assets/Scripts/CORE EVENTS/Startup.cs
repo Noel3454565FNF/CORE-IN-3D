@@ -24,7 +24,8 @@ public class Startup : MonoBehaviour
     [Header("Stabs")]
     public STABSLasers Stab1;
     public STABSLasers Stab2;
-    public System.Action test;
+    public STABSLasers Stab3;
+    public STABSLasers Stab4;
 
     [Header("Core")]
     public MeshRenderer Core;
@@ -60,13 +61,16 @@ public class Startup : MonoBehaviour
 
     public async Task CoreStarup()
     {
-        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true;
-        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true;
+        Stab1.CanGetDamaged = false; Stab1.CanHeat = false; Stab1.CanHeat = false;
+        Stab2.CanGetDamaged = false; Stab2.CanHeat = false; Stab2.CanHeat = false;
+        Stab3.CanGetDamaged = false; Stab3.CanHeat = false; Stab3.CanHeat = false;
+        Stab4.CanGetDamaged = false; Stab4.CanHeat = false; Stab4.CanHeat = false;
+
 
 
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3);
         await Task.Delay(5000);
-        Stab1.StabAdminLock = true; Stab2.StabAdminLock = true;
+        Stab1.StabAdminLock = true; Stab2.StabAdminLock = true; Stab3.StabAdminLock = true; Stab4.StabAdminLock = true;
 
 
         LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
@@ -78,13 +82,14 @@ public class Startup : MonoBehaviour
         print("hello there");
         Task.Run(Stab1.StabStart);
         Task.Run(Stab2.StabStart);
+        Task.Run(Stab3.StabStart);
+        Task.Run(Stab4.StabStart);
         print("hello there");
         await Task.Delay(21000);
 
         ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
 
-        Stab1.Laser.gameObject.SetActive(true);
-        Stab2.Laser.gameObject.SetActive(true);
+        Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true);
 
         plrCAM.TriggerScreenShake(5f, 4f);
 
@@ -102,8 +107,11 @@ public class Startup : MonoBehaviour
         CM.CAH = 10;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
+        Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true; Stab1.StabAdminLock = false;
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;
+        Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanHeat = true; Stab3.StabAdminLock = false;
+        Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanHeat = true; Stab4.StabAdminLock = false;
 
 
     }
