@@ -60,12 +60,13 @@ public class Startup : MonoBehaviour
 
     public async Task CoreStarup()
     {
-        print("hello there");
+        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true;
+        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true;
 
-        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition in T-30 seconds.", 3);
-        print("hello there");
+
+        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3);
         await Task.Delay(5000);
-        print("hello there");
+        Stab1.StabAdminLock = true; Stab2.StabAdminLock = true;
 
 
         LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
@@ -101,8 +102,9 @@ public class Startup : MonoBehaviour
         CM.CAH = 10;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
-        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true;
-        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true;
+        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true; Stab1.StabAdminLock = false;
+        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;
+
 
     }
 

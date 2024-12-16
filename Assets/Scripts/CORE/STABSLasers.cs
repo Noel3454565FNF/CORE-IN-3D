@@ -116,8 +116,7 @@ public class STABSLasers : MonoBehaviour
             TempTar3 = Power / 10f;
             TempTarA = TempTar + TempTar3;
             TempTarA += TempTar2;
-            StabTemp += TempTarA;
-            print(TempTarA);
+            if (CanHeat) { StabTemp += TempTarA; print(TempTarA);}
         }
 
         if (StabTemp >= 300 && HighTempWarning == false)
