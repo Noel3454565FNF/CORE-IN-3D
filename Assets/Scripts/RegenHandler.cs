@@ -21,11 +21,27 @@ public class RegenHandler : MonoBehaviour
     private Application apl;
 
 
+    [Header("IMPORTANT")]
+    public bool AppRunning;
+
+
 
     //private void OnApplicationQuit()
     //{
     //    Time.timeScale = 0;
     //}
+
+
+    private void Awake()
+    {
+        instance = this;
+        AppRunning = true;
+    }
+
+    private void OnApplicationQuit()
+    {
+        AppRunning = false;
+    }
 
 
     private void Start()

@@ -104,7 +104,7 @@ public class Startup : MonoBehaviour
 
         CM.CoreStatus = "ONLINE";
         CM.CoreEvent = "none";
-        CM.CAH = 10;
+        CM.CAH = 70;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
         Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
@@ -112,6 +112,8 @@ public class Startup : MonoBehaviour
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;
         Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanHeat = true; Stab3.StabAdminLock = false;
         Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanHeat = true; Stab4.StabAdminLock = false;
+        Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
+        Stab1.CoolantInput = 20; Stab2.CoolantInput = 20; Stab3.CoolantInput = 20; Stab4.CoolantInput = 20;
 
 
     }

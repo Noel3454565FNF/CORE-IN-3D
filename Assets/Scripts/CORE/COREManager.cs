@@ -1,67 +1,165 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Rendering;
-
+using TMPro;
+using UnityEngine.UIElements;
+using UnityEngine.WSA;
+using System.Diagnostics;
+using System.Reflection;
+using UnityEditor.PackageManager;
+using System.Threading.Tasks;
+using UnityEditor.Timeline.Actions;
+using Unity.VisualScripting;
 public class COREManager : MonoBehaviour
 {
-
-
     [Header("Important Vars")]
     public string CoreStatus = "OFFLINE";
+    public string CoreState = "NONE";
     public string CoreEvent = "NONE";
-    public int CoreTemp = 0;
-    public int CAH = 0;
-    public int CorePressure = 0;
+    public int CoreTemp = 0; // Current temperature of the core
+    public int CAH = 50; // Core additional heating
+    public int CorePressure = 0; // Core pressure
     public float CoreTempChange = 1; // Rate of change for core temperature
     public float changeSpeed = 0f; // Base speed of temperature change
-    public float changeSpeedCoreInfluence = 0f;
+    public float changeSpeedCoreInfluence = 0f; // Core influence on change speed
     private float timeAccumulator = 0; // Tracks time for smoother updates
 
+    [Header("Temperature and Efficiency Vars")]
+    public float MaxHeatUnitEfficiency = 20;
+    public float MaxCoolingUnitEfficiency = 25;
+    public float MaxShieldCoolingEfficiency = 50;
 
     [Header("Stabs Connection")]
-    //Shield Unit & Cooling Unit
-    public STABSLasers Stab1;
-    public STABSLasers Stab2;
-    //Heating Unit & Power Extraction Unit
-    public STABSLasers Stab3;
-    public STABSLasers Stab4;
-    //Aux Unit & Heating/Cooling/Shield Unit
-    public STABSLasers Stab5;
-    public STABSLasers Stab6;
+    public STABSLasers Stab1; // Cooling Unit
+    public STABSLasers Stab2; // Cooling Unit
+    public STABSLasers Stab3; // Heating Unit
+    public STABSLasers Stab4; // Heating Unit
+    public STABSLasers Stab5; // AUX
+    public STABSLasers Stab6; // AUX
+    public STABSLasers Stab7; // AUX
+    public STABSLasers Stab8; // AUX
+
+    [Header("Debug Vars")]
+    public float debugTempChange = 0; // For debugging CoreTempChange
+
+    [Header("Screen")]
+    public TMPro.TextMeshProUGUI TempText;
+    public TMPro.TextMeshProUGUI StateText;
+
+    [Header("Core State")]
+    //Pre Melt state
+    public bool Overheating = false;
+    public bool CritOverheating = false;
+    
+    //Pre Freeze state
+    public bool PowerLoss = false;
+    public bool ReactionLoss = false;
+
+    //Custom Pre State
+    public bool ReactorHandleLoss = false;
+
+    //Catastrophic State
+    public bool Freezedown = false;
+    public bool Meltdown = false;
 
     void Update()
     {
         if (CoreStatus != "OFFLINE")
         {
-            ChangeCoreTemp();
+            UpdateCoreTemperature();
         }
+        
     }
 
-    private void ChangeCoreTemp()
+
+    //private void Start()
+    //{
+    //    test(UpdateCoreTemperature);
+    //}
+
+    //public void test()
+    //{
+
+    //}
+
+
+    
+
+
+    private void UpdateCoreTemperature()
     {
+        
+        // Reset CoreTempChange and apply additional heating
+        CoreTempChange = CAH;
+
+        // Heating unit effect
+        if (Stab3.StabCheckForCoreVal())
+        {
+            CoreTempChange += MaxHeatUnitEfficiency * (Stab3.Power / 100f);
+        }
+        if (Stab4.StabCheckForCoreVal())
+        {
+            CoreTempChange += MaxHeatUnitEfficiency * (Stab4.Power / 100f);
+        }
+
+        // Cooling unit effect
         if (Stab1.StabCheckForCoreVal())
         {
-            CoreTempChange = CoreTempChange - (3 * Stab1.Power / 10);
+            CoreTempChange -= MaxCoolingUnitEfficiency * (Stab1.Power / 100f);
         }
         if (Stab2.StabCheckForCoreVal())
         {
-            CoreTempChange = CoreTempChange - (3 * Stab2.Power / 10);
+            CoreTempChange -= MaxCoolingUnitEfficiency * (Stab2.Power / 100f);
         }
-        // Calculate the adjustment speed based on CoreTempChange
-        float adjustmentSpeed = Mathf.Abs(CoreTempChange + CAH) * (changeSpeed * changeSpeedCoreInfluence);
 
-        // Accumulate time to smoothly increment/decrement CoreTemp
+        // Shield
+        CoreTempChange -= MaxShieldCoolingEfficiency * (100 / 100f);
+
+        // Calculate adjustment speed
+        float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;
+
+        // Accumulate time for smooth updates
         timeAccumulator += Time.deltaTime * adjustmentSpeed;
 
-        // Apply changes only when the accumulator reaches 1 or higher
+        // Apply temperature changes based on the time accumulator
         while (timeAccumulator >= 1f)
         {
-            // Adjust CoreTemp up or down based on the sign of CoreTempChange
-            CoreTemp += (int)Mathf.Sign(CoreTempChange);
+            if (CoreTempChange > 0.9f)
+            {
+                CoreTemp += 1;
+            }
+            else if (CoreTempChange < -1f)
+            {
+                CoreTemp -= 1;
+            }
+            else
+            {
+                CoreTemp += 0;
+                print("core stable");
+            }
+            debugTempChange = CoreTempChange; //  For debugging purposes
+            TempText.text = "" + CoreTemp + "C°";
             timeAccumulator -= 1f;
         }
     }
+
+    public Task COREConstantStateChecker()
+    {
+        while(RegenHandler.instance.AppRunning && CoreStatus == "ONLINE")
+        {
+
+            if (CoreTemp < 20000)
+            {
+
+            }
+
+            Task.Delay(10);
+        }
+        return Task.CompletedTask;
+    }
+
+
 }
+
+
+
