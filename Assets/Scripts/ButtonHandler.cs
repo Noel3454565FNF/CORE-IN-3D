@@ -67,6 +67,7 @@ public class ButtonHandler : MonoBehaviour
             }
             if (haveCooldown)
             {
+                Debug.LogWarning("have cooldown");
                 Task.Run(CooldownRegen);
             }
             else if (!haveCooldown)
@@ -79,8 +80,10 @@ public class ButtonHandler : MonoBehaviour
 
     public async Task CooldownRegen()
     {
-        await Task.Delay(CooldownTime);
         onCooldown = true;
+        await Task.Delay(CooldownTime);
+        print("cooldeown OVER over");
+        onCooldown = false;
     }
 
 

@@ -8,6 +8,7 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.UIElements;
 
 public class STABSLasers : MonoBehaviour
 {
@@ -78,6 +79,14 @@ public class STABSLasers : MonoBehaviour
     public AudioClip StabTogetherIgnit;
     public AudioClip StabSoloIgnit;
 
+    [Header("Screen things")]
+    public UnityEngine.UI.Image stabrotorimg;
+    public UnityEngine.UI.Image stablaserimg;
+    public UnityEngine.UI.Image stabsstructuralpillarimg;
+
+    public TextMeshProUGUI temperature;
+    public TextMeshProUGUI rpm;
+    public TextMeshProUGUI globalStatus;
 
 
 
@@ -104,7 +113,8 @@ public class STABSLasers : MonoBehaviour
 
     void Update()
     {
-
+        temperature.text = Mathf.FloorToInt(StabTemp) + "C°";
+        rpm.text = RPM.ToString(); 
     }
 
 
@@ -127,41 +137,53 @@ public class STABSLasers : MonoBehaviour
         if (StabTemp >= 300 && HighTempWarning == false)
         {
             HighTempWarning = true;
+            temperature.color = Color.yellow;
         }
         if (StabTemp < 300 && HighTempWarning)
         {
             HighTempWarning = false;
+            temperature.color = Color.white;
         }
 
         if (StabTemp >= 400 && StabOverHeat == false)
         {
             StabOverHeat = true;
             ROF();
+            temperature.color = Color.red;
         }
         if (StabTemp < 400 && StabOverHeat)
         {
             StabOverHeat = false;
             ROF();
+            temperature.color = Color.yellow;
         }
 
         if (RPM >= 370 && HighRPM == false)
         {
             HighRPM = true;
+            rpm.color = Color.yellow;
         }
         if (RPM < 370 && HighRPM)
         {
             HighRPM = false;
+            rpm.color = Color.white;
         }
 
         if (RPM >= 420 && RotorOverLoad == false)
         {
             RotorOverLoad = true;
+            rpm.color = Color.red;
         }
         if (RPM < 420 && RotorOverLoad)
         {
             RotorOverLoad = false;
+            rpm.color = Color.yellow;
         }
         yield return new WaitForSeconds(1f);
+        if (globalStatus.ToString().ToLower() != StabStatus.ToString().ToLower())
+        {
+            globalStatus.text = StabStatus.ToString().ToUpper();
+        }
         StartCoroutine(STABTEMPCHECK());
     }
 
@@ -273,32 +295,54 @@ public class STABSLasers : MonoBehaviour
     }
 
 
-    public Task StabChangePowerUp()
+    public void StabChangePowerCaller(string  power)
+    {
+        if (power == "up")
+        {
+            Debug.LogWarning("up called meow");
+            Task.Run(StabChangePowerUp);
+        }
+        if (power == "down")
+        {
+            Debug.LogWarning("down called meow");
+            Task.Run(StabChangePowerDown);
+        }
+        else
+        {
+            Debug.LogError("INVALID ARGUMENT!");
+        }
+    }
+
+    public async Task StabChangePowerUp()
     {
         if (StabAdminLock == false)
         {
             CurrChange = !CurrChange;
-            while (CurrChange && CurrChangeDir == "Up" && Power < 101)
+            Debug.LogWarning("bleh");
+            CurrChangeDir = "Up";
+            while (CurrChange && CurrChangeDir == "Up" && Power < 100)
             {
-                Task.Delay(500);
+                Debug.LogWarning("bleh");
+                await Task.Delay(500);
                 Power += 1;
             }
         }
-        return Task.CompletedTask;
     }
 
-    public Task StabChangePowerDown()
+    public async Task StabChangePowerDown()
     {
         if (StabAdminLock == false)
         {
             CurrChange = !CurrChange;
-            while (CurrChange && CurrChangeDir == "Down" && Power > 9)
+            Debug.LogWarning("bleh");
+            CurrChangeDir = "Down";
+            while (CurrChange && CurrChangeDir == "Down" && Power > 10)
             {
-                Task.Delay(500);
+                await Task.Delay(500);
                 Power -= 1;
+                Debug.LogWarning("bleh");
             }
         }
-        return Task.CompletedTask;
     }
 
 
