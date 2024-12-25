@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -25,8 +26,10 @@ public class ButtonHandler : MonoBehaviour
     /// in milliseconds btw
     /// </summary>
     public int CooldownTime = 3000;
+    public float Pos;
+    public bool Moving = false;
 
-    public AnimationClip ClickedAnim;
+    [SerializeField]public AnimationClip ClickedAnim;
     public Animator ButtonAnimator;
 
     public AudioSource ButtonAudioSource;
@@ -36,6 +39,7 @@ public class ButtonHandler : MonoBehaviour
     void Start()
     {
         if (button == null) { button = this.gameObject; }
+        ButtonAnimator.bodyPosition = button.transform.position;
     }
 
 
@@ -49,8 +53,9 @@ public class ButtonHandler : MonoBehaviour
     {
         if (canBePressed && onCooldown == false && TriggerUsed == false)
         {
+            animhere();
             canBePressed = false;
-            ButtonAnimator.SetTrigger("CanClickAnim");
+            //ButtonAnimator.SetTrigger("CanClickAnim");
             CallOnPress.Invoke();
             if (haveTrigger)
             {
@@ -62,6 +67,7 @@ public class ButtonHandler : MonoBehaviour
             }
             if (haveCooldown)
             {
+                Debug.LogWarning("have cooldown");
                 Task.Run(CooldownRegen);
             }
             else if (!haveCooldown)
@@ -74,10 +80,32 @@ public class ButtonHandler : MonoBehaviour
 
     public async Task CooldownRegen()
     {
-        await Task.Delay(CooldownTime);
         onCooldown = true;
+        await Task.Delay(CooldownTime);
+        print("cooldeown OVER over");
+        onCooldown = false;
     }
 
+
+
+    public void animhere()
+    {
+        var sk = 0;
+        var oldY = button.transform.position.y;
+        LeanTween.value(0f, 0.01f, 0.4f)
+            .setOnUpdate((float t) =>
+            {
+                button.transform.position = new Vector3(button.transform.position.x, button.transform.position.y - t, button.transform.position.z);
+            })
+            .setOnComplete(() =>
+            {
+                LeanTween.value(button.transform.position.y, oldY, 0.3f)
+                .setOnUpdate((float t) =>
+                {
+                    button.transform.position = new Vector3(button.transform.position.x, t, button.transform.position.z);
+                });
+            });
+    }
     // Update is called once per frame
     void Update()
     {
