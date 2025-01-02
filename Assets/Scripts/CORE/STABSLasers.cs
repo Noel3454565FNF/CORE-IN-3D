@@ -36,7 +36,8 @@ public class STABSLasers : MonoBehaviour
     public bool CanHeat = true;
     public bool CanKys = true;
     public bool CurrChange = false;
-    public string CurrChangeDir = "none";
+    public string CurrPowerChangeDir = "none";
+    public string CurrCoolingChangeDir = "none";
 
 
     [Header("Warning")]
@@ -198,6 +199,8 @@ public class STABSLasers : MonoBehaviour
         }
 
         var rotorMaterial = rotorRenderer.material;
+
+        // Ensure the material supports emission
         rotorMaterial.EnableKeyword("_EMISSION");
 
         // Pause LeanTween if a tween is already active
@@ -210,14 +213,22 @@ public class STABSLasers : MonoBehaviour
         if (StabOverHeat)
         {
             // Play particle system for overheating
-            PSStab.Play();
+            if (PSStab != null)
+            {
+                PSStab.Play();
+            }
+            else
+            {
+                Debug.LogWarning("PSStab is not assigned.");
+            }
 
-            // Animate emission to red over 10 seconds
+            // Animate emission to a strong red glow over 10 seconds with an easeOutQuad curve
             LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 10f)
+                .setEase(LeanTweenType.easeOutQuad)
                 .setOnUpdate((float t) =>
                 {
                     WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.red, t);
-                    rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat);
+                    rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat * 2f); // Adjust intensity
                     rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
                 })
                 .setOnComplete(() =>
@@ -230,10 +241,14 @@ public class STABSLasers : MonoBehaviour
         else
         {
             // Stop particle system for overheating
-            PSStab.Stop();
+            if (PSStab != null)
+            {
+                PSStab.Stop();
+            }
 
-            // Animate emission back to white/neutral over 10 seconds
+            // Animate emission back to neutral over 10 seconds with an easeInOutQuad curve
             LTColorCurTween = LeanTween.value(Rotor, 1f, 0f, 10f)
+                .setEase(LeanTweenType.easeInOutQuad)
                 .setOnUpdate((float t) =>
                 {
                     // Transition emission to black and color to white
@@ -250,6 +265,7 @@ public class STABSLasers : MonoBehaviour
             Debug.Log("Cooling color animation started.");
         }
     }
+
 
     IEnumerator STABINTCHECK()
     {
@@ -295,17 +311,39 @@ public class STABSLasers : MonoBehaviour
     }
 
 
-    public void StabChangePowerCaller(string  power)
+    public void StabChangePowerCaller(PassiveArgs lol)
     {
-        if (power == "up")
+        var type = lol.arg1;
+        var d = lol.arg2;
+        if (type == "power")
         {
-            Debug.LogWarning("up called meow");
-            Task.Run(StabChangePowerUp);
+            if (d == "up")
+            {
+                Debug.LogWarning("power up called meow");
+                Task.Run(StabChangePowerUp);
+            }
+            if (d == "down")
+            {
+                Debug.LogWarning("power down called meow");
+                Task.Run(StabChangePowerDown);
+            }
         }
-        if (power == "down")
+        else if (type == "rpm")
         {
-            Debug.LogWarning("down called meow");
-            Task.Run(StabChangePowerDown);
+
+        }
+        else if (type == "cooling")
+        {
+            if (d == "up")
+            {
+                Debug.LogWarning("cooling up called meow");
+                Task.Run(StabChangeCoolingUp);
+            }
+            if (d == "down")
+            {
+                Debug.LogWarning("cooling down called meow");
+                Task.Run(StabChangeCoolingDown);
+            }
         }
         else
         {
@@ -319,8 +357,8 @@ public class STABSLasers : MonoBehaviour
         {
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
-            CurrChangeDir = "Up";
-            while (CurrChange && CurrChangeDir == "Up" && Power < 100)
+            CurrPowerChangeDir = "Up";
+            while (CurrChange && CurrPowerChangeDir == "Up" && Power < 100)
             {
                 Debug.LogWarning("bleh");
                 await Task.Delay(500);
@@ -335,8 +373,45 @@ public class STABSLasers : MonoBehaviour
         {
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
-            CurrChangeDir = "Down";
-            while (CurrChange && CurrChangeDir == "Down" && Power > 10)
+            CurrPowerChangeDir = "Down";
+            while (CurrChange && CurrPowerChangeDir == "Down" && Power > 10)
+            {
+                await Task.Delay(500);
+                Power -= 1;
+                Debug.LogWarning("bleh");
+            }
+        }
+    }
+
+
+
+
+
+
+    public async Task StabChangeCoolingUp()
+    {
+        if (StabAdminLock == false)
+        {
+            CurrChange = !CurrChange;
+            Debug.LogWarning("bleh");
+            CurrCoolingChangeDir = "Up";
+            while (CurrChange && CurrCoolingChangeDir == "Up" && Power < 100)
+            {
+                Debug.LogWarning("bleh");
+                await Task.Delay(500);
+                Power += 1;
+            }
+        }
+    }
+
+    public async Task StabChangeCoolingDown()
+    {
+        if (StabAdminLock == false)
+        {
+            CurrChange = !CurrChange;
+            Debug.LogWarning("bleh");
+            CurrCoolingChangeDir = "Down";
+            while (CurrChange && CurrCoolingChangeDir == "Down" && Power > 0)
             {
                 await Task.Delay(500);
                 Power -= 1;
@@ -349,7 +424,8 @@ public class STABSLasers : MonoBehaviour
     private void OnApplicationQuit()
     {
         CurrChange = false;
-        CurrChangeDir = "none";
+        CurrPowerChangeDir = "none";
+        CurrCoolingChangeDir = "none";
     }
 
     //FUNC FOR EVENTS
@@ -502,3 +578,12 @@ public class STABSLasers : MonoBehaviour
         //}
 
     }
+
+
+
+[SerializeField]
+public class argStabVarchange
+{
+    public string type;
+    public string d;
+}

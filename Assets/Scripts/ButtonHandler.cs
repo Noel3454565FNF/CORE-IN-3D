@@ -12,7 +12,10 @@ public class ButtonHandler : MonoBehaviour
 
     [Header("Component")]
     public GameObject button;
-    public UnityEvent CallOnPress;
+    public UnityEvent<PassiveArgs> CallOnPress;
+    [SerializeField]
+    public PassiveArgs Argstopass;
+    
 
     [Header("Value")]
     public bool canBePressed = true;
@@ -40,6 +43,7 @@ public class ButtonHandler : MonoBehaviour
     {
         if (button == null) { button = this.gameObject; }
         ButtonAnimator.bodyPosition = button.transform.position;
+
     }
 
 
@@ -56,7 +60,7 @@ public class ButtonHandler : MonoBehaviour
             animhere();
             canBePressed = false;
             //ButtonAnimator.SetTrigger("CanClickAnim");
-            CallOnPress.Invoke();
+            CallOnPress.Invoke(Argstopass);
             if (haveTrigger)
             {
                 TriggerUsed = true;
@@ -111,4 +115,14 @@ public class ButtonHandler : MonoBehaviour
     {
         
     }
+}
+
+
+[Serializable]
+public class PassiveArgs
+{
+    public string arg1;
+    public string arg2;
+    public string arg3;
+    public string arg4;
 }
