@@ -315,6 +315,7 @@ public class STABSLasers : MonoBehaviour
     {
         var type = lol.arg1;
         var d = lol.arg2;
+        print(type + " - " + d);
         if (type == "power")
         {
             if (d == "up")
@@ -475,14 +476,11 @@ public class STABSLasers : MonoBehaviour
 
     public void StabKys()
     {
-        PSStab.Stop();
+        StabStatus = "ERROR";
+        PSStab.startColor = new Color(0, 0, 0);
         ASSTAB.clip = StabDie;
         ASSTAB.Play();
         Laser.gameObject.SetActive(false);
-        foreach (GameObject rg in GMstabsParts)
-        {
-            rg.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-        }
     }
 
     public async Task StabStart()

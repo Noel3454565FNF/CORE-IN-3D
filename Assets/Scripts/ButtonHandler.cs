@@ -59,15 +59,11 @@ public class ButtonHandler : MonoBehaviour
         {
             animhere();
             canBePressed = false;
-            //ButtonAnimator.SetTrigger("CanClickAnim");
             CallOnPress.Invoke(Argstopass);
+            print("dude come here");
             if (haveTrigger)
             {
                 TriggerUsed = true;
-            }
-            if(ButtonAudioSource.clip != null)
-            {
-                ButtonAudioSource.Play();
             }
             if (haveCooldown)
             {
@@ -88,6 +84,7 @@ public class ButtonHandler : MonoBehaviour
         await Task.Delay(CooldownTime);
         print("cooldeown OVER over");
         onCooldown = false;
+        canBePressed = true;
     }
 
 
