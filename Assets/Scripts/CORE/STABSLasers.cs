@@ -87,6 +87,9 @@ public class STABSLasers : MonoBehaviour
 
     public TextMeshProUGUI temperature;
     public TextMeshProUGUI rpm;
+    public TextMeshProUGUI cooling;
+    public TextMeshProUGUI stabInput;
+    public TextMeshProUGUI strucINT;
     public TextMeshProUGUI globalStatus;
 
 
@@ -115,7 +118,9 @@ public class STABSLasers : MonoBehaviour
     void Update()
     {
         temperature.text = Mathf.FloorToInt(StabTemp) + "C°";
-        rpm.text = RPM.ToString(); 
+        rpm.text = RPM.ToString();
+        stabInput.text = Power.ToString() + "%";
+        cooling.text = CoolantInput.ToString() + "%";
     }
 
 
@@ -396,11 +401,11 @@ public class STABSLasers : MonoBehaviour
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
             CurrCoolingChangeDir = "Up";
-            while (CurrChange && CurrCoolingChangeDir == "Up" && Power < 100)
+            while (CurrChange && CurrCoolingChangeDir == "Up" && CoolantInput < 100)
             {
                 Debug.LogWarning("bleh");
                 await Task.Delay(500);
-                Power += 1;
+                CoolantInput += 1;
             }
         }
     }
@@ -412,10 +417,10 @@ public class STABSLasers : MonoBehaviour
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
             CurrCoolingChangeDir = "Down";
-            while (CurrChange && CurrCoolingChangeDir == "Down" && Power > 0)
+            while (CurrChange && CurrCoolingChangeDir == "Down" && CoolantInput > 0)
             {
                 await Task.Delay(500);
-                Power -= 1;
+                CoolantInput -= 1;
                 Debug.LogWarning("bleh");
             }
         }
@@ -478,6 +483,7 @@ public class STABSLasers : MonoBehaviour
     {
         StabStatus = "ERROR";
         PSStab.startColor = new Color(0, 0, 0);
+        PSStab.Play();
         ASSTAB.clip = StabDie;
         ASSTAB.Play();
         Laser.gameObject.SetActive(false);

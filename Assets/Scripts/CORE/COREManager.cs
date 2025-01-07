@@ -62,13 +62,14 @@ public class COREManager : MonoBehaviour
     public bool Freezedown = false;
     public bool Meltdown = false;
 
+
+
     void Update()
     {
         if (CoreStatus != "OFFLINE")
         {
             UpdateCoreTemperature();
-        }
-        
+        }        
     }
 
 
