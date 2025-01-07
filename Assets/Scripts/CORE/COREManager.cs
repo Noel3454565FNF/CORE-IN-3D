@@ -32,12 +32,12 @@ public class COREManager : MonoBehaviour
     [Header("Stabs Connection")]
     public STABSLasers Stab1; // Cooling Unit
     public STABSLasers Stab2; // Cooling Unit
-    public STABSLasers Stab3; // Heating Unit
-    public STABSLasers Stab4; // Heating Unit
-    public STABSLasers Stab5; // AUX
-    public STABSLasers Stab6; // AUX
-    public STABSLasers Stab7; // AUX
-    public STABSLasers Stab8; // AUX
+    public STABSLasers Stab3; // AUX
+    public STABSLasers Stab4; // AUX
+    public STABSLasers Stab5; // Heating Unit
+    public STABSLasers Stab6; // Heating Unit
+    public STABSLasers Stab7; // Heating Unit
+    public STABSLasers Stab8; // Heating Unit
 
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
@@ -114,7 +114,7 @@ public class COREManager : MonoBehaviour
         }
 
         // Shield
-        CoreTempChange -= MaxShieldCoolingEfficiency * (100 / 100f);
+        CoreTempChange -= MaxShieldCoolingEfficiency * (MCFS.instance.ShieldPower / 100f);
 
         // Calculate adjustment speed
         float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;
@@ -143,20 +143,24 @@ public class COREManager : MonoBehaviour
             timeAccumulator -= 1f;
         }
     }
-
-    public Task COREConstantStateChecker()
+     
+    async Task COREConstantStateChecker()
     {
-        while(RegenHandler.instance.AppRunning && CoreStatus == "ONLINE")
+        while(RegenHandler.instance.AppRunning && CoreStatus == "ONLINE" && CoreEvent == "NONE")
         {
 
-            if (CoreTemp < 20000)
+            if (CoreTemp > 60000)
             {
-
+                //PREMELT.
             }
 
-            Task.Delay(10);
+            if (CoreTemp < 500)
+            {
+                //PRE-FREEZE/STALL.
+            }
+
+            Task.Delay(0250);
         }
-        return Task.CompletedTask;
     }
 
 

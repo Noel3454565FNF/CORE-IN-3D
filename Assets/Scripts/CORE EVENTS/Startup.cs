@@ -94,7 +94,7 @@ public class Startup : MonoBehaviour
         plrCAM.TriggerScreenShake(5f, 4f);
 
         ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position);
-        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f);
+        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f); MCFS.instance.ShieldCreation(100, 5);
         Core.gameObject.transform.LeanScale(CoreSize, 5f);
         await Task.Delay(9000);
 
@@ -103,11 +103,12 @@ public class Startup : MonoBehaviour
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition success. now switching to manual control.", 5);
 
         CM.CoreStatus = "ONLINE";
+        MCFS.instance.ShieldStatus = MCFS.ShieldStatusEnum.Online.ToString();
         CM.CoreEvent = "none";
         CM.CAH = 70;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
-        Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
+        Stab1.StabRPMCHANGING(250, 7f); Stab2.StabRPMCHANGING(250, 7f); Stab3.StabRPMCHANGING(250, 7f); Stab4.StabRPMCHANGING(250, 7f);
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true; Stab1.StabAdminLock = false;
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;
         Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanHeat = true; Stab3.StabAdminLock = false;

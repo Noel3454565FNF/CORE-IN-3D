@@ -509,6 +509,16 @@ public class STABSLasers : MonoBehaviour
             await Task.Delay(TimeinMS);
         }
     }
+
+    public void StabRPMCHANGING(float to, float time)
+    {
+        var aze = RPM;
+        LeanTween.value(aze, to, time)
+            .setOnUpdate((float t) =>
+            {
+                RPM = Mathf.CeilToInt(t);
+            });
+    }
     public async Task StabRpmTweenDown(int to, int TimeinMS)
     {
         for (int i = to; RPM > i;)
