@@ -10,6 +10,8 @@ using UnityEditor.PackageManager;
 using System.Threading.Tasks;
 using UnityEditor.Timeline.Actions;
 using Unity.VisualScripting;
+using UnityEngine.UI;
+using System.Collections;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
@@ -23,11 +25,16 @@ public class COREManager : MonoBehaviour
     public float changeSpeed = 0f; // Base speed of temperature change
     public float changeSpeedCoreInfluence = 0f; // Core influence on change speed
     private float timeAccumulator = 0; // Tracks time for smoother updates
+    public int coreStability = 100;
 
     [Header("Temperature and Efficiency Vars")]
     public float MaxHeatUnitEfficiency = 20;
     public float MaxCoolingUnitEfficiency = 25;
     public float MaxShieldCoolingEfficiency = 50;
+    public float MasCoreInstabilityEfficiency = 20;
+
+    public float CoreStabilityDecreasingSpeed = 0.2f;
+    public float CoreStabilityIncreasingSpeed = 0.1f;
 
     [Header("Stabs Connection")]
     public STABSLasers Stab1; // Cooling Unit
@@ -46,7 +53,15 @@ public class COREManager : MonoBehaviour
     public TMPro.TextMeshProUGUI TempText;
     public TMPro.TextMeshProUGUI StateText;
 
+    public UnityEngine.UI.Image CoreDiag;
+    public RawImage CoreWS;
+    public TMPro.TextMeshProUGUI CoreUS;
+
+
     [Header("Core State")]
+    //global
+    public bool CoreInEvent = false;
+
     //Pre Melt state
     public bool Overheating = false;
     public bool CritOverheating = false;
@@ -69,7 +84,8 @@ public class COREManager : MonoBehaviour
         if (CoreStatus != "OFFLINE")
         {
             UpdateCoreTemperature();
-        }        
+        }
+        StateText.text = CoreStatus.ToLower();
     }
 
 
@@ -84,7 +100,7 @@ public class COREManager : MonoBehaviour
     //}
 
 
-    
+
 
 
     private void UpdateCoreTemperature()
@@ -92,6 +108,9 @@ public class COREManager : MonoBehaviour
         
         // Reset CoreTempChange and apply additional heating
         CoreTempChange = CAH;
+
+        //Core instability
+        CoreTempChange += MasCoreInstabilityEfficiency * (100 - coreStability / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -144,15 +163,35 @@ public class COREManager : MonoBehaviour
         }
     }
      
-    async Task COREConstantStateChecker()
+    public async Task COREConstantStateChecker()
     {
-        while(RegenHandler.instance.AppRunning && CoreStatus == "ONLINE" && CoreEvent == "NONE")
+        while(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreStatus != "OVERLOAD" && CoreEvent == "NONE")
         {
-
-            if (CoreTemp > 60000)
+            if (CoreTemp > 10000 && Overheating == false && CritOverheating == false)
             {
-                //PREMELT.
+                //P1 PREMELT.
+                StartCoroutine(CoreStabilityDecrease());
+                Overheating = true;
+                TempText.color = Color.yellow;
             }
+            if (coreStability == 0 && Overheating == true && CritOverheating == false)
+            {
+                //P2 PREMELT.
+                StartCoroutine(MCFS.instance.ShieldDegradationFunc());
+                CritOverheating = true;
+                MCFS.instance.integrityTxt.color = Color.yellow;
+            }
+
+
+            if (CoreTemp < 9999 && Overheating == true &&  CritOverheating == false)
+            {
+                //BAI PREMELT.
+                StopCoroutine(CoreStabilityDecrease());
+                Overheating = false;
+                TempText.color = Color.white;
+            }
+
+
 
             if (CoreTemp < 500)
             {
@@ -161,6 +200,81 @@ public class COREManager : MonoBehaviour
 
             Task.Delay(0250);
         }
+    }
+
+
+    public IEnumerator CoreStabilityDecrease()
+    {
+        yield return new WaitForSeconds(CoreStabilityDecreasingSpeed);
+        var t = coreStability - 1;
+        if (t > 0)
+        {
+            coreStability = coreStability - 1;
+            StartCoroutine(CoreStabilityDecrease());
+        }
+        else
+        {
+            StopCoroutine(CoreStabilityDecrease());
+        }
+    }
+    public IEnumerator CoreStabilityIncrease()
+    {
+        yield return new WaitForSeconds(CoreStabilityIncreasingSpeed);
+        var t = coreStability + 1;
+        if (t < 100)
+        {
+            coreStability = coreStability + 1;
+            StartCoroutine(CoreStabilityIncrease());
+        }
+        else
+        {
+            StopCoroutine(CoreStabilityIncrease());
+        }
+    }
+
+    public void LeantweenTemp(float to, float time)
+    {
+        var frfr = CoreTemp;
+        LeanTween.value(frfr, to, time)
+            .setOnUpdate((float t) =>
+            {
+                CoreTemp = Mathf.FloorToInt(t);
+                print(CoreTemp);
+                TempText.text = "" + CoreTemp + "C°";
+            });
+    }
+
+
+    //CORE SCREEN FONCTIONS
+
+    public void CoreToOnline()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = false;
+        CoreDiag.gameObject.active = true;
+    }
+
+    public void CoreToUnknown()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = true;
+        CoreDiag.gameObject.active = false;
+        CoreUS.color = Color.white;
+    }
+
+    public void CoreToDanger()
+    {
+        CoreWS.gameObject.active = true;
+        CoreUS.enabled = false;
+        CoreDiag.gameObject.active = false;
+    }
+
+    public void CoreToUnknownDanger()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = true;
+        CoreDiag.gameObject.active = false;
+        CoreUS.color = new Color(160, 32, 240);
     }
 
 

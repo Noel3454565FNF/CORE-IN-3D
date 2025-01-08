@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Threading.Tasks;
+
 
 [System.Serializable]
 public class LightsManager : MonoBehaviour
@@ -23,20 +25,25 @@ public class LightsManager : MonoBehaviour
         GLM = this;
     }
 
-    public void LevelNeg3LightsControl(int intensity, int SwitchTime, Negate3roomsName whatroom)
+
+
+    public IEnumerator LevelNeg3LightsControl(int intensity, int SwitchTime, Negate3roomsName whatroom)
     {
         if (whatroom == Negate3roomsName.CORE_CONTROL_ROOM)
         {
             var lol = 0;
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
             {
+                yield return new WaitForSeconds(0.1f);
                 light.intensity = Mathf.Lerp(light.intensity, intensity, SwitchTime);
                 var sonu = light.gameObject.GetComponent<AudioSource>();
                 sonu.clip = LightsSound;
                 sonu.Play();
                 lol++;
             }
+            yield return null;
         }
+        yield return null;
     }
 }
 
