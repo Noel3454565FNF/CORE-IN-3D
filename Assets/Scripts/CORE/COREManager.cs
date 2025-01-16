@@ -12,6 +12,8 @@ using UnityEditor.Timeline.Actions;
 using Unity.VisualScripting;
 using UnityEngine.UI;
 using System.Collections;
+using Unity.Mathematics;
+using System.Collections.Generic;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
@@ -26,6 +28,11 @@ public class COREManager : MonoBehaviour
     public float changeSpeedCoreInfluence = 0f; // Core influence on change speed
     private float timeAccumulator = 0; // Tracks time for smoother updates
     public int coreStability = 100;
+
+    public bool CanDecreaseCoreStability = true;
+    public bool CanIncreaseCoreStability = true;
+
+    public bool CanUpdateTemp = false;
 
     [Header("Temperature and Efficiency Vars")]
     public float MaxHeatUnitEfficiency = 20;
@@ -48,6 +55,7 @@ public class COREManager : MonoBehaviour
 
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
+    public static COREManager instance;
 
     [Header("Screen")]
     public TMPro.TextMeshProUGUI TempText;
@@ -57,6 +65,13 @@ public class COREManager : MonoBehaviour
     public RawImage CoreWS;
     public TMPro.TextMeshProUGUI CoreUS;
 
+    public LineClone ReactorSysLogsScreen;
+    
+    public Color LineAttentionColor;
+    public Color LineWarnColor;
+    public Color LineUnknownColor;
+    public Color LineOVERRIDEColor;
+
 
     [Header("Core State")]
     //global
@@ -65,6 +80,8 @@ public class COREManager : MonoBehaviour
     //Pre Melt state
     public bool Overheating = false;
     public bool CritOverheating = false;
+    public bool Premeltdown = false;
+    public bool ShieldDetonationImminent = false;
     
     //Pre Freeze state
     public bool PowerLoss = false;
@@ -75,9 +92,25 @@ public class COREManager : MonoBehaviour
 
     //Catastrophic State
     public bool Freezedown = false;
+    public bool FreezedownHISTORY = false;
     public bool Meltdown = false;
+    public bool Overload = false;
+    public bool ControlLoss = false;
+
+    [Header("Screen Connection")]
+    public GlobalScreenManager MCFSscreen;
+    public GlobalScreenManager MainCoreScreen;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
 
+    private void Start()
+    {
+        UpdateCoreTemperature();
+    }
 
     void Update()
     {
@@ -105,12 +138,11 @@ public class COREManager : MonoBehaviour
 
     private void UpdateCoreTemperature()
     {
-        
-        // Reset CoreTempChange and apply additional heating
+        // Reset CoreTempChange and apply base heating
         CoreTempChange = CAH;
 
-        //Core instability
-        CoreTempChange += MasCoreInstabilityEfficiency * (100 - coreStability / 100f);
+        // Core instability effect
+        CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -132,8 +164,19 @@ public class COREManager : MonoBehaviour
             CoreTempChange -= MaxCoolingUnitEfficiency * (Stab2.Power / 100f);
         }
 
-        // Shield
-        CoreTempChange -= MaxShieldCoolingEfficiency * (MCFS.instance.ShieldPower / 100f);
+        // Shield effect
+        CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
+
+        // Debug: Log CoreTempChange before damping
+        debugTempChange = CoreTempChange;
+
+        // Apply a damping factor to reduce sensitivity
+        CoreTempChange *= 0.8f; // Damping factor to smooth abrupt changes
+
+        // Clamp CoreTempChange to prevent extreme values
+        CoreTempChange = Mathf.Clamp(CoreTempChange, -100f, 100f); // Adjust range as needed
+
+        // Debug: Log CoreTempChange after damping and clamping
 
         // Calculate adjustment speed
         float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;
@@ -141,52 +184,62 @@ public class COREManager : MonoBehaviour
         // Accumulate time for smooth updates
         timeAccumulator += Time.deltaTime * adjustmentSpeed;
 
+        // Debug: Log time accumulator value
+
         // Apply temperature changes based on the time accumulator
-        while (timeAccumulator >= 1f)
+        while (timeAccumulator >= 1f && CanUpdateTemp)
         {
-            if (CoreTempChange > 0.9f)
+            if (Mathf.Abs(CoreTempChange) > 0.1f) // Apply only significant changes
             {
-                CoreTemp += 1;
-            }
-            else if (CoreTempChange < -1f)
-            {
-                CoreTemp -= 1;
+                // Convert the floating-point result to an integer
+                CoreTemp += (int)Mathf.Sign(CoreTempChange) * Mathf.Min(1, (int)Mathf.Abs(CoreTempChange));
             }
             else
             {
-                CoreTemp += 0;
-                print("core stable");
+                UnityEngine.Debug.Log("Core is stable.");
             }
-            debugTempChange = CoreTempChange; //  For debugging purposes
-            TempText.text = "" + CoreTemp + "C°";
+
+            // Debug: Log updated CoreTemp value
+
+            TempText.text = $"{CoreTemp}C°"; // Update temperature text
             timeAccumulator -= 1f;
+            COREConstantStateChecker();
         }
     }
-     
-    public async Task COREConstantStateChecker()
+
+    public void COREConstantStateChecker()
     {
-        while(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreStatus != "OVERLOAD" && CoreEvent == "NONE")
+        if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-            if (CoreTemp > 10000 && Overheating == false && CritOverheating == false)
+            if (CoreTemp > 7600 && Overheating == false && CritOverheating == false)
             {
-                //P1 PREMELT.
-                StartCoroutine(CoreStabilityDecrease());
                 Overheating = true;
+                //P1 PREMELT.
+                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "!Warning Core overheating, nuclear meltodwn IMMINENT!", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
+                StartCoroutine(CoreStabilityDecrease());
                 TempText.color = Color.yellow;
+                //LightsManager.GLM.LevelNeg3LightsFlick(3, Negate3roomsName.ALL);
             }
             if (coreStability == 0 && Overheating == true && CritOverheating == false)
             {
-                //P2 PREMELT.
-                StartCoroutine(MCFS.instance.ShieldDegradationFunc());
                 CritOverheating = true;
+                //P2 PREMELT.
+                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "Shield absortion capacity have reached his limit. PLEASE engage the Core Power Purge IMMEDIATLY.", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
+                MCFS.instance.CanShieldDegrad = true;
+                StartCoroutine(MCFS.instance.ShieldDegradationFunc());
                 MCFS.instance.integrityTxt.color = Color.yellow;
+                //LightsManager.GLM.LevelNeg3LightsFlick(7, Negate3roomsName.ALL);
+            }
+            if (MCFS.instance.ShieldIntegrity <= 10 && Overheating && CritOverheating)
+            {
+                //P3 PREMELT.
             }
 
 
-            if (CoreTemp < 9999 && Overheating == true &&  CritOverheating == false)
+            if (CoreTemp < 7500 && Overheating == true &&  CritOverheating == false)
             {
                 //BAI PREMELT.
-                StopCoroutine(CoreStabilityDecrease());
+                StopCoroutine(CoreStabilityIncrease());
                 Overheating = false;
                 TempText.color = Color.white;
             }
@@ -197,8 +250,6 @@ public class COREManager : MonoBehaviour
             {
                 //PRE-FREEZE/STALL.
             }
-
-            Task.Delay(0250);
         }
     }
 
@@ -207,7 +258,7 @@ public class COREManager : MonoBehaviour
     {
         yield return new WaitForSeconds(CoreStabilityDecreasingSpeed);
         var t = coreStability - 1;
-        if (t > 0)
+        if (t > -1)
         {
             coreStability = coreStability - 1;
             StartCoroutine(CoreStabilityDecrease());
@@ -221,7 +272,7 @@ public class COREManager : MonoBehaviour
     {
         yield return new WaitForSeconds(CoreStabilityIncreasingSpeed);
         var t = coreStability + 1;
-        if (t < 100)
+        if (t < 101)
         {
             coreStability = coreStability + 1;
             StartCoroutine(CoreStabilityIncrease());

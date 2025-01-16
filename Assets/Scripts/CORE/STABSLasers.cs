@@ -20,6 +20,16 @@ public class STABSLasers : MonoBehaviour
     public ParticleSystem PSStab;
     public GameObject Laser;
     public AudioSource ASSTAB;
+    public enum StabStatusEnum
+    {
+        ONLINE,
+        OFFLINE,
+        ERROR,
+        DESTROYED,
+        OVERLOAD,
+        OVERCLOCK,
+        ADMINLOCK
+    };
 
     [HideInInspector] public int LTColorCurTween;
 
@@ -38,6 +48,15 @@ public class STABSLasers : MonoBehaviour
     public bool CurrChange = false;
     public string CurrPowerChangeDir = "none";
     public string CurrCoolingChangeDir = "none";
+    public bool CanRotate = false;
+
+    [Serializable]
+    public enum StabTYPE
+    {
+        ShieldUnit,
+        HeatingUnit,
+        AuxUnit
+    }
 
 
     [Header("Warning")]
@@ -121,6 +140,7 @@ public class STABSLasers : MonoBehaviour
         rpm.text = RPM.ToString();
         stabInput.text = Power.ToString() + "%";
         cooling.text = CoolantInput.ToString() + "%";
+        strucINT.text = StructuralIntegrity.ToString() + "%";
     }
 
 
@@ -290,14 +310,13 @@ public class STABSLasers : MonoBehaviour
             {
                 STABESHUTDOWN();
             }
-            print(integrityLoss);
         }
         yield return new WaitForSeconds(1f);
         StartCoroutine(STABINTCHECK());
     }
     private void FixedUpdate()
     {
-        if (StabStatus == "ONLINE" | StabStatus == "OVERLOADED" | StabStatus == "OVERLOAD" | StabStatus == "OVERCLOCK")
+        if (CanRotate)
         {
             float rotationSpeed = RPM * Time.deltaTime;
             Rotor.transform.Rotate(rotationAxis * rotationSpeed);
@@ -482,6 +501,7 @@ public class STABSLasers : MonoBehaviour
     public void StabKys()
     {
         StabStatus = "ERROR";
+        StabRPMCHANGING(30, 10);
         PSStab.startColor = new Color(0, 0, 0);
         PSStab.Play();
         ASSTAB.clip = StabDie;
@@ -529,19 +549,22 @@ public class STABSLasers : MonoBehaviour
 
     }
 
-    public enum StabStatusEnum
-    {
-        ONLINE,
-        OFFLINE,
-        OVERLOAD,
-        DESTROYED,
-    }
 
 }
-    public class Utility
+    public class Utility : MonoBehaviour
     {
 
-        public async Task WaitedWalter(int Timetowait)
+
+    public static Utility Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
+
+
+    public async Task WaitedWalter(int Timetowait)
         {
             Task.Delay(Timetowait);
 

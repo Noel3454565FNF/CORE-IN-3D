@@ -26,12 +26,17 @@ public class MCFS : MonoBehaviour
     }
     public string ShieldStatus = ShieldStatusEnum.Offline.ToString();
     public bool CanShieldDegrad = false;
-    public int ShieldDegradationSpeed = 1000;
+    public int ShieldDegradationSpeed = 1;
 
     public int SystemIntegrity = 100;
 
     public bool canUpdateShieldIntegrityColor = true;
     public bool canUpdateMCFSStabilityColor = true;
+
+    public bool canShieldRegenerate = false;
+
+    public bool FirstTimeDegradation = true;
+    public bool FirstTimeRegeneration = true;
 
     [Header("Component")]
     public GameObject Shield;
@@ -53,7 +58,6 @@ public class MCFS : MonoBehaviour
     }
 
 
-    //use for startup or idk wtv
     public void ShieldCreation(int to, float time)
     {
         var frome = ShieldIntegrity;
@@ -70,7 +74,7 @@ public class MCFS : MonoBehaviour
     {
         yield return new WaitForSeconds(ShieldDegradationSpeed);
         var t = ShieldIntegrity - 1;
-        if (t > 0)
+        if (t > -1 && CanShieldDegrad)
         {
             ShieldIntegrity = ShieldIntegrity - 1;
             StartCoroutine(ShieldDegradationFunc());

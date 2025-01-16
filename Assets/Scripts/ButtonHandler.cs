@@ -42,7 +42,7 @@ public class ButtonHandler : MonoBehaviour
     void Start()
     {
         if (button == null) { button = this.gameObject; }
-        ButtonAnimator.bodyPosition = button.transform.position;
+        //ButtonAnimator.bodyPosition = button.transform.position;
 
     }
 
