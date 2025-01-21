@@ -35,7 +35,7 @@ public class STABSLasers : MonoBehaviour
 
 
     [Header("Vars")]
-    public string StabStatus = "OFFLINE";
+    public string StabStatus = StabStatusEnum.OFFLINE.ToString();
     public string PendingEvent = "none";
     public float StabTemp = 26;
     public int RPM = 0;
@@ -49,6 +49,7 @@ public class STABSLasers : MonoBehaviour
     public string CurrPowerChangeDir = "none";
     public string CurrCoolingChangeDir = "none";
     public bool CanRotate = false;
+    public bool CanUsePower = true;
 
     [Serializable]
     public enum StabTYPE
@@ -321,6 +322,12 @@ public class STABSLasers : MonoBehaviour
             float rotationSpeed = RPM * Time.deltaTime;
             Rotor.transform.Rotate(rotationAxis * rotationSpeed);
         }
+        var usedPWR = 5;
+        if (CanUsePower)
+        {
+            usedPWR += 250 / (100 * RPM);
+        }
+
     }
 
 
@@ -339,17 +346,14 @@ public class STABSLasers : MonoBehaviour
     {
         var type = lol.arg1;
         var d = lol.arg2;
-        print(type + " - " + d);
         if (type == "power")
         {
             if (d == "up")
             {
-                Debug.LogWarning("power up called meow");
                 Task.Run(StabChangePowerUp);
             }
             if (d == "down")
             {
-                Debug.LogWarning("power down called meow");
                 Task.Run(StabChangePowerDown);
             }
         }
@@ -361,12 +365,10 @@ public class STABSLasers : MonoBehaviour
         {
             if (d == "up")
             {
-                Debug.LogWarning("cooling up called meow");
                 Task.Run(StabChangeCoolingUp);
             }
             if (d == "down")
             {
-                Debug.LogWarning("cooling down called meow");
                 Task.Run(StabChangeCoolingDown);
             }
         }
