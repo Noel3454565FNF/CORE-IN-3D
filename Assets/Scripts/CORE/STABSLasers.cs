@@ -94,6 +94,9 @@ public class STABSLasers : MonoBehaviour
     [HideInInspector] public AnimationCurve curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     public Color WelcomeCurrColorOverheat;
 
+    public int oldRPM = 0;
+    public int oldLASERPOWER = 0;
+
 
     [Header("Audio")]
     public AudioClip StabDie;
@@ -158,7 +161,7 @@ public class STABSLasers : MonoBehaviour
             TempTar3 = Power / 10f;
             TempTarA = TempTar + TempTar3;
             TempTarA += TempTar2;
-            if (CanHeat) { StabTemp += TempTarA; print(TempTarA);}
+            if (CanHeat) { StabTemp += TempTarA;}
         }
 
         if (StabTemp >= 300 && HighTempWarning == false)
@@ -325,7 +328,7 @@ public class STABSLasers : MonoBehaviour
         var usedPWR = 5;
         if (CanUsePower)
         {
-            usedPWR += 250 / (100 * RPM);
+            usedPWR += 250 / (100 * RPM + 1);
         }
 
     }
@@ -514,6 +517,7 @@ public class STABSLasers : MonoBehaviour
     public async Task StabStart()
     {
         print("bend over");
+        CanRotate = true;
         if (StabStatus != "DESTROYED" && Rotor != null)
         {
             PendingEvent = "STARTUP";
@@ -522,6 +526,24 @@ public class STABSLasers : MonoBehaviour
             PendingEvent = "none";
         }
     }
+
+    public async Task StabOutage()
+    {
+        StabAdminLock = true;
+        oldRPM = RPM;
+        oldLASERPOWER = Power;
+        StabRPMCHANGING(60, 1.2f);
+        Power = 0;
+        Laser.SetActive(false);
+    }
+
+    public async Task StabExitOutage()
+    {
+        StabRPMCHANGING(oldRPM, 0.9f);
+        Power  = oldLASERPOWER;
+        Laser.SetActive(true);
+    }
+
     public async Task StabRpmTweenUp(int to, int TimeinMS)
     {
 

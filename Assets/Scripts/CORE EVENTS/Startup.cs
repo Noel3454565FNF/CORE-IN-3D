@@ -90,6 +90,7 @@ public class Startup : MonoBehaviour
         print(RegenHandler.instance.AppRunning);
         while (RH.AppRunning == true)
         {
+            COREManager.instance.CoreInEvent = true;
             Stab1.CanGetDamaged = false; Stab1.CanHeat = false;
             Stab2.CanGetDamaged = false; Stab2.CanHeat = false;
             Stab3.CanGetDamaged = false; Stab3.CanHeat = false;
@@ -134,6 +135,7 @@ public class Startup : MonoBehaviour
             CM.CoreStatus = "ONLINE"; CM.CoreToOnline(); MCFS.instance.ShieldToOnline(); MCFS.instance.ShieldStatus = MCFS.ShieldStatusEnum.Online.ToString(); 
             MCFS.instance.ShieldStatus = MCFS.ShieldStatusEnum.Online.ToString();
             CM.CoreEvent = "none";
+            COREManager.instance.CoreInEvent = false;
             CM.CAH = 20;
             CM.changeSpeedCoreInfluence = 1;
             CM.CoreTempChange = 1;
@@ -145,6 +147,7 @@ public class Startup : MonoBehaviour
             Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
             Stab1.CoolantInput = 22; Stab2.CoolantInput = 22; Stab3.CoolantInput = 22; Stab4.CoolantInput = 22;
             CM.CanUpdateTemp = true;
+            CM.CoreAllowGridEvent = true;
             break;
         }
     }

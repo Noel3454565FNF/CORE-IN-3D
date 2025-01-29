@@ -767,6 +767,7 @@ GameObject:
   - component: {fileID: 45969260}
   - component: {fileID: 45969261}
   - component: {fileID: 45969262}
+  - component: {fileID: 45969263}
   m_Layer: 0
   m_Name: CORE
   m_TagString: Untagged
@@ -830,6 +831,7 @@ MonoBehaviour:
   Stab6: {fileID: 0}
   Stab7: {fileID: 0}
   Stab8: {fileID: 0}
+  Stablist: []
   debugTempChange: 0
   TempText: {fileID: 1788381110}
   StateText: {fileID: 418748322}
@@ -842,6 +844,7 @@ MonoBehaviour:
   LineUnknownColor: {r: 1, g: 0, b: 0.92153263, a: 1}
   LineOVERRIDEColor: {r: 0, g: 0.01782322, b: 1, a: 1}
   CoreInEvent: 0
+  CoreAllowGridEvent: 1
   Overheating: 0
   CritOverheating: 0
   Premeltdown: 0
@@ -937,6 +940,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sk: i hidded everything cuz fuck you im so silly >:3
   StabList: []
+--- !u!114 &45969263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45969257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75694d730e5fdd445b1e7a8bf0c87a74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CM: {fileID: 45969259}
+  cc: {fileID: 45969261}
+  PowerUsage: 0
+  CurrentPower: 0
+  Power: 0
+  ReactorGridIntegrity: 100
+  CanGridUpdate: 1
+  StabMaxPowerUsage: 235
+  StabTotalPowerUsage: 0
+  MCFSMaxPowerUsage: 600
+  MCFSTotalPowerUsage: 0
+  CoreMaxTempThing: 21000
+  CoreMaxPowerProduction: 25000
+  CoreTotalPowerProduction: 0
+  AuxGridPowerUsage: 0
+  AuxGridMaxPower: 900
+  AuxGridStability: 100
+  GridSTS: ONLINE
+  ReactorGridStability: 100
+  GridAllowSurge: 1
+  beansInTheSheinFactory: 0
+  totalPower: 0
+  deduction: 0
 --- !u!1 &59497738
 GameObject:
   m_ObjectHideFlags: 0
@@ -8121,9 +8159,8 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
-  - component: {fileID: 330585550}
   - component: {fileID: 330585549}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -8174,7 +8211,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -8266,85 +8303,24 @@ MonoBehaviour:
   followSpeed: 200
   pitch: 0
   yaw: 0
-  locked: 0
---- !u!73398921 &330585549
-VFXRenderer:
-  serializedVersion: 1
-  m_ObjectHideFlags: 2
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 0
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!2083052967 &330585550
-VisualEffect:
+  locked: 1
+--- !u!114 &330585549
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
-  m_Asset: {fileID: 0}
-  m_InitialEventName: OnPlay
-  m_InitialEventNameOverriden: 0
-  m_StartSeed: 0
-  m_ResetSeedOnPlay: 1
-  m_AllowInstancing: 1
-  m_ResourceVersion: 1
-  m_PropertySheet:
-    m_Float:
-      m_Array: []
-    m_Vector2f:
-      m_Array: []
-    m_Vector3f:
-      m_Array: []
-    m_Vector4f:
-      m_Array: []
-    m_Uint:
-      m_Array: []
-    m_Int:
-      m_Array: []
-    m_Matrix4x4f:
-      m_Array: []
-    m_AnimationCurve:
-      m_Array: []
-    m_Gradient:
-      m_Array: []
-    m_NamedObject:
-      m_Array: []
-    m_Bool:
-      m_Array: []
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 079fcd29555022c4e88f342354104e75, type: 2}
 --- !u!1 &340884930
 GameObject:
   m_ObjectHideFlags: 0
@@ -14030,6 +14006,8 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
+  CanRotate: 0
+  CanUsePower: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -15047,6 +15025,8 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
+  CanRotate: 0
+  CanUsePower: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -18849,6 +18829,8 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
+  CanRotate: 0
+  CanUsePower: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -18982,6 +18964,8 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
+  CanRotate: 0
+  CanUsePower: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0

@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ public class ShockwaveHandler : MonoBehaviour
             {
                 
             });
+        await Task.Delay(2000);
+        GameObject.Destroy(Tgame);
     }
 
 

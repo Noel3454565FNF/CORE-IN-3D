@@ -54,7 +54,7 @@ public class StartupFailure : MonoBehaviour
 
     public async Task StartupFailureFunc()
     {
-
+        Debug.LogWarning("Nothing there atm sorry");
     }
 
     // Update is called once per frame
@@ -66,7 +66,7 @@ public class StartupFailure : MonoBehaviour
 
 
 
-
+///OLD
 //while (RegenHandler.instance.AppRunning == true)
 //        {
 //            CM.CoreEvent = "STARTUP";

@@ -14,6 +14,7 @@ using UnityEngine.UI;
 using System.Collections;
 using Unity.Mathematics;
 using System.Collections.Generic;
+using System.ComponentModel;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
@@ -48,10 +49,12 @@ public class COREManager : MonoBehaviour
     public STABSLasers Stab2; // Cooling Unit
     public STABSLasers Stab3; // AUX
     public STABSLasers Stab4; // AUX
-    public STABSLasers Stab5; // Heating Unit
-    public STABSLasers Stab6; // Heating Unit
-    public STABSLasers Stab7; // Heating Unit
-    public STABSLasers Stab8; // Heating Unit
+    public STABSLasers Stab5; // Power Unit
+    public STABSLasers Stab6; // Power Unit
+    public STABSLasers Stab7; // Power Unit
+    public STABSLasers Stab8; // Power Unit
+
+    [HideInInspector] public List<STABSLasers> Stablist;
 
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
@@ -76,6 +79,7 @@ public class COREManager : MonoBehaviour
     [Header("Core State")]
     //global
     public bool CoreInEvent = false;
+    public bool CoreAllowGridEvent = true;
 
     //Pre Melt state
     public bool Overheating = false;
@@ -109,6 +113,10 @@ public class COREManager : MonoBehaviour
 
     private void Start()
     {
+        Stablist.Add(Stab1);
+        Stablist.Add(Stab2);
+        Stablist.Add(Stab3);
+        Stablist.Add(Stab4);
         UpdateCoreTemperature();
     }
 
@@ -290,7 +298,6 @@ public class COREManager : MonoBehaviour
             .setOnUpdate((float t) =>
             {
                 CoreTemp = Mathf.FloorToInt(t);
-                print(CoreTemp);
                 TempText.text = "" + CoreTemp + "C°";
             });
     }
@@ -329,7 +336,20 @@ public class COREManager : MonoBehaviour
     }
 
 
+
 }
 
+
+
+public class DEVSONLY : MonoBehaviour
+{
+    [ReadOnly(true)] public string README = "don't take anything here seriously lol-";
+    [ReadOnly(true)] public string ThoseWhoknow = ":skull:";
+    public void AndSuddenlyIGotTheUrgeToSingErika()
+    {
+        ThoseWhoknow = "no seriously, erika is a good history song. the phonk version is peak :pray:";
+        UnityEngine.Diagnostics.Utils.ForceCrash(UnityEngine.Diagnostics.ForcedCrashCategory.FatalError);
+    }
+}
 
 
