@@ -27,10 +27,11 @@ public class ForcedEventTriggerUI : Editor
 
     }
 
-    
-    
-    
-    
+
+
+
+
+
     //REACTOR GRID EVENT
     [MenuItem("Tools/Events/ReactorGrid/Power outage")]
     static void b()
@@ -43,10 +44,24 @@ public class ForcedEventTriggerUI : Editor
         }
     }
 
-
-    private void Awake()
+    //STABS EVENT
+    [MenuItem("Tools/Events/ReactorSys/Stabs/Enter Overheat")]
+    static void c()
     {
-        Debug.LogWarning("i can see you.");
+        
     }
+
+    //MCFS EVENT
+    [MenuItem("Tools/Events/MCFS/Kys")]
+    static void d()
+    {
+        MCFS.instance.ShieldKYS();
+        Debug.LogError("BYE BYE MCFS!");
+    }
+
+    //private void Awake()
+    //{
+    //    Debug.LogWarning("i can see you.");
+    //}
 
 }

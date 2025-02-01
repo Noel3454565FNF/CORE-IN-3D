@@ -817,7 +817,7 @@ MonoBehaviour:
   CanDecreaseCoreStability: 1
   CanIncreaseCoreStability: 1
   CanUpdateTemp: 0
-  MaxHeatUnitEfficiency: 40
+  MaxHeatUnitEfficiency: 80
   MaxCoolingUnitEfficiency: 25
   MaxShieldCoolingEfficiency: 15
   MasCoreInstabilityEfficiency: 10
@@ -961,10 +961,12 @@ MonoBehaviour:
   CanGridUpdate: 1
   StabMaxPowerUsage: 235
   StabTotalPowerUsage: 0
+  StabRPMMaxPowerUsage: 0
+  StabRPMTotalPowerUsage: 0
   MCFSMaxPowerUsage: 600
   MCFSTotalPowerUsage: 0
   CoreMaxTempThing: 21000
-  CoreMaxPowerProduction: 25000
+  CoreMaxPowerProduction: 1500
   CoreTotalPowerProduction: 0
   AuxGridPowerUsage: 0
   AuxGridMaxPower: 900
@@ -14053,6 +14055,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   WelcomeCurrColorOverheat: {r: 0, g: 0, b: 0, a: 0}
+  oldRPM: 0
+  oldLASERPOWER: 0
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
@@ -15072,6 +15076,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   WelcomeCurrColorOverheat: {r: 0, g: 0, b: 0, a: 0}
+  oldRPM: 0
+  oldLASERPOWER: 0
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
@@ -18876,6 +18882,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   WelcomeCurrColorOverheat: {r: 0, g: 0, b: 0, a: 0}
+  oldRPM: 0
+  oldLASERPOWER: 0
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
@@ -19011,6 +19019,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   WelcomeCurrColorOverheat: {r: 0, g: 0, b: 0, a: 0}
+  oldRPM: 0
+  oldLASERPOWER: 0
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}

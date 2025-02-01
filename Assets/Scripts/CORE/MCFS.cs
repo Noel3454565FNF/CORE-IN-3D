@@ -58,6 +58,7 @@ public class MCFS : MonoBehaviour
     }
 
 
+    
     public void ShieldCreation(int to, float time)
     {
         var frome = ShieldIntegrity;
@@ -66,6 +67,28 @@ public class MCFS : MonoBehaviour
             .setOnUpdate((float t) =>
             {
                 ShieldIntegrity = Mathf.CeilToInt(t);
+            });
+    }
+
+
+    public void ShieldKYS()
+    {
+        //either using an animation or a can script it
+        //idk im lazy :3
+        ShieldStatus = ShieldStatusEnum.Error.ToString();
+
+        Shield.transform.LeanScale(new Vector3(10, 10, 10), 0.3f)
+            .setOnUpdate((float t) =>
+            {
+                Vector3 lol = Vector3.Lerp(Shield.transform.localScale, new Vector3(15, 15, 15), t);
+                Shield.transform.localScale = lol;
+            });
+
+        LeanTween.color(this.gameObject, new Color(0, 0, 0, 0), 0.2f)
+            .setOnUpdate((float t) =>
+            {
+                Color currentC = Color.Lerp(Shield.GetComponent<MeshRenderer>().material.color, new Color(0, 0, 0, 0), t);
+                Shield.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", currentC);
             });
     }
 

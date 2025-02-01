@@ -219,7 +219,7 @@ public class COREManager : MonoBehaviour
     {
         if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-            if (CoreTemp > 7600 && Overheating == false && CritOverheating == false)
+            if (CoreTemp > 8000 && Overheating == false && CritOverheating == false)
             {
                 Overheating = true;
                 //P1 PREMELT.

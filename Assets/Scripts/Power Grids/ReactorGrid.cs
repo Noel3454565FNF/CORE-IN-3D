@@ -15,6 +15,11 @@ public class ReactorGrid : MonoBehaviour
     public MCFS cc;
     private Coroutine gridMathCoroutine;
 
+    private STABSLasers Stab1;
+    private STABSLasers Stab2;
+    private STABSLasers Stab3;
+    private STABSLasers Stab4;
+
 
 
     [Header("Power things")]
@@ -27,6 +32,9 @@ public class ReactorGrid : MonoBehaviour
     [Header("Powe usage thingies")]
     public int StabMaxPowerUsage;
     public int StabTotalPowerUsage;
+
+    public int StabRPMMaxPowerUsage;
+    public int StabRPMTotalPowerUsage;
 
     public int MCFSMaxPowerUsage;
     public int MCFSTotalPowerUsage;
@@ -76,6 +84,10 @@ public class ReactorGrid : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Stab1 = CM.Stab1;
+        Stab2 = CM.Stab2;
+        Stab3 = CM.Stab3;
+        Stab4 = CM.Stab4;
         //GridMath();
         Task.Run(GridStatusUpdate);
         StartGridMath();
@@ -135,23 +147,47 @@ public class ReactorGrid : MonoBehaviour
         {
             // Reset power values
             StabTotalPowerUsage = 0;
+            StabRPMTotalPowerUsage = 0;
             CoreTotalPowerProduction = 0;
             totalPower = 0;
             deduction = 0;
 
             //print("ReactorGridSys: RUNNING");
 
-            // Get the stabilizers list
-            List<STABSLasers> stabilizers = COREManager.instance.Stablist;
-
-            // Calculate stabilizer power usage
-            foreach (STABSLasers stab in stabilizers)
+            if (Stab1.Power != 0)
             {
-                if (stab.Power != 0)
-                {
-                    print("stab power update in 2028!");
-                    StabTotalPowerUsage += (StabMaxPowerUsage * stab.Power)/100;
-                }
+                StabTotalPowerUsage += (StabMaxPowerUsage * Stab1.Power) / 100;
+            }
+            if (Stab1.RPM != 0)
+            {
+                StabRPMTotalPowerUsage += (StabRPMMaxPowerUsage * Stab1.RPM) / 100;
+            }
+
+            if (Stab2.Power != 0)
+            {
+                StabTotalPowerUsage += (StabMaxPowerUsage * Stab2.Power) / 100;
+            }
+            if (Stab2.RPM != 0)
+            {
+                StabRPMTotalPowerUsage += (StabRPMMaxPowerUsage * Stab2.RPM) / 100;
+            }
+
+            if (Stab3.Power != 0)
+            {
+                StabTotalPowerUsage += (StabMaxPowerUsage * Stab3.Power) / 100;
+            }
+            if (Stab3.RPM != 0)
+            {
+                StabRPMTotalPowerUsage += (StabRPMMaxPowerUsage * Stab3.RPM) / 100; 
+            }
+
+            if (Stab4.Power != 0)
+            {
+                StabTotalPowerUsage += (StabMaxPowerUsage * Stab4.Power) / 100;
+            }
+            if (Stab4.RPM != 0)
+            {
+                StabRPMTotalPowerUsage += (StabRPMMaxPowerUsage * Stab4.RPM) / 100;
             }
 
             // Calculate shield power usage
@@ -166,20 +202,20 @@ public class ReactorGrid : MonoBehaviour
             // Calculate core power production
             if (CM.CoreTemp != 0)
             {
-                beansInTheSheinFactory = CoreMaxTempThing / (CM.CoreTemp * 100);
+                beansInTheSheinFactory = (CM.CoreTemp * 100) / CoreMaxTempThing;
 
                 if (beansInTheSheinFactory != 0)
                 {
-                    CoreTotalPowerProduction = (beansInTheSheinFactory * 100) / CoreMaxPowerProduction;
-                    print($"core update now! {CoreTotalPowerProduction}");
+                    CoreTotalPowerProduction = (beansInTheSheinFactory * 100000) / CoreMaxPowerProduction;
+                    print($"core update now! {beansInTheSheinFactory}");
                 }
             }
 
            // print($"StabTotalPowerUsage: {StabTotalPowerUsage} && MCFSTotalPowerUsage: {MCFSTotalPowerUsage}");
 
             // Calculate total power and deduction
-            deduction = StabTotalPowerUsage + MCFSTotalPowerUsage;
-            totalPower = deduction - CoreTotalPowerProduction;
+            deduction -= StabTotalPowerUsage + MCFSTotalPowerUsage + StabRPMTotalPowerUsage;
+            totalPower = deduction + CoreTotalPowerProduction;
 
             // Debug information
             //print($"Total Power: {totalPower}");

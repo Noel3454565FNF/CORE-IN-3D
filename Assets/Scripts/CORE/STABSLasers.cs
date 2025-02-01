@@ -228,17 +228,6 @@ public class STABSLasers : MonoBehaviour
         }
 
         var rotorMaterial = rotorRenderer.material;
-
-        // Ensure the material supports emission
-        rotorMaterial.EnableKeyword("_EMISSION");
-
-        // Pause LeanTween if a tween is already active
-        if (LTColorCurTween != null && LTColorCurTween != 0)
-        {
-            LeanTween.pause(Rotor);
-            Debug.Log("Pausing existing LeanTween tween.");
-        }
-
         if (StabOverHeat)
         {
             // Play particle system for overheating
@@ -276,7 +265,7 @@ public class STABSLasers : MonoBehaviour
             }
 
             // Animate emission back to neutral over 10 seconds with an easeInOutQuad curve
-            LTColorCurTween = LeanTween.value(Rotor, 1f, 0f, 10f)
+            LTColorCurTween = LeanTween.value(Rotor, 1f, -1f, 10f)
                 .setEase(LeanTweenType.easeInOutQuad)
                 .setOnUpdate((float t) =>
                 {
@@ -295,6 +284,54 @@ public class STABSLasers : MonoBehaviour
         }
     }
 
+    public IEnumerator EnterOverheat()
+    {
+        var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
+        var rotorMaterial = rotorRenderer.material;
+        PSStab.Play();
+        LTColorCurTween = LeanTween.value(Rotor, -1f, 1f, 3f)
+    .setEase(LeanTweenType.easeOutQuad)
+    .setOnUpdate((float t) =>
+    {
+        WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.red, t);
+        rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat * 2f); // Adjust intensity
+        rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
+    })
+    .setOnComplete(() =>
+    {
+        Debug.Log($"Emission color after overheat: {rotorMaterial.GetColor("_EmissionColor")}");
+    }).id;
+
+        Debug.Log("Overheat color animation started.");
+
+        yield return null;
+
+    }
+
+
+    public IEnumerator ExitOverheat()
+    {
+        var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
+        var rotorMaterial = rotorRenderer.material;
+        PSStab.Play();
+        LTColorCurTween = LeanTween.value(Rotor, 1f, -1f, 3f)
+    .setEase(LeanTweenType.easeOutQuad)
+    .setOnUpdate((float t) =>
+    {
+        WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.white, t);
+        rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat); // Adjust intensity
+        rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
+    })
+    .setOnComplete(() =>
+    {
+        Debug.Log($"Emission color after overheat: {rotorMaterial.GetColor("_EmissionColor")}");
+    }).id;
+
+        Debug.Log("Overheat color animation started.");
+
+        yield return null;
+
+    }
 
     IEnumerator STABINTCHECK()
     {
