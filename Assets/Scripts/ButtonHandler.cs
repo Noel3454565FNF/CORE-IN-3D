@@ -36,6 +36,9 @@ public class ButtonHandler : MonoBehaviour
     public Animator ButtonAnimator;
 
     public AudioSource ButtonAudioSource;
+    public AudioClip ButtonAudioClip;
+    public bool CanPlayAudio;
+    public bool KEEPQUIET;
     //
     //
     //
@@ -44,6 +47,15 @@ public class ButtonHandler : MonoBehaviour
         if (button == null) { button = this.gameObject; }
         //ButtonAnimator.bodyPosition = button.transform.position;
 
+        if (gameObject.GetComponent<AudioSource>() != null)
+        {
+            ButtonAudioSource = gameObject.GetComponent<AudioSource>();
+            if (ButtonAudioClip != null)
+            {
+                ButtonAudioSource.clip = ButtonAudioClip;
+                CanPlayAudio = true;
+            }
+        }
     }
 
 
@@ -60,7 +72,10 @@ public class ButtonHandler : MonoBehaviour
             animhere();
             canBePressed = false;
             CallOnPress.Invoke(Argstopass);
-            print("dude come here");
+            if (CanPlayAudio && KEEPQUIET == false)
+            {
+                ButtonAudioSource.Play();
+            }
             if (haveTrigger)
             {
                 TriggerUsed = true;

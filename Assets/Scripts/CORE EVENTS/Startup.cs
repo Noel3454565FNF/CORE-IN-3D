@@ -18,6 +18,7 @@ public class Startup : MonoBehaviour
     public ShockwaveHandler l;
     public FAS sk;
     public bool InProgress = false;
+    public ButtonHandler ButtonH;
 
     [Header("Plr")]
     public CameraFollowAndControl plrCAM;
@@ -46,11 +47,17 @@ public class Startup : MonoBehaviour
     public bool forcedFailure;
     public bool forcedSuccess;
     public RegenHandler RH;
+    public static Startup instance;
 
     public void Start()
     {
         utility = new Utility();
         Test();
+    }
+
+    private void Awake()
+    {
+        instance = this;
     }
 
     public async Task Test()
@@ -86,7 +93,6 @@ public class Startup : MonoBehaviour
 
     public async Task CoreStarup()
     {
-        print("hey baby");
         print(RegenHandler.instance.AppRunning);
         while (RH.AppRunning == true)
         {
@@ -105,7 +111,7 @@ public class Startup : MonoBehaviour
 
             StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM)); CM.ReactorSysLogsScreen.EntryPoint("Redirecting power to Reactor Grid", Color.white);
 
-            CM.CoreEvent = "STARTUP";
+            CM.CoreEvent = COREManager.CoreEventEnum.Startup.ToString();
             print("hello there");
             audioSource.clip = StartupThingi;
             audioSource.Play();

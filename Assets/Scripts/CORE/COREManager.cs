@@ -18,7 +18,10 @@ using System.ComponentModel;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
-    public string CoreStatus = "OFFLINE";
+
+    private string llll = "don't mind me, im useless";
+    public enum CoreStatusEnum { Offline, Online, Overload };
+    public string CoreStatus = CoreStatusEnum.Offline.ToString(); 
     public string CoreState = "NONE";
     public string CoreEvent = "NONE";
     public int CoreTemp = 0; // Current temperature of the core
@@ -34,6 +37,8 @@ public class COREManager : MonoBehaviour
     public bool CanIncreaseCoreStability = true;
 
     public bool CanUpdateTemp = false;
+    public bool CanShutdown = false; public bool ForceDisableShutdown = false;
+    public bool CanStartup = true; public bool ForceDisableStartup = false;
 
     [Header("Temperature and Efficiency Vars")]
     public float MaxHeatUnitEfficiency = 20;
@@ -80,6 +85,16 @@ public class COREManager : MonoBehaviour
     //global
     public bool CoreInEvent = false;
     public bool CoreAllowGridEvent = true;
+    public enum CoreEventEnum
+    {
+        Startup,
+        Shutdown,
+        ShutdownFailure,
+        Meltdown,
+        Freezedown,
+        FreezedownHISTORY,
+
+    }
 
     //Pre Melt state
     public bool Overheating = false;
@@ -122,7 +137,7 @@ public class COREManager : MonoBehaviour
 
     void Update()
     {
-        if (CoreStatus != "OFFLINE")
+        if (CoreStatus != CoreStatusEnum.Offline.ToString())
         {
             UpdateCoreTemperature();
         }
@@ -258,8 +273,10 @@ public class COREManager : MonoBehaviour
             {
                 //PRE-FREEZE/STALL.
             }
+
         }
     }
+
 
 
     public IEnumerator CoreStabilityDecrease()
@@ -333,6 +350,15 @@ public class COREManager : MonoBehaviour
         CoreUS.enabled = true;
         CoreDiag.gameObject.active = false;
         CoreUS.color = new Color(160, 32, 240);
+    }
+
+    public void ShutdownChecker()
+    {
+        if (CoreTemp > 6000 && CoreTemp < 8000 && Premeltdown == false && ControlLoss == false && CoreInEvent == false && ReactorGrid.instance.GridSTS == ReactorGrid.GridStatus.ONLINE.ToString() && ForceDisableShutdown == false)
+        {
+            CanShutdown = false;
+            Shutdown.instance.ShutdownCaller();
+        }
     }
 
 

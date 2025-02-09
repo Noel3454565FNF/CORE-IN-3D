@@ -30,11 +30,14 @@ public class STABSLasers : MonoBehaviour
         OVERCLOCK,
         ADMINLOCK
     };
-
+    
     [HideInInspector] public int LTColorCurTween;
 
 
     [Header("Vars")]
+    /// <summary>
+    /// The real one btw, use StabStatusEnum;
+    /// </summary>
     public string StabStatus = StabStatusEnum.OFFLINE.ToString();
     public string PendingEvent = "none";
     public float StabTemp = 26;
@@ -43,13 +46,14 @@ public class STABSLasers : MonoBehaviour
     public int CoolantInput = 0;
     public int StructuralIntegrity = 100;
     public bool CanGetDamaged = true;
-    public bool CanHeat = true;
+    public bool CanHeat = true; public bool canCool = true;
     public bool CanKys = true;
     public bool CurrChange = false;
     public string CurrPowerChangeDir = "none";
     public string CurrCoolingChangeDir = "none";
     public bool CanRotate = false;
     public bool CanUsePower = true;
+    public bool CanStart = true;
 
     [Serializable]
     public enum StabTYPE
@@ -157,11 +161,20 @@ public class STABSLasers : MonoBehaviour
         if (StabStatus == "ONLINE")
         {
             TempTar = RPM / 40f;
-            TempTar2 = -CoolantInput / 2.5f;
+            if (canCool)
+            {
+                TempTar2 = -CoolantInput / 2.5f;
+            }
             TempTar3 = Power / 10f;
             TempTarA = TempTar + TempTar3;
             TempTarA += TempTar2;
             if (CanHeat) { StabTemp += TempTarA;}
+        }
+
+        if (StabTemp < 0 && canCool)
+        {
+            canCool = false;
+            StartCoroutine(CanCoolCooldownThing());
         }
 
         if (StabTemp >= 300 && HighTempWarning == false)
@@ -178,13 +191,13 @@ public class STABSLasers : MonoBehaviour
         if (StabTemp >= 400 && StabOverHeat == false)
         {
             StabOverHeat = true;
-            ROF();
+            StartCoroutine(EnterOverheat());
             temperature.color = Color.red;
         }
         if (StabTemp < 400 && StabOverHeat)
         {
             StabOverHeat = false;
-            ROF();
+            StartCoroutine(ExitOverheat());
             temperature.color = Color.yellow;
         }
 
@@ -216,6 +229,17 @@ public class STABSLasers : MonoBehaviour
         }
         StartCoroutine(STABTEMPCHECK());
     }
+
+
+    public IEnumerator CanCoolCooldownThing()
+    {
+        yield return null;
+        canCool = false;
+        StructuralIntegrity = UnityEngine.Random.Range(1, 3);
+        yield return new WaitForSeconds(UnityEngine.Random.Range(1, 10));
+        canCool = true;
+    }
+
 
     public void ROF()
     {
@@ -286,6 +310,7 @@ public class STABSLasers : MonoBehaviour
 
     public IEnumerator EnterOverheat()
     {
+        StopCoroutine(ExitOverheat());
         var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
         var rotorMaterial = rotorRenderer.material;
         PSStab.Play();
@@ -311,6 +336,7 @@ public class STABSLasers : MonoBehaviour
 
     public IEnumerator ExitOverheat()
     {
+        StopCoroutine(EnterOverheat());
         var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
         var rotorMaterial = rotorRenderer.material;
         PSStab.Play();
@@ -543,8 +569,12 @@ public class STABSLasers : MonoBehaviour
     public void StabKys()
     {
         StabStatus = "ERROR";
+        CanHeat = false;
+        canCool = false;
+        CanKys = false;
+        CanStart = false;
         StabRPMCHANGING(30, 10);
-        PSStab.startColor = new Color(0, 0, 0);
+        PSStab.startColor = Color.grey;
         PSStab.Play();
         ASSTAB.clip = StabDie;
         ASSTAB.Play();
@@ -553,9 +583,8 @@ public class STABSLasers : MonoBehaviour
 
     public async Task StabStart()
     {
-        print("bend over");
         CanRotate = true;
-        if (StabStatus != "DESTROYED" && Rotor != null)
+        if (StabStatus != "DESTROYED" && Rotor != null && CanStart)
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";
@@ -564,7 +593,7 @@ public class STABSLasers : MonoBehaviour
         }
     }
 
-    public async Task StabOutage()
+    public void StabOutage()
     {
         StabAdminLock = true;
         oldRPM = RPM;
@@ -574,11 +603,28 @@ public class STABSLasers : MonoBehaviour
         Laser.SetActive(false);
     }
 
-    public async Task StabExitOutage()
+    public void StabExitOutage()
     {
         StabRPMCHANGING(oldRPM, 0.9f);
         Power  = oldLASERPOWER;
         Laser.SetActive(true);
+    }
+
+    public IEnumerator InstantShutdown()
+    {
+        yield return null;
+        StabRPMCHANGING(0, RPM);
+        Laser.SetActive(false);
+        CanHeat = false;
+        CanGetDamaged = false;
+        LeanTween.value(Power, 0, 6)
+            .setOnUpdate((float t) =>
+            {
+                Power = (int)Mathf.Lerp(Power, 0, t);
+            });
+
+        yield return new WaitForSeconds(8);
+        StabStatus = StabStatusEnum.OFFLINE.ToString();
     }
 
     public async Task StabRpmTweenUp(int to, int TimeinMS)

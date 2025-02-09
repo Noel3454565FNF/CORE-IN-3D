@@ -768,6 +768,7 @@ GameObject:
   - component: {fileID: 45969261}
   - component: {fileID: 45969262}
   - component: {fileID: 45969263}
+  - component: {fileID: 45969264}
   m_Layer: 0
   m_Name: CORE
   m_TagString: Untagged
@@ -817,6 +818,10 @@ MonoBehaviour:
   CanDecreaseCoreStability: 1
   CanIncreaseCoreStability: 1
   CanUpdateTemp: 0
+  CanShutdown: 0
+  ForceDisableShutdown: 0
+  CanStartup: 1
+  ForceDisableStartup: 0
   MaxHeatUnitEfficiency: 80
   MaxCoolingUnitEfficiency: 25
   MaxShieldCoolingEfficiency: 15
@@ -876,6 +881,7 @@ MonoBehaviour:
   l: {fileID: 906418702}
   sk: {fileID: 906418700}
   InProgress: 0
+  ButtonH: {fileID: 0}
   plrCAM: {fileID: 330585548}
   Stab1: {fileID: 993715339}
   Stab2: {fileID: 1509911879}
@@ -977,6 +983,37 @@ MonoBehaviour:
   beansInTheSheinFactory: 0
   totalPower: 0
   deduction: 0
+--- !u!114 &45969264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 45969257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 918448ceb4266ed449e7b781204114fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CM: {fileID: 45969259}
+  mcfs: {fileID: 45969261}
+  ScreenShake: {fileID: 330585548}
+  Shockwave: {fileID: 906418702}
+  WhiteFlash: {fileID: 906418701}
+  AS: {fileID: 280712911}
+  ShutdownOst: {fileID: 0}
+  Announcement: {fileID: 906418700}
+  RG: {fileID: 45969263}
+  HowManyShutdown: 0
+  FailureChance: 0
+  baseChance: 0
+  Chaotic: 0
+  ForcedChaotic: 0
+  ChaoticChance: 1
+  MeltShutdown: 0
+  MeltShutdownForced: 0
+  MeltShutdownForcedFail: 0
+  MeltShutdownForcedPass: 0
 --- !u!1 &59497738
 GameObject:
   m_ObjectHideFlags: 0
@@ -2012,6 +2049,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &180974902
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2168,6 +2208,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &209829579
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2318,6 +2361,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &246685802
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3149,6 +3195,7 @@ GameObject:
   - component: {fileID: 280712907}
   - component: {fileID: 280712906}
   - component: {fileID: 280712910}
+  - component: {fileID: 280712911}
   m_Layer: 0
   m_Name: PlayerObj
   m_TagString: Untagged
@@ -3289,6 +3336,102 @@ MonoBehaviour:
   canMove: 1
   inUI: 0
   isTyping: 0
+--- !u!82 &280712911
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280712904}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &295871372
 GameObject:
   m_ObjectHideFlags: 0
@@ -9425,7 +9568,7 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 233
   DopplerLevel: 1
   MinDistance: 16.380466
   MaxDistance: 500
@@ -9797,6 +9940,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &552156149
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9947,6 +10093,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &567420745
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10534,6 +10683,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &603534744
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11064,6 +11216,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &697230475
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11690,6 +11845,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &743549033
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14004,12 +14162,14 @@ MonoBehaviour:
   StructuralIntegrity: 100
   CanGetDamaged: 0
   CanHeat: 0
+  canCool: 1
   CanKys: 0
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
   CanRotate: 0
   CanUsePower: 1
+  CanStart: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -14148,6 +14308,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &994077431
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14506,6 +14669,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1039327232
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14577,6 +14743,135 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039327229}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1044446287
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1834265977}
+    m_Modifications:
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.079
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.581
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2631055614230651137, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_Name
+      value: Core Shutdown Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: haveTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: canBePressed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: haveCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 45969259}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShutdownChecker
+      objectReference: {fileID: 0}
+    - target: {fileID: 5807356847010564339, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: CallOnPress.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: COREManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7766449919574697790, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 723eb25b5482a2e43b4acf915afb406a, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ac3e84e473de0ee4aa887b0a62a157ea, type: 3}
+--- !u!4 &1044446288 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 828896672920939862, guid: ac3e84e473de0ee4aa887b0a62a157ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 1044446287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1045539660
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14882,6 +15177,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1069391118
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15025,12 +15323,14 @@ MonoBehaviour:
   StructuralIntegrity: 100
   CanGetDamaged: 0
   CanHeat: 0
+  canCool: 1
   CanKys: 0
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
   CanRotate: 0
   CanUsePower: 1
+  CanStart: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -15456,6 +15756,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1145146652
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15880,6 +16183,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1161235596
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17278,6 +17584,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1375712663
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17570,6 +17879,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1385923270
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18831,12 +19143,14 @@ MonoBehaviour:
   StructuralIntegrity: 100
   CanGetDamaged: 0
   CanHeat: 0
+  canCool: 1
   CanKys: 0
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
   CanRotate: 0
   CanUsePower: 1
+  CanStart: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -18968,12 +19282,14 @@ MonoBehaviour:
   StructuralIntegrity: 100
   CanGetDamaged: 0
   CanHeat: 0
+  canCool: 1
   CanKys: 0
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
   CanRotate: 0
   CanUsePower: 1
+  CanStart: 1
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -19946,6 +20262,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1596195932
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20208,6 +20527,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1602692601
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20358,6 +20680,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1605091887
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20795,6 +21120,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1665010920
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26502,6 +26830,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1765803088
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33050,6 +33381,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1870420272}
+  - {fileID: 1044446288}
   - {fileID: 1437844257}
   m_Father: {fileID: 1571488468}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -33203,6 +33535,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1835242463
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33628,6 +33963,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1882490971
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -44061,6 +44399,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &1959465474
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -44799,6 +45140,9 @@ MonoBehaviour:
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
+  ButtonAudioClip: {fileID: 0}
+  CanPlayAudio: 0
+  KEEPQUIET: 0
 --- !u!65 &2071541230
 BoxCollider:
   m_ObjectHideFlags: 0

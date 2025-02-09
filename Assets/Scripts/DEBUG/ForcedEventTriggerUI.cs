@@ -32,6 +32,33 @@ public class ForcedEventTriggerUI : Editor
 
 
 
+    //CORE EVENTS
+    [MenuItem("Tools/Events/Core/Shutdown/Shutdown")]
+    static void Sdown()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Shutdown.instance.ShutdownCaller();
+        }
+    }
+    [MenuItem("Tools/Events/Core/Shutdown/Shutdown Failure")]
+    static void ShutdownFailure()
+    {
+        if (EditorApplication.isPlaying)
+        {
+
+        }
+    }
+    [MenuItem("Tools/Events/Core/Shutdown/Shutdown Success")]
+    public void ShutdownSuccess()
+    {
+        if (EditorApplication.isPlaying)
+        {
+
+        }
+    }
+
+
     //REACTOR GRID EVENT
     [MenuItem("Tools/Events/ReactorGrid/Power outage")]
     static void b()

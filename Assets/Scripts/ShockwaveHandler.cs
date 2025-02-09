@@ -44,7 +44,7 @@ public class ShockwaveHandler : MonoBehaviour
             {
                 
             });
-        await Task.Delay(4000);
+        await Task.Delay(6000);
         GameObject.Destroy(Tgame);
     }
 

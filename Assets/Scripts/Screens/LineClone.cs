@@ -14,6 +14,13 @@ public class LineClone : MonoBehaviour
     private bool isBusy = false;
     private Coroutine activeCoroutine;
 
+    public enum WhatIsMyPurpose
+    {
+        PassTheButter,
+        ReactorSys,
+        Mainframe,
+    }
+
     private void Start()
     {
         if (textComponent == null)

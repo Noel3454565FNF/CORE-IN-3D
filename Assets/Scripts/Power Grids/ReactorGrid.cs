@@ -127,7 +127,7 @@ public class ReactorGrid : MonoBehaviour
     {
         if (gridMathCoroutine == null)
         {
-            print("h");
+            //print("h");
             gridMathCoroutine = StartCoroutine(GridMathCoroutine());
         }
     }
@@ -196,7 +196,7 @@ public class ReactorGrid : MonoBehaviour
                 var r = 0;
                 r = MCFSMaxPowerUsage * cc.ShieldPower; //600 * 10
                 MCFSTotalPowerUsage = r / 100;
-                print($"mf update now! {MCFSTotalPowerUsage} or {cc.ShieldPower} or {r}");
+                //print($"mf update now! {MCFSTotalPowerUsage} or {cc.ShieldPower} or {r}");
             }
 
             // Calculate core power production
@@ -207,7 +207,7 @@ public class ReactorGrid : MonoBehaviour
                 if (beansInTheSheinFactory != 0)
                 {
                     CoreTotalPowerProduction = (beansInTheSheinFactory * 100000) / CoreMaxPowerProduction;
-                    print($"core update now! {beansInTheSheinFactory}");
+                    //print($"core update now! {beansInTheSheinFactory}");
                 }
             }
 
