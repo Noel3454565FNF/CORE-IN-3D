@@ -120,8 +120,12 @@ public class COREManager : MonoBehaviour
     public GlobalScreenManager MCFSscreen;
     public GlobalScreenManager MainCoreScreen;
 
+    [Header("Component")]
+    public EventManager eventmanager;
+
     private void Awake()
     {
+        eventmanager = new EventManager();
         instance = this;
     }
 
@@ -365,6 +369,53 @@ public class COREManager : MonoBehaviour
 
 }
 
+
+public class EventManager : MonoBehaviour
+{
+    public List<IEnumerator> ListOfEvents;
+
+    public IEnumerator temp;
+
+    public IEnumerator StartupEvent;
+    public IEnumerator ShutdownEvent;
+    public IEnumerator PremeltEvent;
+    public IEnumerator MeltdownEvent;
+    public IEnumerator SDV1Event;
+    public IEnumerator SDV2Event;
+    public IEnumerator OverloadV1Event;
+
+    public static EventManager instance;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
+    public void Start()
+    {
+        StartupEvent = Startup.instance.CoreStarup();
+        ShutdownEvent = Shutdown.instance.ShutdownStart();
+
+        ListOfEvents.Add(StartupEvent);
+        ListOfEvents.Add(ShutdownEvent);
+        ListOfEvents.Add(PremeltEvent);
+        ListOfEvents.Add(MeltdownEvent);
+        ListOfEvents.Add(SDV1Event);
+        ListOfEvents.Add(SDV2Event);
+        ListOfEvents.Add(OverloadV1Event);
+    }
+
+    public void EventKillSwitch()
+    {
+        foreach(IEnumerator e in ListOfEvents)
+        {
+            StopCoroutine(e);
+        }
+    }
+
+}
 
 
 public class DEVSONLY : MonoBehaviour

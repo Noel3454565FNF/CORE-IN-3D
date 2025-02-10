@@ -20,6 +20,7 @@ public class STABSLasers : MonoBehaviour
     public ParticleSystem PSStab;
     public GameObject Laser;
     public AudioSource ASSTAB;
+    public GameObject BuildUp;
     public enum StabStatusEnum
     {
         ONLINE,
@@ -656,6 +657,35 @@ public class STABSLasers : MonoBehaviour
 
     }
 
+
+
+    public IEnumerator StabBuildUp(float timetoreach, Color BColor, Vector3 StartSize, Vector3 GoalSize)
+    {
+        BColor.a = 0;
+        BuildUp.GetComponent<MeshRenderer>().material.SetColor("_Color", BColor);
+        Color lol = new Color();
+        lol.r = BColor.r;
+        lol.g = BColor.g;
+        lol.b = BColor.b;
+        lol.a = 1;
+
+        BuildUp.transform.position = StartSize;
+
+        LeanTween.value(BuildUp.GetComponent<MeshRenderer>().material.GetColor("_Color").a, lol.a, timetoreach)
+            .setOnUpdate((float t) =>
+            { 
+                Color n = new Color(BColor.r, BColor.g, BColor.b, t);
+                BuildUp.GetComponent<MeshRenderer>().material.SetColor("_Color", n);
+            });
+
+        BuildUp.LeanScale(GoalSize, timetoreach);
+
+        yield return new WaitForSeconds(timetoreach);
+
+
+
+        yield return null;
+    }
 
 }
     public class Utility : MonoBehaviour

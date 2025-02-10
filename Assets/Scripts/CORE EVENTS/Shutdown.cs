@@ -61,7 +61,7 @@ public static Shutdown instance;
         StartCoroutine(ShutdownStart());
     }
 
-    IEnumerator ShutdownStart()
+    public IEnumerator ShutdownStart()
     {
         CM.CoreInEvent = true;
         CM.CoreEvent = COREManager.CoreEventEnum.Shutdown.ToString();
@@ -187,18 +187,22 @@ public static Shutdown instance;
     public IEnumerator ChaoticMain()
     {
         Debug.LogWarning("oh uuuh... smt went wrong-");
+        
         CM.ReactorSysLogsScreen.EntryPoint("Rebooting ReactorySys...", CM.LineAttentionColor);
         yield return new WaitForSeconds(5);
         CM.ReactorSysLogsScreen.EntryPoint("UNABLE TO REBOOT.", CM.LineUnknownColor);
+        yield return new WaitForSeconds(1.5f);
         CM.ReactorSysLogsScreen.EntryPoint("ERROR", CM.LineUnknownColor);
         yield return new WaitForSeconds(3);
         CM.ReactorSysLogsScreen.EntryPoint("Contacting Administration...", CM.LineAttentionColor);
         yield return new WaitForSeconds(3);
         CM.ReactorSysLogsScreen.EntryPoint("UNABLE TO CONTACT ADMININSTRATION!", CM.LineWarnColor);
-        CM.ReactorSysLogsScreen.EntryPoint("SENDING SOS TO MAINFRAME...", CM.LineAttentionColor);
         yield return new WaitForSeconds(1);
+        CM.ReactorSysLogsScreen.EntryPoint("SENDING SOS TO MAINFRAME...", CM.LineAttentionColor);
+        yield return new WaitForSeconds(1.5f);
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
         CM.ReactorSysLogsScreen.EntryPoint("GRID FAULT DETECTED!", Color.red);
+        yield return new WaitForSeconds(0.5f);
         FAS.GFAS.WriteAnAnnouncement("Mainframe", "ReactorSys fault detected! Attempting to terminate the core...", 3);
         CM.ReactorSysLogsScreen.EntryPoint("UNABLE TO GET RESPONCE FROM MAINFRAME!", Color.red);
         WhiteFlash.ScreenFlashF(Color.black, 1, 3, 0.1f, 0.1f);
@@ -210,6 +214,14 @@ public static Shutdown instance;
         //but for now...
         //have fun!
         //and try to save the day!
+        FAS.GFAS.WriteAnAnnouncement("Mainframe", "ReactorSys is unresponsive! CORE TERMINATION IS NOW IN EFFECT!", 3);
+        CM.ReactorSysLogsScreen.EntryPoint("UNKNOWN REACTOR ERROR!", CM.LineUnknownColor);
+        //CM.Stab1.Move(100, 100); CM.Stab2.Move(100, 100);
+        CM.Stab3.StabRPMCHANGING(1200, 3); CM.Stab4.StabRPMCHANGING(1200, 3);
+        yield return new WaitForSeconds(1.5f);
+        //CM.Stab3.LaserBuildUp(1.5f, Color.white()); CM.stab4.LaserBuildUp(1.5f, Color.white());
+        yield return new WaitForSeconds(1.5f);
+        CM.Stab3.Laser.SetActive(true); CM.Stab4.Laser.SetActive(true);
 
     }
 

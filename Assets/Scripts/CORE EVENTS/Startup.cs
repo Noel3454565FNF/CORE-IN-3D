@@ -52,7 +52,6 @@ public class Startup : MonoBehaviour
     public void Start()
     {
         utility = new Utility();
-        Test();
     }
 
     private void Awake()
@@ -60,15 +59,10 @@ public class Startup : MonoBehaviour
         instance = this;
     }
 
-    public async Task Test()
-    {
-        //await Task.Delay(3000);
-        //var l = ShockwaveHandler.GSwH;
-    }
-
     public void CoreStartupCaller()
     {
-        print("startup invoked");
+        ButtonH.canBePressed = false;
+        CM.CanStartup = false;
         if (InProgress == false)
         {
             bool choosenOne = false;
@@ -81,19 +75,18 @@ public class Startup : MonoBehaviour
             else if (forcedSuccess == true && choosenOne == false)
             {
                 choosenOne = true;
-                CoreStarup();
+                StartCoroutine(CoreStarup());
             }
             else if (choosenOne == false)
             {
                     choosenOne = true;
-                    CoreStarup();
+                    StartCoroutine(CoreStarup());
             }
         }
     }
 
-    public async Task CoreStarup()
+    public IEnumerator CoreStarup()
     {
-        print(RegenHandler.instance.AppRunning);
         while (RH.AppRunning == true)
         {
             COREManager.instance.CoreInEvent = true;
@@ -105,7 +98,7 @@ public class Startup : MonoBehaviour
 
 
             sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3); CM.MainCoreScreen.MakeMemeGoAway(); CM.MCFSscreen.MakeMemeGoAway(); CM.ReactorSysLogsScreen.EntryPoint("Core ignition requested and approved!", Color.white);
-            await Task.Delay(5000);
+            yield return new WaitForSeconds(5);
             Stab1.StabAdminLock = true; Stab2.StabAdminLock = true; Stab3.StabAdminLock = true; Stab4.StabAdminLock = true;
 
 
@@ -121,7 +114,7 @@ public class Startup : MonoBehaviour
             Task.Run(Stab3.StabStart);
             Task.Run(Stab4.StabStart);
             print("hello there");
-            await Task.Delay(21000);
+            yield return new WaitForSeconds(21);
 
             ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
 
@@ -132,7 +125,7 @@ public class Startup : MonoBehaviour
             ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position);
             CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f); MCFS.instance.ShieldCreation(100, 5); COREManager.instance.ReactorSysLogsScreen.EntryPoint("Core shield formation...", Color.white);
             Core.gameObject.transform.LeanScale(CoreSize, 5f); CM.LeantweenTemp(7500f, 5f); CM.ReactorSysLogsScreen.EntryPoint("Core formation...", Color.white);
-            await Task.Delay(9000); CM.ReactorSysLogsScreen.EntryPoint("Core ignition successful!", Color.green);
+            yield return new WaitForSeconds(5); CM.ReactorSysLogsScreen.EntryPoint("Core ignition successful!", Color.green);
 
             StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
             CM.COREConstantStateChecker();
@@ -154,7 +147,9 @@ public class Startup : MonoBehaviour
             Stab1.CoolantInput = 22; Stab2.CoolantInput = 22; Stab3.CoolantInput = 22; Stab4.CoolantInput = 22;
             CM.CanUpdateTemp = true;
             CM.CoreAllowGridEvent = true;
+            ButtonH.canBePressed = true;
             break;
         }
+        yield return null;
     }
 }

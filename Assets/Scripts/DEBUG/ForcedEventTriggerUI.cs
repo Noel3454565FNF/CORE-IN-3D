@@ -86,6 +86,18 @@ public class ForcedEventTriggerUI : Editor
         Debug.LogError("BYE BYE MCFS!");
     }
 
+    //CHAOTIC EVENT
+    [MenuItem("Tools/Events/Chaotic/SDV1")]
+    static void SDV1()
+    {
+
+    }
+    [MenuItem("Tools/Events/Chaotic/OverloadV1")]
+    static void OverloadV1()
+    {
+
+    }
+
     //private void Awake()
     //{
     //    Debug.LogWarning("i can see you.");
