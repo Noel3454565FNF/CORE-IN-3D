@@ -570,6 +570,7 @@ public class STABSLasers : MonoBehaviour
     public void StabKys()
     {
         StabStatus = "ERROR";
+        Power = 0;
         CanHeat = false;
         canCool = false;
         CanKys = false;
@@ -682,6 +683,16 @@ public class STABSLasers : MonoBehaviour
 
         yield return new WaitForSeconds(timetoreach);
 
+        Vector3 LastGoalSize = new Vector3(GoalSize.x + 3, GoalSize.y + 3, GoalSize.z + 3);
+
+        LeanTween.value(BuildUp.GetComponent<MeshRenderer>().material.GetColor("_Color").a, 0, 0.4f)
+            .setOnUpdate((float t) =>
+            {
+                Color n = new Color(BColor.r, BColor.g, BColor.b, t);
+                BuildUp.GetComponent<MeshRenderer>().material.SetColor("_Color", n);
+            });
+
+        BuildUp.LeanScale(LastGoalSize, 0.4f);
 
 
         yield return null;
