@@ -85,6 +85,7 @@ public class COREManager : MonoBehaviour
     //global
     public bool CoreInEvent = false;
     public bool CoreAllowGridEvent = true;
+
     public enum CoreEventEnum
     {
         Startup,
@@ -122,10 +123,18 @@ public class COREManager : MonoBehaviour
 
     [Header("Component")]
     public EventManager eventmanager;
+    public CorePurgeSYS CPSYS;
+
+
+    [Header("Core Purge Sys Component")]
+    public ButtonHandler CPSYSButton;
+
+
 
     private void Awake()
     {
         eventmanager = new EventManager();
+        CPSYS = new CorePurgeSYS();
         instance = this;
     }
 
@@ -238,7 +247,7 @@ public class COREManager : MonoBehaviour
     {
         if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-            if (CoreTemp > 8000 && Overheating == false && CritOverheating == false)
+            if (CoreTemp > 9000 && Overheating == false && CritOverheating == false)
             {
                 Overheating = true;
                 //P1 PREMELT.
@@ -251,15 +260,18 @@ public class COREManager : MonoBehaviour
             {
                 CritOverheating = true;
                 //P2 PREMELT.
-                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "Shield absortion capacity have reached his limit. PLEASE engage the Core Power Purge IMMEDIATLY.", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
+                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "Shield absortion capacity have reached its limit. PLEASE engage the Core Power Purge IMMEDIATLY.", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
                 MCFS.instance.CanShieldDegrad = true;
                 StartCoroutine(MCFS.instance.ShieldDegradationFunc());
                 MCFS.instance.integrityTxt.color = Color.yellow;
                 //LightsManager.GLM.LevelNeg3LightsFlick(7, Negate3roomsName.ALL);
             }
-            if (MCFS.instance.ShieldIntegrity <= 10 && Overheating && CritOverheating)
+            if (MCFS.instance.ShieldIntegrity <= 10 && Overheating && CritOverheating && Premeltdown == false)
             {
                 //P3 PREMELT.
+                CoreInEvent = true;
+                Premeltdown = true;
+                Premelt.instance.Caller();
             }
 
 
@@ -383,6 +395,7 @@ public class EventManager : MonoBehaviour
     public IEnumerator SDV1Event;
     public IEnumerator SDV2Event;
     public IEnumerator OverloadV1Event;
+    public IEnumerator FFSD;
 
     public static EventManager instance;
 
@@ -405,13 +418,21 @@ public class EventManager : MonoBehaviour
         ListOfEvents.Add(SDV1Event);
         ListOfEvents.Add(SDV2Event);
         ListOfEvents.Add(OverloadV1Event);
+        ListOfEvents.Add(FFSD);
     }
 
-    public void EventKillSwitch()
+    public void EventKillSwitch(IEnumerator EventToNotKill)
     {
         foreach(IEnumerator e in ListOfEvents)
         {
-            StopCoroutine(e);
+            if (e != EventToNotKill)
+            {
+                StopCoroutine(e);
+            }
+            else
+            {
+                print("event sparred");
+            }
         }
     }
 
@@ -430,3 +451,57 @@ public class DEVSONLY : MonoBehaviour
 }
 
 
+public class CorePurgeSYS:MonoBehaviour
+{
+    public static CorePurgeSYS instance;
+
+
+    //vars
+    public bool CanPurge = true;
+    public bool CorePurgeAuth = false;
+    public int SystemIntegrity = 100;
+    public bool CorePurgeRequested = false;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
+
+    public bool PurgeCaller()
+    {
+        if (CorePurgeAuth && CorePurgeRequested)
+        {
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("Core purge inbound...", Color.yellow);
+            StartCoroutine(Purge());
+            return true;
+        }
+        if(CorePurgeRequested == false)
+        {
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("ERROR: NO CORE PURGE REQUEST FOUND!", Color.red);
+            return false;
+        }
+        return false;
+    }
+
+
+    public void PurgeRegister()
+    {
+        if (CorePurgeRequested == false && CorePurgeAuth == true)
+        {
+            CorePurgeRequested = true;
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("Core purge rquested!", Color.green);
+        }
+    }
+
+
+    public IEnumerator Purge()
+    {
+
+
+        yield return null;
+    }
+
+}

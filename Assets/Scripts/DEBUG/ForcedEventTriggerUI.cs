@@ -98,6 +98,12 @@ public class ForcedEventTriggerUI : Editor
 
     }
 
+    //DEV EVENT
+    [MenuItem("Tools/Events/DEV/FFSD")]
+    static void FFSD()
+    {
+
+    }
     //private void Awake()
     //{
     //    Debug.LogWarning("i can see you.");
