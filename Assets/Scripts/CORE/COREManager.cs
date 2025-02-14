@@ -10,10 +10,18 @@ using UnityEditor.PackageManager;
 using System.Threading.Tasks;
 using UnityEditor.Timeline.Actions;
 using Unity.VisualScripting;
+using UnityEngine.UI;
+using System.Collections;
+using Unity.Mathematics;
+using System.Collections.Generic;
+using System.ComponentModel;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
-    public string CoreStatus = "OFFLINE";
+
+    private string llll = "don't mind me, im useless";
+    public enum CoreStatusEnum { Offline, Online, Overload };
+    public string CoreStatus = CoreStatusEnum.Offline.ToString(); 
     public string CoreState = "NONE";
     public string CoreEvent = "NONE";
     public int CoreTemp = 0; // Current temperature of the core
@@ -23,33 +31,76 @@ public class COREManager : MonoBehaviour
     public float changeSpeed = 0f; // Base speed of temperature change
     public float changeSpeedCoreInfluence = 0f; // Core influence on change speed
     private float timeAccumulator = 0; // Tracks time for smoother updates
+    public int coreStability = 100;
+
+    public bool CanDecreaseCoreStability = true;
+    public bool CanIncreaseCoreStability = true;
+
+    public bool CanUpdateTemp = false;
+    public bool CanShutdown = false; public bool ForceDisableShutdown = false;
+    public bool CanStartup = true; public bool ForceDisableStartup = false;
 
     [Header("Temperature and Efficiency Vars")]
     public float MaxHeatUnitEfficiency = 20;
     public float MaxCoolingUnitEfficiency = 25;
     public float MaxShieldCoolingEfficiency = 50;
+    public float MasCoreInstabilityEfficiency = 20;
+
+    public float CoreStabilityDecreasingSpeed = 0.2f;
+    public float CoreStabilityIncreasingSpeed = 0.1f;
 
     [Header("Stabs Connection")]
     public STABSLasers Stab1; // Cooling Unit
     public STABSLasers Stab2; // Cooling Unit
-    public STABSLasers Stab3; // Heating Unit
-    public STABSLasers Stab4; // Heating Unit
-    public STABSLasers Stab5; // AUX
-    public STABSLasers Stab6; // AUX
-    public STABSLasers Stab7; // AUX
-    public STABSLasers Stab8; // AUX
+    public STABSLasers Stab3; // AUX
+    public STABSLasers Stab4; // AUX
+    public STABSLasers Stab5; // Power Unit
+    public STABSLasers Stab6; // Power Unit
+    public STABSLasers Stab7; // Power Unit
+    public STABSLasers Stab8; // Power Unit
+
+    [HideInInspector] public List<STABSLasers> Stablist;
 
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
+    public static COREManager instance;
 
     [Header("Screen")]
     public TMPro.TextMeshProUGUI TempText;
     public TMPro.TextMeshProUGUI StateText;
 
+    public UnityEngine.UI.Image CoreDiag;
+    public RawImage CoreWS;
+    public TMPro.TextMeshProUGUI CoreUS;
+
+    public LineClone ReactorSysLogsScreen;
+    
+    public Color LineAttentionColor;
+    public Color LineWarnColor;
+    public Color LineUnknownColor;
+    public Color LineOVERRIDEColor;
+
+
     [Header("Core State")]
+    //global
+    public bool CoreInEvent = false;
+    public bool CoreAllowGridEvent = true;
+    public enum CoreEventEnum
+    {
+        Startup,
+        Shutdown,
+        ShutdownFailure,
+        Meltdown,
+        Freezedown,
+        FreezedownHISTORY,
+
+    }
+
     //Pre Melt state
     public bool Overheating = false;
     public bool CritOverheating = false;
+    public bool Premeltdown = false;
+    public bool ShieldDetonationImminent = false;
     
     //Pre Freeze state
     public bool PowerLoss = false;
@@ -60,15 +111,41 @@ public class COREManager : MonoBehaviour
 
     //Catastrophic State
     public bool Freezedown = false;
+    public bool FreezedownHISTORY = false;
     public bool Meltdown = false;
+    public bool Overload = false;
+    public bool ControlLoss = false;
+
+    [Header("Screen Connection")]
+    public GlobalScreenManager MCFSscreen;
+    public GlobalScreenManager MainCoreScreen;
+
+    [Header("Component")]
+    public EventManager eventmanager;
+
+    private void Awake()
+    {
+        eventmanager = new EventManager();
+        instance = this;
+    }
+
+
+    private void Start()
+    {
+        Stablist.Add(Stab1);
+        Stablist.Add(Stab2);
+        Stablist.Add(Stab3);
+        Stablist.Add(Stab4);
+        UpdateCoreTemperature();
+    }
 
     void Update()
     {
-        if (CoreStatus != "OFFLINE")
+        if (CoreStatus != CoreStatusEnum.Offline.ToString())
         {
             UpdateCoreTemperature();
         }
-        
+        StateText.text = CoreStatus.ToLower();
     }
 
 
@@ -83,14 +160,16 @@ public class COREManager : MonoBehaviour
     //}
 
 
-    
+
 
 
     private void UpdateCoreTemperature()
     {
-        
-        // Reset CoreTempChange and apply additional heating
+        // Reset CoreTempChange and apply base heating
         CoreTempChange = CAH;
+
+        // Core instability effect
+        CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -112,8 +191,19 @@ public class COREManager : MonoBehaviour
             CoreTempChange -= MaxCoolingUnitEfficiency * (Stab2.Power / 100f);
         }
 
-        // Shield
-        CoreTempChange -= MaxShieldCoolingEfficiency * (100 / 100f);
+        // Shield effect
+        CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
+
+        // Debug: Log CoreTempChange before damping
+        debugTempChange = CoreTempChange;
+
+        // Apply a damping factor to reduce sensitivity
+        CoreTempChange *= 0.8f; // Damping factor to smooth abrupt changes
+
+        // Clamp CoreTempChange to prevent extreme values
+        CoreTempChange = Mathf.Clamp(CoreTempChange, -100f, 100f); // Adjust range as needed
+
+        // Debug: Log CoreTempChange after damping and clamping
 
         // Calculate adjustment speed
         float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;
@@ -121,45 +211,222 @@ public class COREManager : MonoBehaviour
         // Accumulate time for smooth updates
         timeAccumulator += Time.deltaTime * adjustmentSpeed;
 
+        // Debug: Log time accumulator value
+
         // Apply temperature changes based on the time accumulator
-        while (timeAccumulator >= 1f)
+        while (timeAccumulator >= 1f && CanUpdateTemp)
         {
-            if (CoreTempChange > 0.9f)
+            if (Mathf.Abs(CoreTempChange) > 0.1f) // Apply only significant changes
             {
-                CoreTemp += 1;
-            }
-            else if (CoreTempChange < -1f)
-            {
-                CoreTemp -= 1;
+                // Convert the floating-point result to an integer
+                CoreTemp += (int)Mathf.Sign(CoreTempChange) * Mathf.Min(1, (int)Mathf.Abs(CoreTempChange));
             }
             else
             {
-                CoreTemp += 0;
-                print("core stable");
+                UnityEngine.Debug.Log("Core is stable.");
             }
-            debugTempChange = CoreTempChange; //  For debugging purposes
-            TempText.text = "" + CoreTemp + "C°";
+
+            // Debug: Log updated CoreTemp value
+
+            TempText.text = $"{CoreTemp}C°"; // Update temperature text
             timeAccumulator -= 1f;
+            COREConstantStateChecker();
         }
     }
 
-    public Task COREConstantStateChecker()
+    public void COREConstantStateChecker()
     {
-        while(RegenHandler.instance.AppRunning && CoreStatus == "ONLINE")
+        if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-
-            if (CoreTemp < 20000)
+            if (CoreTemp > 8000 && Overheating == false && CritOverheating == false)
             {
-
+                Overheating = true;
+                //P1 PREMELT.
+                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "!Warning Core overheating, nuclear meltodwn IMMINENT!", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
+                StartCoroutine(CoreStabilityDecrease());
+                TempText.color = Color.yellow;
+                //LightsManager.GLM.LevelNeg3LightsFlick(3, Negate3roomsName.ALL);
+            }
+            if (coreStability == 0 && Overheating == true && CritOverheating == false)
+            {
+                CritOverheating = true;
+                //P2 PREMELT.
+                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "Shield absortion capacity have reached his limit. PLEASE engage the Core Power Purge IMMEDIATLY.", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
+                MCFS.instance.CanShieldDegrad = true;
+                StartCoroutine(MCFS.instance.ShieldDegradationFunc());
+                MCFS.instance.integrityTxt.color = Color.yellow;
+                //LightsManager.GLM.LevelNeg3LightsFlick(7, Negate3roomsName.ALL);
+            }
+            if (MCFS.instance.ShieldIntegrity <= 10 && Overheating && CritOverheating)
+            {
+                //P3 PREMELT.
             }
 
-            Task.Delay(10);
+
+            if (CoreTemp < 7500 && Overheating == true &&  CritOverheating == false)
+            {
+                //BAI PREMELT.
+                StopCoroutine(CoreStabilityIncrease());
+                Overheating = false;
+                TempText.color = Color.white;
+            }
+
+
+
+            if (CoreTemp < 500)
+            {
+                //PRE-FREEZE/STALL.
+            }
+
         }
-        return Task.CompletedTask;
     }
+
+
+
+    public IEnumerator CoreStabilityDecrease()
+    {
+        yield return new WaitForSeconds(CoreStabilityDecreasingSpeed);
+        var t = coreStability - 1;
+        if (t > -1)
+        {
+            coreStability = coreStability - 1;
+            StartCoroutine(CoreStabilityDecrease());
+        }
+        else
+        {
+            StopCoroutine(CoreStabilityDecrease());
+        }
+    }
+    public IEnumerator CoreStabilityIncrease()
+    {
+        yield return new WaitForSeconds(CoreStabilityIncreasingSpeed);
+        var t = coreStability + 1;
+        if (t < 101)
+        {
+            coreStability = coreStability + 1;
+            StartCoroutine(CoreStabilityIncrease());
+        }
+        else
+        {
+            StopCoroutine(CoreStabilityIncrease());
+        }
+    }
+
+    public void LeantweenTemp(float to, float time)
+    {
+        var frfr = CoreTemp;
+        LeanTween.value(frfr, to, time)
+            .setOnUpdate((float t) =>
+            {
+                CoreTemp = Mathf.FloorToInt(t);
+                TempText.text = "" + CoreTemp + "C°";
+            });
+    }
+
+
+    //CORE SCREEN FONCTIONS
+
+    public void CoreToOnline()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = false;
+        CoreDiag.gameObject.active = true;
+    }
+
+    public void CoreToUnknown()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = true;
+        CoreDiag.gameObject.active = false;
+        CoreUS.color = Color.white;
+    }
+
+    public void CoreToDanger()
+    {
+        CoreWS.gameObject.active = true;
+        CoreUS.enabled = false;
+        CoreDiag.gameObject.active = false;
+    }
+
+    public void CoreToUnknownDanger()
+    {
+        CoreWS.gameObject.active = false;
+        CoreUS.enabled = true;
+        CoreDiag.gameObject.active = false;
+        CoreUS.color = new Color(160, 32, 240);
+    }
+
+    public void ShutdownChecker()
+    {
+        if (CoreTemp > 6000 && CoreTemp < 8000 && Premeltdown == false && ControlLoss == false && CoreInEvent == false && ReactorGrid.instance.GridSTS == ReactorGrid.GridStatus.ONLINE.ToString() && ForceDisableShutdown == false)
+        {
+            CanShutdown = false;
+            Shutdown.instance.ShutdownCaller();
+        }
+    }
+
 
 
 }
 
+
+public class EventManager : MonoBehaviour
+{
+    public List<IEnumerator> ListOfEvents;
+
+    public IEnumerator temp;
+
+    public IEnumerator StartupEvent;
+    public IEnumerator ShutdownEvent;
+    public IEnumerator PremeltEvent;
+    public IEnumerator MeltdownEvent;
+    public IEnumerator SDV1Event;
+    public IEnumerator SDV2Event;
+    public IEnumerator OverloadV1Event;
+
+    public static EventManager instance;
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
+
+
+    public void Start()
+    {
+        StartupEvent = Startup.instance.CoreStarup();
+        ShutdownEvent = Shutdown.instance.ShutdownStart();
+
+        ListOfEvents.Add(StartupEvent);
+        ListOfEvents.Add(ShutdownEvent);
+        ListOfEvents.Add(PremeltEvent);
+        ListOfEvents.Add(MeltdownEvent);
+        ListOfEvents.Add(SDV1Event);
+        ListOfEvents.Add(SDV2Event);
+        ListOfEvents.Add(OverloadV1Event);
+    }
+
+    public void EventKillSwitch()
+    {
+        foreach(IEnumerator e in ListOfEvents)
+        {
+            StopCoroutine(e);
+        }
+    }
+
+}
+
+
+public class DEVSONLY : MonoBehaviour
+{
+    [ReadOnly(true)] public string README = "don't take anything here seriously lol-";
+    [ReadOnly(true)] public string ThoseWhoknow = ":skull:";
+    public void AndSuddenlyIGotTheUrgeToSingErika()
+    {
+        ThoseWhoknow = "no seriously, erika is a good history song. the phonk version is peak :pray:";
+        UnityEngine.Diagnostics.Utils.ForceCrash(UnityEngine.Diagnostics.ForcedCrashCategory.FatalError);
+    }
+}
 
 

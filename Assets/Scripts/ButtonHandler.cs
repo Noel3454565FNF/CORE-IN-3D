@@ -12,7 +12,10 @@ public class ButtonHandler : MonoBehaviour
 
     [Header("Component")]
     public GameObject button;
-    public UnityEvent CallOnPress;
+    public UnityEvent<PassiveArgs> CallOnPress;
+    [SerializeField]
+    public PassiveArgs Argstopass;
+    
 
     [Header("Value")]
     public bool canBePressed = true;
@@ -33,13 +36,26 @@ public class ButtonHandler : MonoBehaviour
     public Animator ButtonAnimator;
 
     public AudioSource ButtonAudioSource;
+    public AudioClip ButtonAudioClip;
+    public bool CanPlayAudio;
+    public bool KEEPQUIET;
     //
     //
     //
     void Start()
     {
         if (button == null) { button = this.gameObject; }
-        ButtonAnimator.bodyPosition = button.transform.position;
+        //ButtonAnimator.bodyPosition = button.transform.position;
+
+        if (gameObject.GetComponent<AudioSource>() != null)
+        {
+            ButtonAudioSource = gameObject.GetComponent<AudioSource>();
+            if (ButtonAudioClip != null)
+            {
+                ButtonAudioSource.clip = ButtonAudioClip;
+                CanPlayAudio = true;
+            }
+        }
     }
 
 
@@ -55,15 +71,14 @@ public class ButtonHandler : MonoBehaviour
         {
             animhere();
             canBePressed = false;
-            //ButtonAnimator.SetTrigger("CanClickAnim");
-            CallOnPress.Invoke();
+            CallOnPress.Invoke(Argstopass);
+            if (CanPlayAudio && KEEPQUIET == false)
+            {
+                ButtonAudioSource.Play();
+            }
             if (haveTrigger)
             {
                 TriggerUsed = true;
-            }
-            if(ButtonAudioSource.clip != null)
-            {
-                ButtonAudioSource.Play();
             }
             if (haveCooldown)
             {
@@ -84,6 +99,7 @@ public class ButtonHandler : MonoBehaviour
         await Task.Delay(CooldownTime);
         print("cooldeown OVER over");
         onCooldown = false;
+        canBePressed = true;
     }
 
 
@@ -111,4 +127,14 @@ public class ButtonHandler : MonoBehaviour
     {
         
     }
+}
+
+
+[Serializable]
+public class PassiveArgs
+{
+    public string arg1;
+    public string arg2;
+    public string arg3;
+    public string arg4;
 }

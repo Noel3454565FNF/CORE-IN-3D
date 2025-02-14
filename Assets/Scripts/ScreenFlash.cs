@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading.Tasks;
+
 
 public class ScreenFlash : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class ScreenFlash : MonoBehaviour
     {
         GSF = this;
     }
+
 
     public async Task ScreenFlashF(Color Cto, float Time, int waittime)
     {
@@ -58,5 +60,46 @@ public class ScreenFlash : MonoBehaviour
         });
     }
 
+
+
+    public async Task ScreenFlashF(Color Cto, float Time, int waittime, float switchtofull, float switchtotrans)
+    {
+        var pa1 = 1f;
+        var pa2 = 1f;
+
+
+
+        var pa3 = Mathf.CeilToInt(Time / 2);
+
+
+        var tempI = 0.700;
+        float Tempa = 0;
+        //while (image.color.a < tempI)
+        //{
+        //    image.color = new Color(Cto.r, Cto.g, Cto.b, Tempa);
+        //    Tempa = Tempa + 0.010f;
+        //    await Task.Delay(0001);
+        //}
+
+
+
+        LeanTween.value(this.gameObject, 0f, 1f, switchtofull)
+        .setOnUpdate((float t) =>
+        {
+            Color currentColor = Color.Lerp(image.color, Cto, t);
+            image.color = currentColor;
+        });
+
+
+        await Task.Delay(waittime);
+
+
+        LeanTween.value(this.gameObject, 0f, 1f, switchtotrans)
+    .setOnUpdate((float t) =>
+    {
+        Color currentColor = Color.Lerp(image.color, new Color(Cto.r, Cto.g, Cto.b, 0f), t);
+        image.color = currentColor;
+    });
+    }
 
 }

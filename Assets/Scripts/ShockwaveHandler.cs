@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,10 +39,13 @@ public class ShockwaveHandler : MonoBehaviour
             {
                 Color currentC = Color.Lerp(Tcolor, new Color(Tcolor.r, Tcolor.g, Tcolor.b, 0f), t);
                 Tgame.gameObject.GetComponent<MeshRenderer>().material.SetColor("_Color", currentC);
+            })
+            .setOnComplete(() =>
+            {
+                
             });
-        print("shockwave finish");
-
-        await Task.Delay((int)time);
+        await Task.Delay(6000);
+        GameObject.Destroy(Tgame);
     }
 
 

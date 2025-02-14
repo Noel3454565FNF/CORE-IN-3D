@@ -99,8 +99,8 @@ public class CameraFollowAndControl : MonoBehaviour
         if (shakeDuration > 0)
         {
             // Add random noise to the camera's position
-            shakeOffset = Random.insideUnitSphere * shakeMagnitude;
-
+            shakeOffset = Vector3.Lerp(transform.position, Random.insideUnitSphere * shakeMagnitude, dampingSpeed);
+            
             // Reduce the shake duration over time
             shakeDuration -= Time.deltaTime * dampingSpeed;
         }

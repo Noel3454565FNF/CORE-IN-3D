@@ -20,12 +20,26 @@ public class STABSLasers : MonoBehaviour
     public ParticleSystem PSStab;
     public GameObject Laser;
     public AudioSource ASSTAB;
-
+    public GameObject BuildUp;
+    public enum StabStatusEnum
+    {
+        ONLINE,
+        OFFLINE,
+        ERROR,
+        DESTROYED,
+        OVERLOAD,
+        OVERCLOCK,
+        ADMINLOCK
+    };
+    
     [HideInInspector] public int LTColorCurTween;
 
 
     [Header("Vars")]
-    public string StabStatus = "OFFLINE";
+    /// <summary>
+    /// The real one btw, use StabStatusEnum;
+    /// </summary>
+    public string StabStatus = StabStatusEnum.OFFLINE.ToString();
     public string PendingEvent = "none";
     public float StabTemp = 26;
     public int RPM = 0;
@@ -33,10 +47,22 @@ public class STABSLasers : MonoBehaviour
     public int CoolantInput = 0;
     public int StructuralIntegrity = 100;
     public bool CanGetDamaged = true;
-    public bool CanHeat = true;
+    public bool CanHeat = true; public bool canCool = true;
     public bool CanKys = true;
     public bool CurrChange = false;
-    public string CurrChangeDir = "none";
+    public string CurrPowerChangeDir = "none";
+    public string CurrCoolingChangeDir = "none";
+    public bool CanRotate = false;
+    public bool CanUsePower = true;
+    public bool CanStart = true;
+
+    [Serializable]
+    public enum StabTYPE
+    {
+        ShieldUnit,
+        HeatingUnit,
+        AuxUnit
+    }
 
 
     [Header("Warning")]
@@ -73,6 +99,9 @@ public class STABSLasers : MonoBehaviour
     [HideInInspector] public AnimationCurve curve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     public Color WelcomeCurrColorOverheat;
 
+    public int oldRPM = 0;
+    public int oldLASERPOWER = 0;
+
 
     [Header("Audio")]
     public AudioClip StabDie;
@@ -86,6 +115,9 @@ public class STABSLasers : MonoBehaviour
 
     public TextMeshProUGUI temperature;
     public TextMeshProUGUI rpm;
+    public TextMeshProUGUI cooling;
+    public TextMeshProUGUI stabInput;
+    public TextMeshProUGUI strucINT;
     public TextMeshProUGUI globalStatus;
 
 
@@ -114,7 +146,10 @@ public class STABSLasers : MonoBehaviour
     void Update()
     {
         temperature.text = Mathf.FloorToInt(StabTemp) + "C°";
-        rpm.text = RPM.ToString(); 
+        rpm.text = RPM.ToString();
+        stabInput.text = Power.ToString() + "%";
+        cooling.text = CoolantInput.ToString() + "%";
+        strucINT.text = StructuralIntegrity.ToString() + "%";
     }
 
 
@@ -127,11 +162,20 @@ public class STABSLasers : MonoBehaviour
         if (StabStatus == "ONLINE")
         {
             TempTar = RPM / 40f;
-            TempTar2 = -CoolantInput / 2.5f;
+            if (canCool)
+            {
+                TempTar2 = -CoolantInput / 2.5f;
+            }
             TempTar3 = Power / 10f;
             TempTarA = TempTar + TempTar3;
             TempTarA += TempTar2;
-            if (CanHeat) { StabTemp += TempTarA; print(TempTarA);}
+            if (CanHeat) { StabTemp += TempTarA;}
+        }
+
+        if (StabTemp < 0 && canCool)
+        {
+            canCool = false;
+            StartCoroutine(CanCoolCooldownThing());
         }
 
         if (StabTemp >= 300 && HighTempWarning == false)
@@ -148,13 +192,13 @@ public class STABSLasers : MonoBehaviour
         if (StabTemp >= 400 && StabOverHeat == false)
         {
             StabOverHeat = true;
-            ROF();
+            StartCoroutine(EnterOverheat());
             temperature.color = Color.red;
         }
         if (StabTemp < 400 && StabOverHeat)
         {
             StabOverHeat = false;
-            ROF();
+            StartCoroutine(ExitOverheat());
             temperature.color = Color.yellow;
         }
 
@@ -187,6 +231,17 @@ public class STABSLasers : MonoBehaviour
         StartCoroutine(STABTEMPCHECK());
     }
 
+
+    public IEnumerator CanCoolCooldownThing()
+    {
+        yield return null;
+        canCool = false;
+        StructuralIntegrity = UnityEngine.Random.Range(1, 3);
+        yield return new WaitForSeconds(UnityEngine.Random.Range(1, 10));
+        canCool = true;
+    }
+
+
     public void ROF()
     {
         // Cache the Rotor MeshRenderer and Material
@@ -198,26 +253,25 @@ public class STABSLasers : MonoBehaviour
         }
 
         var rotorMaterial = rotorRenderer.material;
-        rotorMaterial.EnableKeyword("_EMISSION");
-
-        // Pause LeanTween if a tween is already active
-        if (LTColorCurTween != null && LTColorCurTween != 0)
-        {
-            LeanTween.pause(Rotor);
-            Debug.Log("Pausing existing LeanTween tween.");
-        }
-
         if (StabOverHeat)
         {
             // Play particle system for overheating
-            PSStab.Play();
+            if (PSStab != null)
+            {
+                PSStab.Play();
+            }
+            else
+            {
+                Debug.LogWarning("PSStab is not assigned.");
+            }
 
-            // Animate emission to red over 10 seconds
+            // Animate emission to a strong red glow over 10 seconds with an easeOutQuad curve
             LTColorCurTween = LeanTween.value(Rotor, 0f, 1f, 10f)
+                .setEase(LeanTweenType.easeOutQuad)
                 .setOnUpdate((float t) =>
                 {
                     WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.red, t);
-                    rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat);
+                    rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat * 2f); // Adjust intensity
                     rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
                 })
                 .setOnComplete(() =>
@@ -230,10 +284,14 @@ public class STABSLasers : MonoBehaviour
         else
         {
             // Stop particle system for overheating
-            PSStab.Stop();
+            if (PSStab != null)
+            {
+                PSStab.Stop();
+            }
 
-            // Animate emission back to white/neutral over 10 seconds
-            LTColorCurTween = LeanTween.value(Rotor, 1f, 0f, 10f)
+            // Animate emission back to neutral over 10 seconds with an easeInOutQuad curve
+            LTColorCurTween = LeanTween.value(Rotor, 1f, -1f, 10f)
+                .setEase(LeanTweenType.easeInOutQuad)
                 .setOnUpdate((float t) =>
                 {
                     // Transition emission to black and color to white
@@ -249,6 +307,57 @@ public class STABSLasers : MonoBehaviour
 
             Debug.Log("Cooling color animation started.");
         }
+    }
+
+    public IEnumerator EnterOverheat()
+    {
+        StopCoroutine(ExitOverheat());
+        var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
+        var rotorMaterial = rotorRenderer.material;
+        PSStab.Play();
+        LTColorCurTween = LeanTween.value(Rotor, -1f, 1f, 3f)
+    .setEase(LeanTweenType.easeOutQuad)
+    .setOnUpdate((float t) =>
+    {
+        WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.red, t);
+        rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat * 2f); // Adjust intensity
+        rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
+    })
+    .setOnComplete(() =>
+    {
+        Debug.Log($"Emission color after overheat: {rotorMaterial.GetColor("_EmissionColor")}");
+    }).id;
+
+        Debug.Log("Overheat color animation started.");
+
+        yield return null;
+
+    }
+
+
+    public IEnumerator ExitOverheat()
+    {
+        StopCoroutine(EnterOverheat());
+        var rotorRenderer = Rotor.gameObject.GetComponent<MeshRenderer>();
+        var rotorMaterial = rotorRenderer.material;
+        PSStab.Play();
+        LTColorCurTween = LeanTween.value(Rotor, 1f, -1f, 3f)
+    .setEase(LeanTweenType.easeOutQuad)
+    .setOnUpdate((float t) =>
+    {
+        WelcomeCurrColorOverheat = Color.Lerp(rotorMaterial.color, Color.white, t);
+        rotorMaterial.SetColor("_EmissionColor", WelcomeCurrColorOverheat); // Adjust intensity
+        rotorMaterial.SetColor("_Color", WelcomeCurrColorOverheat);
+    })
+    .setOnComplete(() =>
+    {
+        Debug.Log($"Emission color after overheat: {rotorMaterial.GetColor("_EmissionColor")}");
+    }).id;
+
+        Debug.Log("Overheat color animation started.");
+
+        yield return null;
+
     }
 
     IEnumerator STABINTCHECK()
@@ -269,18 +378,23 @@ public class STABSLasers : MonoBehaviour
             {
                 STABESHUTDOWN();
             }
-            print(integrityLoss);
         }
         yield return new WaitForSeconds(1f);
         StartCoroutine(STABINTCHECK());
     }
     private void FixedUpdate()
     {
-        if (StabStatus == "ONLINE" | StabStatus == "OVERLOADED" | StabStatus == "OVERLOAD" | StabStatus == "OVERCLOCK")
+        if (CanRotate)
         {
             float rotationSpeed = RPM * Time.deltaTime;
             Rotor.transform.Rotate(rotationAxis * rotationSpeed);
         }
+        var usedPWR = 5;
+        if (CanUsePower)
+        {
+            usedPWR += 250 / (100 * RPM + 1);
+        }
+
     }
 
 
@@ -295,17 +409,35 @@ public class STABSLasers : MonoBehaviour
     }
 
 
-    public void StabChangePowerCaller(string  power)
+    public void StabChangePowerCaller(PassiveArgs lol)
     {
-        if (power == "up")
+        var type = lol.arg1;
+        var d = lol.arg2;
+        if (type == "power")
         {
-            Debug.LogWarning("up called meow");
-            Task.Run(StabChangePowerUp);
+            if (d == "up")
+            {
+                Task.Run(StabChangePowerUp);
+            }
+            if (d == "down")
+            {
+                Task.Run(StabChangePowerDown);
+            }
         }
-        if (power == "down")
+        else if (type == "rpm")
         {
-            Debug.LogWarning("down called meow");
-            Task.Run(StabChangePowerDown);
+
+        }
+        else if (type == "cooling")
+        {
+            if (d == "up")
+            {
+                Task.Run(StabChangeCoolingUp);
+            }
+            if (d == "down")
+            {
+                Task.Run(StabChangeCoolingDown);
+            }
         }
         else
         {
@@ -319,8 +451,8 @@ public class STABSLasers : MonoBehaviour
         {
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
-            CurrChangeDir = "Up";
-            while (CurrChange && CurrChangeDir == "Up" && Power < 100)
+            CurrPowerChangeDir = "Up";
+            while (CurrChange && CurrPowerChangeDir == "Up" && Power < 100)
             {
                 Debug.LogWarning("bleh");
                 await Task.Delay(500);
@@ -335,8 +467,8 @@ public class STABSLasers : MonoBehaviour
         {
             CurrChange = !CurrChange;
             Debug.LogWarning("bleh");
-            CurrChangeDir = "Down";
-            while (CurrChange && CurrChangeDir == "Down" && Power > 10)
+            CurrPowerChangeDir = "Down";
+            while (CurrChange && CurrPowerChangeDir == "Down" && Power > 10)
             {
                 await Task.Delay(500);
                 Power -= 1;
@@ -346,10 +478,48 @@ public class STABSLasers : MonoBehaviour
     }
 
 
+
+
+
+
+    public async Task StabChangeCoolingUp()
+    {
+        if (StabAdminLock == false)
+        {
+            CurrChange = !CurrChange;
+            Debug.LogWarning("bleh");
+            CurrCoolingChangeDir = "Up";
+            while (CurrChange && CurrCoolingChangeDir == "Up" && CoolantInput < 100)
+            {
+                Debug.LogWarning("bleh");
+                await Task.Delay(500);
+                CoolantInput += 1;
+            }
+        }
+    }
+
+    public async Task StabChangeCoolingDown()
+    {
+        if (StabAdminLock == false)
+        {
+            CurrChange = !CurrChange;
+            Debug.LogWarning("bleh");
+            CurrCoolingChangeDir = "Down";
+            while (CurrChange && CurrCoolingChangeDir == "Down" && CoolantInput > 0)
+            {
+                await Task.Delay(500);
+                CoolantInput -= 1;
+                Debug.LogWarning("bleh");
+            }
+        }
+    }
+
+
     private void OnApplicationQuit()
     {
         CurrChange = false;
-        CurrChangeDir = "none";
+        CurrPowerChangeDir = "none";
+        CurrCoolingChangeDir = "none";
     }
 
     //FUNC FOR EVENTS
@@ -399,20 +569,23 @@ public class STABSLasers : MonoBehaviour
 
     public void StabKys()
     {
-        PSStab.Stop();
+        StabStatus = "ERROR";
+        CanHeat = false;
+        canCool = false;
+        CanKys = false;
+        CanStart = false;
+        StabRPMCHANGING(30, 10);
+        PSStab.startColor = Color.grey;
+        PSStab.Play();
         ASSTAB.clip = StabDie;
         ASSTAB.Play();
         Laser.gameObject.SetActive(false);
-        foreach (GameObject rg in GMstabsParts)
-        {
-            rg.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-        }
     }
 
     public async Task StabStart()
     {
-        print("bend over");
-        if (StabStatus != "DESTROYED" && Rotor != null)
+        CanRotate = true;
+        if (StabStatus != "DESTROYED" && Rotor != null && CanStart)
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";
@@ -420,6 +593,41 @@ public class STABSLasers : MonoBehaviour
             PendingEvent = "none";
         }
     }
+
+    public void StabOutage()
+    {
+        StabAdminLock = true;
+        oldRPM = RPM;
+        oldLASERPOWER = Power;
+        StabRPMCHANGING(60, 1.2f);
+        Power = 0;
+        Laser.SetActive(false);
+    }
+
+    public void StabExitOutage()
+    {
+        StabRPMCHANGING(oldRPM, 0.9f);
+        Power  = oldLASERPOWER;
+        Laser.SetActive(true);
+    }
+
+    public IEnumerator InstantShutdown()
+    {
+        yield return null;
+        StabRPMCHANGING(0, RPM);
+        Laser.SetActive(false);
+        CanHeat = false;
+        CanGetDamaged = false;
+        LeanTween.value(Power, 0, 6)
+            .setOnUpdate((float t) =>
+            {
+                Power = (int)Mathf.Lerp(Power, 0, t);
+            });
+
+        yield return new WaitForSeconds(8);
+        StabStatus = StabStatusEnum.OFFLINE.ToString();
+    }
+
     public async Task StabRpmTweenUp(int to, int TimeinMS)
     {
 
@@ -428,6 +636,16 @@ public class STABSLasers : MonoBehaviour
             RPM++;
             await Task.Delay(TimeinMS);
         }
+    }
+
+    public void StabRPMCHANGING(float to, float time)
+    {
+        var aze = RPM;
+        LeanTween.value(aze, to, time)
+            .setOnUpdate((float t) =>
+            {
+                RPM = Mathf.CeilToInt(t);
+            });
     }
     public async Task StabRpmTweenDown(int to, int TimeinMS)
     {
@@ -439,19 +657,51 @@ public class STABSLasers : MonoBehaviour
 
     }
 
-    public enum StabStatusEnum
+
+
+    public IEnumerator StabBuildUp(float timetoreach, Color BColor, Vector3 StartSize, Vector3 GoalSize)
     {
-        ONLINE,
-        OFFLINE,
-        OVERLOAD,
-        DESTROYED,
+        BColor.a = 0;
+        BuildUp.GetComponent<MeshRenderer>().material.SetColor("_Color", BColor);
+        Color lol = new Color();
+        lol.r = BColor.r;
+        lol.g = BColor.g;
+        lol.b = BColor.b;
+        lol.a = 1;
+
+        BuildUp.transform.position = StartSize;
+
+        LeanTween.value(BuildUp.GetComponent<MeshRenderer>().material.GetColor("_Color").a, lol.a, timetoreach)
+            .setOnUpdate((float t) =>
+            { 
+                Color n = new Color(BColor.r, BColor.g, BColor.b, t);
+                BuildUp.GetComponent<MeshRenderer>().material.SetColor("_Color", n);
+            });
+
+        BuildUp.LeanScale(GoalSize, timetoreach);
+
+        yield return new WaitForSeconds(timetoreach);
+
+
+
+        yield return null;
     }
 
 }
-    public class Utility
+    public class Utility : MonoBehaviour
     {
 
-        public async Task WaitedWalter(int Timetowait)
+
+    public static Utility Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+
+
+
+    public async Task WaitedWalter(int Timetowait)
         {
             Task.Delay(Timetowait);
 
@@ -502,3 +752,12 @@ public class STABSLasers : MonoBehaviour
         //}
 
     }
+
+
+
+[SerializeField]
+public class argStabVarchange
+{
+    public string type;
+    public string d;
+}
