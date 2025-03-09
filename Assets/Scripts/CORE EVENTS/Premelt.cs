@@ -76,31 +76,7 @@ public class Premelt : MonoBehaviour
         yield return new WaitForSeconds(10f);
         if(lol <= TotalFailureChance)
         {
-            Debug.LogWarning("oh well... maybe you should not had done that-");
-            RSYSlogs.EntryPoint("CONNECTION LOST WITH STAB 4!", CM.LineUnknownColor); CPSYS.CanPurge = false;
-            CM.Stab4.StabKys();
-            yield return new WaitForSeconds(4f);
-            RSYSlogs.EntryPoint("PURGE SYSTEM FAILURE!", CM.LineUnknownColor);
-            FAS.GFAS.WriteAnAnnouncement("Administration", "UNABLE TO RESTABILIZE! EVACUATION ORDER NOW IN EFFECT!", 5);
-            yield return new WaitForSeconds(2.2f);
-            mcfs.ShieldToUnknownThreat();
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
-            yield return new WaitForSeconds(7);
-            RSYSlogs.EntryPoint("SHIELD DETONATION IMMINENT!", Color.red);
-            yield return new WaitForSeconds(2.5f);
-
-            yield return new WaitForSeconds(3f);
-            mcfs.ShieldKYS();
-            CM.Stab1.StabKys();
-            CM.Stab2.StabKys();
-            CM.Stab3.StabKys();
-            //Meltdown.Caller()
-            yield return null;
+            StartCoroutine(ShieldDetonation());
         }
         else
         {
@@ -111,7 +87,7 @@ public class Premelt : MonoBehaviour
                 RSYSlogs.EntryPoint("System will now attempt to purge the core...", CM.LineOVERRIDEColor);
                 if (CPSYS.PurgeCaller() == true)
                 {
-
+                    //Call core purge
                 }
                 else
                 {
@@ -119,6 +95,8 @@ public class Premelt : MonoBehaviour
                     RSYSlogs.EntryPoint("CORE PURGE FAILURE!", Color.red);
                     yield return new WaitForSeconds(6f);
                     RSYSlogs.EntryPoint("SHIELD DETONATION IMMINENT!", Color.red);
+                    yield return new WaitForSeconds(3f);
+                    StartCoroutine(ShieldDetonation());
                 }
                 yield return null;
             }
@@ -127,6 +105,37 @@ public class Premelt : MonoBehaviour
 
             }
         }
+        yield return null;
+    }
+
+
+
+    public IEnumerator ShieldDetonation()
+    {
+        Debug.LogWarning("oh well... maybe you should not had done that-");
+        RSYSlogs.EntryPoint("CONNECTION LOST WITH STAB 4!", CM.LineUnknownColor); CPSYS.CanPurge = false;
+        CM.Stab4.StabKys();
+        yield return new WaitForSeconds(4f);
+        RSYSlogs.EntryPoint("PURGE SYSTEM FAILURE!", CM.LineUnknownColor);
+        FAS.GFAS.WriteAnAnnouncement("Administration", "UNABLE TO RESTABILIZE! EVACUATION ORDER NOW IN EFFECT!", 5);
+        yield return new WaitForSeconds(2.2f);
+        mcfs.ShieldToUnknownThreat();
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        RSYSlogs.EntryPoint("MCFS SYSTEM FAILURE", CM.LineUnknownColor);
+        yield return new WaitForSeconds(7);
+        RSYSlogs.EntryPoint("SHIELD DETONATION IMMINENT!", Color.red);
+        yield return new WaitForSeconds(2.5f);
+
+        yield return new WaitForSeconds(3f);
+        mcfs.ShieldKYS();
+        CM.Stab1.StabKys();
+        CM.Stab2.StabKys();
+        CM.Stab3.StabKys();
+        //Meltdown.Caller()
         yield return null;
     }
 }
