@@ -408,7 +408,7 @@ public class EventManager : MonoBehaviour
 
     public void Start()
     {
-        StartupEvent = Startup.instance.CoreStarup();
+        //StartupEvent = Startup.instance.CoreStarup();
         ShutdownEvent = Shutdown.instance.ShutdownStart();
 
         ListOfEvents.Add(StartupEvent);

@@ -17,6 +17,7 @@ public class Startup : MonoBehaviour
     public AudioSource audioSource;
     public ShockwaveHandler l;
     public FAS sk;
+    public static Startup instance;
 
     [Header("Plr")]
     public CameraFollowAndControl plrCAM;
@@ -40,6 +41,11 @@ public class Startup : MonoBehaviour
     [Header("Audios")]
     public AudioClip StartupThingi;
     public AudioClip lightsSound;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     public void Start()
     {
