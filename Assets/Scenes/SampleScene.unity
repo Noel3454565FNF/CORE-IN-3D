@@ -11836,7 +11836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &594092201
 Transform:
   m_ObjectHideFlags: 0
@@ -14718,7 +14718,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &821469340
 Transform:
   m_ObjectHideFlags: 0
@@ -26274,6 +26274,8 @@ MonoBehaviour:
   Laser: {fileID: 723419677}
   ASSTAB: {fileID: 0}
   BuildUp: {fileID: 594092200}
+  PowerPurge1: {fileID: 0}
+  PowerPurge2: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -26292,6 +26294,7 @@ MonoBehaviour:
   CanRotate: 0
   CanUsePower: 1
   CanStart: 1
+  WS: 0
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -27664,6 +27667,8 @@ MonoBehaviour:
   Laser: {fileID: 868165026}
   ASSTAB: {fileID: 0}
   BuildUp: {fileID: 821469339}
+  PowerPurge1: {fileID: 0}
+  PowerPurge2: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -27682,6 +27687,7 @@ MonoBehaviour:
   CanRotate: 0
   CanUsePower: 1
   CanStart: 1
+  WS: 0
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -27971,7 +27977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1110601716
 Transform:
   m_ObjectHideFlags: 0
@@ -32481,6 +32487,8 @@ MonoBehaviour:
   Laser: {fileID: 1535259570}
   ASSTAB: {fileID: 0}
   BuildUp: {fileID: 1110601715}
+  PowerPurge1: {fileID: 0}
+  PowerPurge2: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -32499,6 +32507,7 @@ MonoBehaviour:
   CanRotate: 0
   CanUsePower: 1
   CanStart: 1
+  WS: 0
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -32622,6 +32631,8 @@ MonoBehaviour:
   Laser: {fileID: 141781685}
   ASSTAB: {fileID: 0}
   BuildUp: {fileID: 1963213633}
+  PowerPurge1: {fileID: 0}
+  PowerPurge2: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -32640,6 +32651,7 @@ MonoBehaviour:
   CanRotate: 0
   CanUsePower: 1
   CanStart: 1
+  WS: 0
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -58563,7 +58575,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1963213634
 Transform:
   m_ObjectHideFlags: 0

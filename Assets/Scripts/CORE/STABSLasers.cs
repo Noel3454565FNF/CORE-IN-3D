@@ -21,6 +21,12 @@ public class STABSLasers : MonoBehaviour
     public GameObject Laser;
     public AudioSource ASSTAB;
     public GameObject BuildUp;
+
+
+    [Header("Particles things")]
+    public ParticleSystem PowerPurge1;
+    public ParticleSystem PowerPurge2;
+
     public enum StabStatusEnum
     {
         ONLINE,
@@ -56,14 +62,18 @@ public class STABSLasers : MonoBehaviour
     public bool CanUsePower = true;
     public bool CanStart = true;
 
-    [Serializable]
-    public enum StabTYPE
+
+    public enum WhatStab
     {
-        ShieldUnit,
-        HeatingUnit,
-        AuxUnit
+        Stab1,
+        Stab2,
+        Stab3,
+        Stab4,
+        Stab5,
+        Stab6,
     }
 
+    public WhatStab WS = new WhatStab();
 
     [Header("Warning")]
     public bool LowTempWarning = false;
@@ -697,6 +707,25 @@ public class STABSLasers : MonoBehaviour
 
         yield return null;
     }
+
+
+
+
+    public bool CanPurge()
+    {
+        if (StabStatus == StabStatusEnum.OFFLINE.ToString() || StabStatus == StabStatusEnum.ERROR.ToString() || StabStatus == StabStatusEnum.DESTROYED.ToString() || StructuralIntegrity > 15)
+        {
+            Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " FAILED TO PURGE!", Color.red);
+            return false;
+        }
+        else
+        {
+            Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
+            return true;
+        }
+    }
+
+
 
 }
     public class Utility : MonoBehaviour

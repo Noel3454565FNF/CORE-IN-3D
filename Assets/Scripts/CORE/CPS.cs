@@ -14,8 +14,10 @@ public class CPS : MonoBehaviour
     private STABSLasers stab5;
     private STABSLasers stab6;
     private List<STABSLasers> stabs = new List<STABSLasers>();
+    private List<STABSLasers> stabsPURGING = new List<STABSLasers>();
     public AudioClip PowerPurgeAudio;
     public AudioSource AudioPlayer;
+    public static CPS cps;
 
 
     [Header("Value")]
@@ -25,8 +27,14 @@ public class CPS : MonoBehaviour
 
     public int PurgeCount = 0;
     public int PurgeFailureChance = 0;
+    public int PurgeEfficiency = 10000;
 
 
+
+    private void Awake()
+    {
+        cps = this;
+    }
 
 
     // Start is called before the first frame update
@@ -43,8 +51,8 @@ public class CPS : MonoBehaviour
         stabs.Add(stab2);
         stabs.Add(stab3);
         stabs.Add(stab4);
-        stabs.Add(stab5);
-        stabs.Add(stab6);
+        //stabs.Add(stab5);
+        //stabs.Add(stab6);
         AudioPlayer.clip = PowerPurgeAudio;
     }
 
@@ -56,12 +64,6 @@ public class CPS : MonoBehaviour
 
     IEnumerator POWERPURGE()
     {
-        AudioPlayer.Play();
-        CM.CanUpdateTemp = false;
-        foreach(STABSLasers stab in stabs)
-        {
-            //stab.
-        }
         var hehe = true;
         
         if (ForcePurgeFailure && hehe)
@@ -69,11 +71,26 @@ public class CPS : MonoBehaviour
             hehe = false;
         }
 
-        if (ForcePurgeSucess == hehe)
+        if (ForcePurgeSucess && hehe)
         {
             hehe = false;
         }
 
+        var luck = Random.Range(0, 100);
+
+        if (hehe)
+        {
+            if (PurgeFailureChance < luck)
+            {
+                //SUCCESS
+                StartCoroutine(SUCCESS());
+            }
+            else
+            {
+                //FAILURE
+                StartCoroutine(FAILURE());
+            }
+        }
 
 
         yield return new WaitForSeconds(1);
@@ -83,11 +100,71 @@ public class CPS : MonoBehaviour
     IEnumerator SUCCESS()
     {
         yield return new WaitForSeconds(1);
+        AudioPlayer.Play();
+        CM.CanUpdateTemp = false;
+        foreach (STABSLasers stab in stabs)
+        {
+
+            if (stab.CanPurge())
+            {
+                stabsPURGING.Add(stab);
+                stab.PowerPurge1.Play();
+                stab.PowerPurge2.Play();
+            }
+
+        }
+
     }
 
     IEnumerator FAILURE()
     {
         yield return new WaitForSeconds(1);
+        AudioPlayer.Play();
+        CM.CanUpdateTemp = false;
+        foreach (STABSLasers stab in stabs)
+        {
+
+            if (stab.CanPurge())
+            {
+                stabsPURGING.Add(stab);
+                stab.StabAdminLock = true;
+                //stab.StabStatus = STABSLasers.StabStatusEnum.ADMINLOCK.ToString();
+                stab.PowerPurge1.Play();
+                stab.PowerPurge2.Play();
+            }
+
+        }
+
+        var TempCoreTemp = CM.CoreTemp - PurgeEfficiency;
+
+        LeanTween.value(CM.CoreTemp, TempCoreTemp, 7)
+            .setOnUpdate((float t) => {
+
+                CM.CoreTemp = Mathf.CeilToInt(t);
+
+            });
+
+        foreach(var stab in stabsPURGING)
+        {
+            var structemp = stab.StructuralIntegrity - Random.Range(0, 15);
+            var temptime = Random.Range(4, 7);
+
+
+            LeanTween.value(stab.StructuralIntegrity, structemp, temptime)
+                .setOnUpdate((float t) =>
+                {
+                    stab.StructuralIntegrity = Mathf.CeilToInt(t);
+                });
+        }
+
+        yield return new WaitForSeconds(7);
+        CM.CanUpdateTemp = true;
+
+        foreach(STABSLasers stab in stabsPURGING)
+        {
+            stab.PowerPurge1.Stop();
+            stab.PowerPurge2.Stop();
+        }
     }
 
 

@@ -98,6 +98,15 @@ public class ForcedEventTriggerUI : Editor
 
     }
 
+    //SAFEGUARDS SYSTEMS
+    [MenuItem("Tools/Events/Core/PowerPurge/PowerPurgeCaller")]
+    static void PPC()
+    {
+        CPS.cps.POWERPURGECALLER();
+    }
+
+
+
     //DEV EVENT
     [MenuItem("Tools/Events/DEV/FFSD")]
     static void FFSD()
