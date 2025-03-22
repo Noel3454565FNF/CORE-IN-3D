@@ -43,12 +43,12 @@ public class CPS : MonoBehaviour
     void Start()
     {
         CM = COREManager.instance;
-        CM.Stab1 = stab1;
-        CM.Stab2 = stab2;
-        CM.Stab3 = stab3;
-        CM.Stab4 = stab4;
-        CM.Stab5 = stab5;
-        CM.Stab6 = stab6;
+        stab1 = CM.Stab1;
+        stab2 = CM.Stab2;
+        stab3 = CM.Stab3;
+        stab4 = CM.Stab4;
+        stab5 = CM.Stab5;
+        stab6 = CM.Stab6;
         stabs.Add(stab1);
         stabs.Add(stab2);
         stabs.Add(stab3);

@@ -1,58 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 
 public class TimeTicking : MonoBehaviour
 {
     [Header("Components")]
-    public TMPro.TextMeshPro timetext;
-
+    public TextMeshProUGUI timetext;
 
     [Header("Values")]
-    public bool QUITTING = false;
-    public bool CanUpdate = false;
-    public int Milliseconds = 0;
-    public int Seconds = 0;
-    public int Minutes = 0;
+    public bool IsRunning = false;
+    public float totalMilliseconds = 0;
 
-
-    private void OnApplicationQuit()
+    private void Start()
     {
-        QUITTING = true;
+        //StartTimer(1, 10, 0);
     }
 
-
-
-
-    public async Task Millisecond()
+    public void StartTimer(int mins, int secs, int mills)
     {
-        if (QUITTING == false && CanUpdate == true)
-        {
-
-
-
-            Task.Delay(0001);
-
-
-
-        }
-        else
-        {
-            //FORCE TO QUIT SO NO SHITTY AAAAH UPDATE.
-        }
+        totalMilliseconds = (mins * 60 + secs) * 1000 + mills;
+        IsRunning = true;
     }
-
 
     private void Update()
     {
-        if (QUITTING == false && CanUpdate == true)
+        if (IsRunning && totalMilliseconds > 0)
         {
-            timetext.text = Minutes + ":" + Seconds + ":" + Milliseconds;
+            totalMilliseconds -= Time.deltaTime * 1000; // Subtract real-time elapsed milliseconds
+
+            if (totalMilliseconds <= 0)
+            {
+                totalMilliseconds = 0;
+                IsRunning = false;
+            }
+
+            int minutes = Mathf.FloorToInt(totalMilliseconds / 60000);
+            int seconds = Mathf.FloorToInt((totalMilliseconds % 60000) / 1000);
+            int milliseconds = Mathf.FloorToInt(totalMilliseconds % 1000);
+
+            timetext.text = $"{minutes:D2}:{seconds:D2}:{milliseconds:D3}";
         }
     }
-
-
 }
