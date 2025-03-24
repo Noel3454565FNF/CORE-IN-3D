@@ -62,10 +62,10 @@ public class Startup : MonoBehaviour
     public void CoreStartupCaller()
     {
         print("startup invoked");
-        CoreStarup();
+        StartCoroutine(CoreStarup());
     }
 
-    public async Task CoreStarup()
+    public IEnumerator CoreStarup()
     {
         Stab1.CanGetDamaged = false; Stab1.CanHeat = false; Stab1.CanHeat = false;
         Stab2.CanGetDamaged = false; Stab2.CanHeat = false; Stab2.CanHeat = false;
@@ -75,11 +75,11 @@ public class Startup : MonoBehaviour
 
 
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3);
-        await Task.Delay(5000);
+        yield return new WaitForSeconds(5);
         Stab1.StabAdminLock = true; Stab2.StabAdminLock = true; Stab3.StabAdminLock = true; Stab4.StabAdminLock = true;
 
 
-        LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
 
         CM.CoreEvent = "STARTUP";
         print("hello there");
@@ -91,20 +91,20 @@ public class Startup : MonoBehaviour
         Task.Run(Stab3.StabStart);
         Task.Run(Stab4.StabStart);
         print("hello there");
-        await Task.Delay(21000);
+        yield return new WaitForSeconds(21);
 
-        ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1);
+        StartCoroutine(ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1, 0.5f, 0.5f));
 
         Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true);
 
         plrCAM.TriggerScreenShake(5f, 4f);
 
-        ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position);
+        StartCoroutine(ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position));
         CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f);
         Core.gameObject.transform.LeanScale(CoreSize, 5f);
-        await Task.Delay(9000);
+        yield return new WaitForSeconds(9);
 
-        LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
 
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition success. now switching to manual control.", 5);
 
@@ -119,9 +119,9 @@ public class Startup : MonoBehaviour
         Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanHeat = true; Stab3.StabAdminLock = false;
         Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanHeat = true; Stab4.StabAdminLock = false;
         Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
-        Stab1.CoolantInput = 20; Stab2.CoolantInput = 20; Stab3.CoolantInput = 20; Stab4.CoolantInput = 20;
+        Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30;
 
-
+        yield break;
 
     }
 

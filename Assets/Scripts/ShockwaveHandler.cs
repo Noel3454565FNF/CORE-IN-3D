@@ -22,7 +22,7 @@ public class ShockwaveHandler : MonoBehaviour
     }
 
 
-    public async Task ShockWaveBuilder(GameObject gameObject, Material material, Vector3 expansionT, float time, Vector3 Spawnpos)
+    public IEnumerator ShockWaveBuilder(GameObject gameObject, Material material, Vector3 expansionT, float time, Vector3 Spawnpos)
     {
         print("ShockWave registered");
         var Tgame = GameObject.Instantiate(gameObject);
@@ -44,8 +44,10 @@ public class ShockwaveHandler : MonoBehaviour
             {
                 
             });
-        await Task.Delay(6000);
+        yield return new WaitForSeconds(time + 1);
         GameObject.Destroy(Tgame);
+
+        yield break;
     }
 
 

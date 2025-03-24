@@ -596,7 +596,7 @@ public class STABSLasers : MonoBehaviour
     public async Task StabStart()
     {
         CanRotate = true;
-        if (StabStatus != "DESTROYED" && Rotor != null && CanStart)
+        if (CanStart)
         {
             PendingEvent = "STARTUP";
             StabStatus = "ONLINE";

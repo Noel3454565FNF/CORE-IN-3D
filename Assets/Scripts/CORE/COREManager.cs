@@ -72,6 +72,7 @@ public class COREManager : MonoBehaviour
     public UnityEngine.UI.Image CoreDiag;
     public RawImage CoreWS;
     public TMPro.TextMeshProUGUI CoreUS;
+    public GameObject CoreTR;
 
     public LineClone ReactorSysLogsScreen;
     
@@ -368,6 +369,19 @@ public class COREManager : MonoBehaviour
         CoreUS.color = new Color(160, 32, 240);
     }
 
+    public void CoreDisplayTimer(int minute, int seconds)
+    {
+        CoreWS.gameObject.SetActive(false);
+        CoreUS.gameObject.SetActive(false);
+        CoreDiag.gameObject.SetActive(false);
+        TempText.gameObject.SetActive(false);
+        StateText.gameObject.SetActive(false);
+        CoreTR.gameObject.SetActive(true);
+        CoreTR.GetComponent<TimeTicking>().StartTimer(minute, seconds, 0000);
+    }
+
+
+
     public void ShutdownChecker()
     {
         if (CoreTemp > 6000 && CoreTemp < 8000 && Premeltdown == false && ControlLoss == false && CoreInEvent == false && ReactorGrid.instance.GridSTS == ReactorGrid.GridStatus.ONLINE.ToString() && ForceDisableShutdown == false)
@@ -378,6 +392,14 @@ public class COREManager : MonoBehaviour
     }
 
 
+
+    public async Task CoreSizeChanger(Vector3 size, int time)
+    {
+        if (RegenHandler.instance.AppRunning)
+        {
+            Startup.instance.Core.transform.LeanScale(size, time);
+        }
+    }
 
 }
 

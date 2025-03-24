@@ -29,7 +29,7 @@ public class CPS : MonoBehaviour
 
     public int PurgeCount = 0;
     public int PurgeFailureChance = 0;
-    public int PurgeEfficiency = 10000;
+    public int PurgeEfficiency = 15000;
 
 
 
@@ -61,7 +61,7 @@ public class CPS : MonoBehaviour
     
     public void POWERPURGECALLER()
     {
-
+        StartCoroutine(POWERPURGE());
     }
 
     IEnumerator POWERPURGE()
@@ -100,17 +100,19 @@ public class CPS : MonoBehaviour
 
         if (hehe)
         {
-            var PFCtemp = PurgeFailureChance + AmountOfLaserPurging;
-            if (PurgeFailureChance < luck)
+            var PFCtemp = PurgeFailureChance - AmountOfLaserPurging;
+            if (PFCtemp < luck)
             {
                 //SUCCESS
+                PurgeFailure = false;
                 StartCoroutine(PURGING());
 
             }
             else
             {
                 //FAILURE
-                StartCoroutine(FAILURE());
+                PurgeFailure = true;
+                StartCoroutine(PURGING());
             }
         }
 
@@ -121,7 +123,7 @@ public class CPS : MonoBehaviour
 
     IEnumerator FAILURE()
     {
-        CM.ReactorSysLogsScreen.EntryPoint("!!!PURGE SYSTEMS ANOMALY DETECTED!!!", Color.red);
+        CM.ReactorSysLogsScreen.EntryPoint("!!!ANOMALY DETECTED IN PURGESYS!!!", Color.red);
 
         foreach(var stab in stabsPURGING)
         {
@@ -167,7 +169,7 @@ public class CPS : MonoBehaviour
             //Chaotic meltdown...
             //safe locked cuz no idea what to do here-
         }
-        else if (taken == false && CanTurnReallyBad < othernumber)
+        else if (taken == true && CanTurnReallyBad < othernumber)
         {
             taken = true;
             //Self-destructV1
@@ -176,11 +178,11 @@ public class CPS : MonoBehaviour
         else
         {
             //Instant Stall
-            CM.ReactorSysLogsScreen.EntryPoint("CORE SYSTEMS UNABLE TO MAINTAIN REACTION!", Color.yellow);
+            CM.ReactorSysLogsScreen.EntryPoint("REACTOR SYSTEMS UNABLE TO MAINTAIN REACTION!", Color.yellow);
             yield return new WaitForSeconds(1.3f);
             CM.ReactorSysLogsScreen.EntryPoint("CORE ST-ST-ST-ST-ST-ST-ALLLLLLLL IMMINENT!", Color.red);
             yield return new WaitForSeconds(4f);
-            //Stall.Instance.InstantStall();
+            Stall.instance.InstantStall();
         }
     }
 
@@ -210,7 +212,7 @@ public class CPS : MonoBehaviour
         }
         else
         {
-            TempCoreTemp = CM.CoreTemp - PurgeEfficiency;
+            TempCoreTemp = CM.CoreTemp - Random.Range(500, PurgeEfficiency);
         }
 
         LeanTween.value(CM.CoreTemp, TempCoreTemp, 7)
@@ -254,7 +256,7 @@ public class CPS : MonoBehaviour
                     stab.PowerPurge2.Stop();
                 }
                 yield return new WaitForSeconds(4);
-                //INSTANTSTALL();
+                Stall.instance.InstantStall();
                 stabsPURGING = null;
                 yield break;
             }
@@ -311,6 +313,20 @@ public class CPS : MonoBehaviour
                 }
             }
             stabsPURGING = null;
+            PurgeFailureChance = PurgeFailureChance + Random.Range(1, 5);
+            if (PurgeEfficiency > 500)
+            {
+                var TempPurgeEfficiency = PurgeEfficiency - Random.Range(0, PurgeEfficiency);
+
+                if (TempPurgeEfficiency < 500)
+                {
+                    PurgeEfficiency = 500;
+                }
+                else
+                {
+                    PurgeEfficiency = TempPurgeEfficiency;
+                }
+            }
         }
     }
 
