@@ -19,6 +19,8 @@ public class Startup : MonoBehaviour
     public FAS sk;
     public static Startup instance;
 
+    public List<GlobalScreenManager> gsm;
+
     [Header("Plr")]
     public CameraFollowAndControl plrCAM;
 
@@ -67,10 +69,15 @@ public class Startup : MonoBehaviour
 
     public IEnumerator CoreStarup()
     {
-        Stab1.CanGetDamaged = false; Stab1.CanHeat = false; Stab1.CanHeat = false;
-        Stab2.CanGetDamaged = false; Stab2.CanHeat = false; Stab2.CanHeat = false;
-        Stab3.CanGetDamaged = false; Stab3.CanHeat = false; Stab3.CanHeat = false;
-        Stab4.CanGetDamaged = false; Stab4.CanHeat = false; Stab4.CanHeat = false;
+        foreach (GlobalScreenManager glob in gsm)
+        {
+            glob.MakeMemeGoAway();
+        }
+
+        Stab1.CanGetDamaged = false; Stab1.CanHeat = false; Stab1.CanKys = false;
+        Stab2.CanGetDamaged = false; Stab2.CanHeat = false; Stab2.CanKys = false;
+        Stab3.CanGetDamaged = false; Stab3.CanHeat = false; Stab3.CanKys = false;
+        Stab4.CanGetDamaged = false; Stab4.CanHeat = false; Stab4.CanKys = false;
 
 
 
@@ -97,6 +104,12 @@ public class Startup : MonoBehaviour
 
         Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true);
 
+        LeanTween.value(CM.CoreTemp, 7000, 5)
+            .setOnUpdate((float t) =>
+            {
+                CM.CoreTemp = Mathf.CeilToInt(t);
+            });
+
         plrCAM.TriggerScreenShake(5f, 4f);
 
         StartCoroutine(ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position));
@@ -113,6 +126,8 @@ public class Startup : MonoBehaviour
         CM.CAH = 70;
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
+        CM.CanUpdateTemp = true;
+        CM.CoreToOnline();
         Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true; Stab1.StabAdminLock = false;
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;

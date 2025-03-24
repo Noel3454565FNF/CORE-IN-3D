@@ -134,6 +134,8 @@ public class STABSLasers : MonoBehaviour
 
     void Start()
     {
+        PowerPurge1.Stop();
+        PowerPurge2.Stop();
         ASSTAB = gameObject.AddComponent<AudioSource>();
         ASSTAB.playOnAwake = false;
         ASSTAB.volume = 1;
@@ -713,7 +715,7 @@ public class STABSLasers : MonoBehaviour
 
     public bool CanPurge()
     {
-        if (StabStatus == StabStatusEnum.OFFLINE.ToString() || StabStatus == StabStatusEnum.ERROR.ToString() || StabStatus == StabStatusEnum.DESTROYED.ToString() || StructuralIntegrity > 15)
+        if (StabStatus == StabStatusEnum.OFFLINE.ToString() || StabStatus == StabStatusEnum.ERROR.ToString() || StabStatus == StabStatusEnum.DESTROYED.ToString() || StructuralIntegrity < 15)
         {
             Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " FAILED TO PURGE!", Color.red);
             return false;

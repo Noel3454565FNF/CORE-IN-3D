@@ -156,6 +156,7 @@ public class COREManager : MonoBehaviour
             UpdateCoreTemperature();
         }
         StateText.text = CoreStatus.ToLower();
+        TempText.text = CoreTemp.ToString();
     }
 
 

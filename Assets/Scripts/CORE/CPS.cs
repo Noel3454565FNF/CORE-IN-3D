@@ -8,14 +8,14 @@ public class CPS : MonoBehaviour
 
     [Header("Component")]
     private COREManager CM;
-    private STABSLasers stab1;
-    private STABSLasers stab2;
-    private STABSLasers stab3;
-    private STABSLasers stab4;
+    public STABSLasers stab1;
+    public STABSLasers stab2;
+    public STABSLasers stab3;
+    public STABSLasers stab4;
     private STABSLasers stab5;
     private STABSLasers stab6;
-    private List<STABSLasers> stabs = new List<STABSLasers>();
-    private List<STABSLasers> stabsPURGING = new List<STABSLasers>();
+    public List<STABSLasers> stabs = new List<STABSLasers>();
+    public List<STABSLasers> stabsPURGING = new List<STABSLasers>();
     public AudioClip PowerPurgeAudio;
     public AudioSource AudioPlayer;
     public static CPS cps;
@@ -43,12 +43,12 @@ public class CPS : MonoBehaviour
     void Start()
     {
         CM = COREManager.instance;
-        stab1 = CM.Stab1;
-        stab2 = CM.Stab2;
-        stab3 = CM.Stab3;
-        stab4 = CM.Stab4;
-        stab5 = CM.Stab5;
-        stab6 = CM.Stab6;
+        //stab1 = CM.Stab1;
+        //stab2 = CM.Stab2;
+        //stab3 = CM.Stab3;
+        //stab4 = CM.Stab4;
+        //stab5 = CM.Stab5;
+        //stab6 = CM.Stab6;
         stabs.Add(stab1);
         stabs.Add(stab2);
         stabs.Add(stab3);
@@ -75,8 +75,13 @@ public class CPS : MonoBehaviour
 
             if (stab.CanPurge())
             {
+                Debug.LogError("spread.");
                 stabsPURGING.Add(stab);
                 AmountOfLaserPurging++;
+            }
+            else
+            {
+                Debug.LogError("die.");
             }
 
         }
@@ -104,12 +109,14 @@ public class CPS : MonoBehaviour
             if (PFCtemp < luck)
             {
                 //SUCCESS
+                Debug.LogError("purge success: " + PFCtemp + " | " + luck);
                 PurgeFailure = false;
                 StartCoroutine(PURGING());
 
             }
             else
             {
+                Debug.LogError("purge failure" + PFCtemp + " | " + luck);
                 //FAILURE
                 PurgeFailure = true;
                 StartCoroutine(PURGING());
@@ -191,20 +198,17 @@ public class CPS : MonoBehaviour
         yield return new WaitForSeconds(1);
         AudioPlayer.Play();
         CM.CanUpdateTemp = false;
-        foreach (STABSLasers stab in stabs)
+        foreach (STABSLasers stab in stabsPURGING)
         {
 
-            if (stab.CanPurge())
-            {
                 stab.StabAdminLock = true;
-                //stab.StabStatus = STABSLasers.StabStatusEnum.ADMINLOCK.ToString();
                 stab.PowerPurge1.Play();
                 stab.PowerPurge2.Play();
-            }
+            Debug.LogWarning("purge effect playing");
 
         }
 
-        var TempCoreTemp = 0;
+        int TempCoreTemp = 0;
 
         if (PurgeFailure)
         {
@@ -222,18 +226,6 @@ public class CPS : MonoBehaviour
 
             });
 
-        foreach(var stab in stabsPURGING)
-        {
-            var structemp = stab.StructuralIntegrity - Random.Range(0, 15);
-            var temptime = Random.Range(4, 7);
-
-
-            LeanTween.value(stab.StructuralIntegrity, structemp, temptime)
-                .setOnUpdate((float t) =>
-                {
-                    stab.StructuralIntegrity = Mathf.CeilToInt(t);
-                });
-        }
 
         yield return new WaitForSeconds(3f);
 
@@ -246,7 +238,7 @@ public class CPS : MonoBehaviour
 
             yield return new WaitForSeconds(4f);
 
-            if (CM.CoreTemp >= 4000)
+            if (CM.CoreTemp <= 4000)
             {
                 CM.ReactorSysLogsScreen.EntryPoint("CORE STALL IMMINENT!", CM.LineWarnColor);
                 foreach (STABSLasers stab in stabsPURGING)
@@ -278,7 +270,7 @@ public class CPS : MonoBehaviour
                     yield return new WaitForSeconds(1);
                     CM.ReactorSysLogsScreen.EntryPoint("PLEASE AVOID USING THIS CONTIGENCY SYSTEM!", Color.yellow);
                 }
-                if (PurgeCount <= 5)
+                if (PurgeCount >= 5)
                 {
                     yield return new WaitForSeconds(2);
                     CM.ReactorSysLogsScreen.EntryPoint("!!!PURGE SYSTEM DAMAGED!!!", Color.red);
@@ -294,14 +286,16 @@ public class CPS : MonoBehaviour
                     if (randomnumber < repairchance)
                     {
                         //REPAIR SUCCESSFUL
+                        Debug.LogError(randomnumber + " < " + repairchance);
                         CM.ReactorSysLogsScreen.EntryPoint("SYSTEMS REPAIR SUCCESSFUL!", Color.green);
+                        CM.CanUpdateTemp = true;
                     }
                     else
                     {
+                        Debug.LogError(randomnumber + " > " + repairchance);
                         //bro you are so cooked :skull:
                         //sdv1.instance.RouletteRusse(90);
                         stabsPURGING = null;
-                        yield break;
                     }
                 }
 

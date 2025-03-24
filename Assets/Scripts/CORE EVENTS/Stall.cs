@@ -6,15 +6,15 @@ using UnityEngine;
 public class Stall : MonoBehaviour
 {
     public static Stall instance;
-    private COREManager CM;
+    public COREManager CM;
     private LightsManager LM;
 
 
-    private List<STABSLasers> stabs;
-    private STABSLasers stab1;
-    private STABSLasers stab2;
-    private STABSLasers stab3;
-    private STABSLasers stab4;
+    public List<STABSLasers> stabs;
+    public STABSLasers stab1;
+    public STABSLasers stab2;
+    public STABSLasers stab3;
+    public STABSLasers stab4;
     private STABSLasers stab5;
     private STABSLasers stab6;
 
@@ -29,12 +29,17 @@ public class Stall : MonoBehaviour
 
     public void Start()
     {
-        stabs.Add(CM.Stab1);
-        stabs.Add(CM.Stab2);
-        stabs.Add(CM.Stab3);
-        stabs.Add(CM.Stab4);
         //stabs.Add(CM.Stab5);
         //stabs.Add(CM.Stab6);
+    }
+
+    IEnumerator init()
+    {
+        yield return new WaitForSeconds(1);
+        stabs.Add(stab1);
+        stabs.Add(stab2);
+        stabs.Add(stab3);
+        stabs.Add(stab4);
     }
 
     public void InstantStall()
@@ -54,10 +59,8 @@ public class Stall : MonoBehaviour
         StallEffect1.Play();
         yield return new WaitForSeconds(4);
         StallEffect1.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-        StallEffect2.Play();
         CM.ReactorSysLogsScreen.EntryPoint("Unattended core stall detected", Color.white);
         yield return new WaitForSeconds(5);
-        StallEffect2.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         CM.ReactorSysLogsScreen.EntryPoint("Rebooting Reactor Component...", Color.white);
         yield return new WaitForSeconds(3);
         CM.ReactorSysLogsScreen.EntryPoint("Reboot suvccessful! reactor ready for ignition!", Color.green);
