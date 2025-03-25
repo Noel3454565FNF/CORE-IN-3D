@@ -72,10 +72,13 @@ public class CPS : MonoBehaviour
 
         foreach (STABSLasers stab in stabs)
         {
-
+            yield return new WaitForSeconds(0.1f);
             if (stab.CanPurge())
             {
-                Debug.LogError("spread.");
+                Debug.LogError("spread. " + stab.WS + " and also: " + stab.CanPurge());
+                
+                CM.ReactorSysLogsScreen.EntryPoint("! " + stab.WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
+                stab.CanKys = false; stab.CanGetDamaged = false; stab.CanHeat = false; stab.canCool = false;
                 stabsPURGING.Add(stab);
                 AmountOfLaserPurging++;
             }
@@ -119,7 +122,7 @@ public class CPS : MonoBehaviour
                 Debug.LogError("purge failure" + PFCtemp + " | " + luck);
                 //FAILURE
                 PurgeFailure = true;
-                StartCoroutine(PURGING());
+                StartCoroutine(FAILURE());
             }
         }
 
@@ -195,7 +198,7 @@ public class CPS : MonoBehaviour
 
     IEnumerator PURGING()
     {
-        yield return new WaitForSeconds(1);
+        stabsPURGING.Clear();
         AudioPlayer.Play();
         CM.CanUpdateTemp = false;
         foreach (STABSLasers stab in stabsPURGING)
@@ -204,8 +207,6 @@ public class CPS : MonoBehaviour
                 stab.StabAdminLock = true;
                 stab.PowerPurge1.Play();
                 stab.PowerPurge2.Play();
-            Debug.LogWarning("purge effect playing");
-
         }
 
         int TempCoreTemp = 0;
@@ -227,16 +228,9 @@ public class CPS : MonoBehaviour
             });
 
 
-        yield return new WaitForSeconds(3f);
 
-        if (PurgeFailure)
-        {
-            StartCoroutine(FAILURE());
-        }
-        else
-        {
 
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(7f);
 
             if (CM.CoreTemp <= 4000)
             {
@@ -246,11 +240,10 @@ public class CPS : MonoBehaviour
                     stab.StabAdminLock = false;
                     stab.PowerPurge1.Stop();
                     stab.PowerPurge2.Stop();
-                }
-                yield return new WaitForSeconds(4);
+                    stab.CanKys = false; stab.CanGetDamaged = false; stab.CanHeat = false; stab.canCool = false;
+            }
+            yield return new WaitForSeconds(4);
                 Stall.instance.InstantStall();
-                stabsPURGING = null;
-                yield break;
             }
             else
             {
@@ -304,24 +297,26 @@ public class CPS : MonoBehaviour
                 foreach (STABSLasers stab in stabsPURGING)
                 {
                     stab.StabAdminLock = false;
+
                 }
             }
-            stabsPURGING = null;
-            PurgeFailureChance = PurgeFailureChance + Random.Range(1, 5);
-            if (PurgeEfficiency > 500)
-            {
-                var TempPurgeEfficiency = PurgeEfficiency - Random.Range(0, PurgeEfficiency);
 
-                if (TempPurgeEfficiency < 500)
-                {
-                    PurgeEfficiency = 500;
-                }
-                else
-                {
-                    PurgeEfficiency = TempPurgeEfficiency;
-                }
+        PurgeFailureChance = PurgeFailureChance + Random.Range(1, 5);
+        if (PurgeEfficiency > 500)
+        {
+            var TempPurgeEfficiency = PurgeEfficiency - Random.Range(0, PurgeEfficiency);
+
+            if (TempPurgeEfficiency < 500)
+            {
+                PurgeEfficiency = 500;
+            }
+            else
+            {
+                PurgeEfficiency = TempPurgeEfficiency;
             }
         }
+        yield break;
+
     }
 
 

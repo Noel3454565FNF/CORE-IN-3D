@@ -18,6 +18,7 @@ public class Startup : MonoBehaviour
     public ShockwaveHandler l;
     public FAS sk;
     public static Startup instance;
+    public ButtonHandler StartupButton;
 
     public List<GlobalScreenManager> gsm;
 
@@ -49,21 +50,11 @@ public class Startup : MonoBehaviour
         instance = this;
     }
 
-    public void Start()
-    {
-        utility = new Utility();
-        Test();
-    }
-
-    public async Task Test()
-    {
-        //await Task.Delay(3000);
-        //var l = ShockwaveHandler.GSwH;
-    }
 
     public void CoreStartupCaller()
     {
         print("startup invoked");
+        CM.StateText.color = Color.white;
         StartCoroutine(CoreStarup());
     }
 
@@ -81,7 +72,7 @@ public class Startup : MonoBehaviour
 
 
 
-        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3);
+        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3); CM.ReactorSysLogsScreen.EntryPoint("IGNITION IMMINENT!", Color.yellow);
         yield return new WaitForSeconds(5);
         Stab1.StabAdminLock = true; Stab2.StabAdminLock = true; Stab3.StabAdminLock = true; Stab4.StabAdminLock = true;
 
@@ -100,7 +91,7 @@ public class Startup : MonoBehaviour
         print("hello there");
         yield return new WaitForSeconds(21);
 
-        StartCoroutine(ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1, 0.5f, 0.5f));
+        StartCoroutine(ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1, 0.5f, 0.5f)); CM.ReactorSysLogsScreen.EntryPoint("Firing Lasers!", Color.gray);
 
         Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true);
 
@@ -110,16 +101,16 @@ public class Startup : MonoBehaviour
                 CM.CoreTemp = Mathf.CeilToInt(t);
             });
 
-        plrCAM.TriggerScreenShake(5f, 4f);
+        plrCAM.TriggerScreenShake(5f, 4f); CM.ReactorSysLogsScreen.EntryPoint("Heating Core to operation temperature", Color.yellow);
 
         StartCoroutine(ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position));
-        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f);
-        Core.gameObject.transform.LeanScale(CoreSize, 5f);
+        CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f); MCFS.instance.ShieldToOnline();
+        Core.gameObject.transform.LeanScale(CoreSize, 5f); CM.CoreToOnline();
         yield return new WaitForSeconds(9);
 
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
 
-        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition success. now switching to manual control.", 5);
+        sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition success. now switching to manual control.", 5); CM.ReactorSysLogsScreen.EntryPoint("Ignition success!", Color.green);
 
         CM.CoreStatus = "ONLINE";
         CM.CoreEvent = "none";

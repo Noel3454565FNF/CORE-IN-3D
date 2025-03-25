@@ -58,10 +58,10 @@ public class LineClone : MonoBehaviour
 
     public void EntryPoint(string text, Color textColor)
     {
-        if (isBusy)
-        {
-            return;
-        }
+        //if (isBusy)
+        //{
+        //    return;
+        //}
 
         if (tt == TextType.TMPUGUI && textComponent == null)
         {

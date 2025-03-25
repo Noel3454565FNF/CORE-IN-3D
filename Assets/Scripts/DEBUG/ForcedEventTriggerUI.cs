@@ -5,6 +5,7 @@ using UnityEditor.Timeline.Actions;
 using Unity.VisualScripting;
 using System.Threading.Tasks;
 using Unity.VisualScripting.FullSerializer;
+using UnityEditor.ShaderKeywordFilter;
 
 public class ForcedEventTriggerUI : Editor
 {
@@ -50,11 +51,19 @@ public class ForcedEventTriggerUI : Editor
         }
     }
     [MenuItem("Tools/Events/Core/Shutdown/Shutdown Success")]
-    public void ShutdownSuccess()
+    static void ShutdownSuccess()
     {
         if (EditorApplication.isPlaying)
         {
 
+        }
+    }
+    [MenuItem("Tools/Events/Core/Stall/InstantStall")]
+    static void InstantStall()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            Stall.instance.InstantStall();
         }
     }
 
@@ -112,6 +121,13 @@ public class ForcedEventTriggerUI : Editor
     static void FFSD()
     {
 
+    }
+
+    //PARTICLES THINGS
+    [MenuItem("Tools/Stuff/Particles/Particles Shockwave")]
+    static void ParticlesShockwave()
+    {
+        Stall.instance.ParticleShockwaveCaller();
     }
     //private void Awake()
     //{

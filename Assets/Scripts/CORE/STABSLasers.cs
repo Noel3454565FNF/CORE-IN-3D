@@ -72,7 +72,9 @@ public class STABSLasers : MonoBehaviour
         Stab5,
         Stab6,
     }
-
+    /// <summary>
+    /// Stab name
+    /// </summary>
     public WhatStab WS = new WhatStab();
 
     [Header("Warning")]
@@ -136,6 +138,7 @@ public class STABSLasers : MonoBehaviour
     {
         PowerPurge1.Stop();
         PowerPurge2.Stop();
+        Cm = COREManager.instance;
         ASSTAB = gameObject.AddComponent<AudioSource>();
         ASSTAB.playOnAwake = false;
         ASSTAB.volume = 1;
@@ -722,7 +725,8 @@ public class STABSLasers : MonoBehaviour
         }
         else
         {
-            Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
+            //Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
+            Debug.LogError("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!");
             return true;
         }
     }

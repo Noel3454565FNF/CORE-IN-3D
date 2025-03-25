@@ -20,7 +20,7 @@ public class COREManager : MonoBehaviour
     [Header("Important Vars")]
 
     private string llll = "don't mind me, im useless";
-    public enum CoreStatusEnum { Offline, Online, Overload };
+    public enum CoreStatusEnum { Offline, Online, Overload, Stall };
     public string CoreStatus = CoreStatusEnum.Offline.ToString(); 
     public string CoreState = "NONE";
     public string CoreEvent = "NONE";
@@ -130,6 +130,8 @@ public class COREManager : MonoBehaviour
     [Header("Core Purge Sys Component")]
     public ButtonHandler CPSYSButton;
 
+    [Header("Events scripts")]
+    public Startup startup;
 
 
     private void Awake()
@@ -142,6 +144,7 @@ public class COREManager : MonoBehaviour
 
     private void Start()
     {
+        startup = Startup.instance;
         Stablist.Add(Stab1);
         Stablist.Add(Stab2);
         Stablist.Add(Stab3);
@@ -249,7 +252,7 @@ public class COREManager : MonoBehaviour
     {
         if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-            if (CoreTemp > 9000 && Overheating == false && CritOverheating == false)
+            if (CoreTemp > 12000 && Overheating == false && CritOverheating == false)
             {
                 Overheating = true;
                 //P1 PREMELT.
@@ -273,6 +276,7 @@ public class COREManager : MonoBehaviour
                 //P3 PREMELT.
                 CoreInEvent = true;
                 Premeltdown = true;
+                MCFS.instance.CanShieldDegrad = false;
                 Premelt.instance.Caller();
             }
 
@@ -400,6 +404,15 @@ public class COREManager : MonoBehaviour
         {
             Startup.instance.Core.transform.LeanScale(size, time);
         }
+    }
+
+
+
+    public void ResetToAllowStartup()
+    {
+        Startup.instance.StartupButton.canBePressed = true;
+        CanStartup = true;
+        CanShutdown = false;
     }
 
 }
