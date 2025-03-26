@@ -386,12 +386,14 @@ public class STABSLasers : MonoBehaviour
         if (HighRPM && RotorOverLoad == false) { integrityLoss += 0.2f; }
         if (HighRPM && RotorOverLoad) { integrityLoss += 0.5f; }
 
+        Debug.LogWarning(WS  + " intergrity loss" + integrityLoss);
+
         if (StabStatus == "ONLINE" && CanGetDamaged)
         {
-            StructuralIntegrity -= (int)Math.Round(integrityLoss);
-            if (StructuralIntegrity < 15f)
+            StructuralIntegrity -= Mathf.CeilToInt(integrityLoss);
+            if (StructuralIntegrity <= 1f && CanKys)
             {
-                STABESHUTDOWN();
+                StabKys();
             }
         }
         yield return new WaitForSeconds(1f);
@@ -585,12 +587,14 @@ public class STABSLasers : MonoBehaviour
     public void StabKys()
     {
         StabStatus = "ERROR";
+        globalStatus.color = Color.red;
         Power = 0;
+        StructuralIntegrity = 0;
         CanHeat = false;
         canCool = false;
         CanKys = false;
         CanStart = false;
-        StabRPMCHANGING(30, 10);
+        StabRPMCHANGING(0, 10);
         PSStab.startColor = Color.grey;
         PSStab.Play();
         ASSTAB.clip = StabDie;

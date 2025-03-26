@@ -120,10 +120,10 @@ public class Startup : MonoBehaviour
         CM.CanUpdateTemp = true;
         CM.CoreToOnline();
         Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
-        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanHeat = true; Stab1.StabAdminLock = false;
-        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanHeat = true; Stab2.StabAdminLock = false;
-        Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanHeat = true; Stab3.StabAdminLock = false;
-        Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanHeat = true; Stab4.StabAdminLock = false;
+        Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanKys = true; Stab1.StabAdminLock = false;
+        Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanKys = true; Stab2.StabAdminLock = false;
+        Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanKys = true; Stab3.StabAdminLock = false;
+        Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanKys = true; Stab4.StabAdminLock = false;
         Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
         Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30;
 

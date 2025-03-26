@@ -66,6 +66,7 @@ public class CPS : MonoBehaviour
 
     IEnumerator POWERPURGE()
     {
+        stabsPURGING.Clear();
         PurgeCount++;
         var hehe = true;
         var AmountOfLaserPurging = 0;
@@ -142,7 +143,7 @@ public class CPS : MonoBehaviour
         }
 
         var twow = CM.CoreTemp + Random.Range(2000, 15000);
-        LeanTween.value(CM.CoreTemp, twow, 4)
+        LeanTween.value(CM.CoreTemp, twow, 7)
             .setOnUpdate((float t) =>
             {
                 CM.CoreTemp = Mathf.CeilToInt(t);
@@ -150,18 +151,6 @@ public class CPS : MonoBehaviour
 
         CM.ReactorSysLogsScreen.EntryPoint("ATTEMPTING TO ABORT PURGE SEQUENCE...", Color.yellow);
 
-        foreach (var stab in stabsPURGING)
-        {
-            var structemp = stab.StructuralIntegrity - Random.Range(3, 25);
-            var temptime = 4;
-
-
-            LeanTween.value(stab.StructuralIntegrity, structemp, temptime)
-                .setOnUpdate((float t) =>
-                {
-                    stab.StructuralIntegrity = Mathf.CeilToInt(t);
-                });
-        }
 
 
         yield return new WaitForSeconds(2);
@@ -198,7 +187,6 @@ public class CPS : MonoBehaviour
 
     IEnumerator PURGING()
     {
-        stabsPURGING.Clear();
         AudioPlayer.Play();
         CM.CanUpdateTemp = false;
         foreach (STABSLasers stab in stabsPURGING)

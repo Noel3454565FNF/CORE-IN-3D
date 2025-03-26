@@ -303,7 +303,7 @@ public class COREManager : MonoBehaviour
 
     public IEnumerator CoreStabilityDecrease()
     {
-        yield return new WaitForSeconds(CoreStabilityDecreasingSpeed);
+        yield return new WaitForSeconds(3);
         var t = coreStability - 1;
         if (t > -1)
         {
@@ -411,6 +411,7 @@ public class COREManager : MonoBehaviour
     public void ResetToAllowStartup()
     {
         Startup.instance.StartupButton.canBePressed = true;
+        Startup.instance.StartupButton.TriggerUsed = false;
         CanStartup = true;
         CanShutdown = false;
     }
