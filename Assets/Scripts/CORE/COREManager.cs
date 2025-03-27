@@ -50,14 +50,12 @@ public class COREManager : MonoBehaviour
     public float CoreStabilityIncreasingSpeed = 0.1f;
 
     [Header("Stabs Connection")]
-    public STABSLasers Stab1; // Cooling Unit
-    public STABSLasers Stab2; // Cooling Unit
-    public STABSLasers Stab3; // AUX
-    public STABSLasers Stab4; // AUX
-    public STABSLasers Stab5; // Power Unit
-    public STABSLasers Stab6; // Power Unit
-    public STABSLasers Stab7; // Power Unit
-    public STABSLasers Stab8; // Power Unit
+    public STABSLasers Stab1; // Stabilization Unit
+    public STABSLasers Stab2; // Stabilization Unit
+    public STABSLasers Stab3; // Power Unit
+    public STABSLasers Stab4; // Power Unit
+    public STABSLasers Stab5; // Combustion/Aux Unit
+    public STABSLasers Stab6; // Combustion/Aux Unit
 
     [HideInInspector] public List<STABSLasers> Stablist;
 
