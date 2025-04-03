@@ -386,7 +386,6 @@ public class STABSLasers : MonoBehaviour
         if (HighRPM && RotorOverLoad == false) { integrityLoss += 0.2f; }
         if (HighRPM && RotorOverLoad) { integrityLoss += 0.5f; }
 
-        Debug.LogWarning(WS  + " intergrity loss" + integrityLoss);
 
         if (StabStatus == "ONLINE" && CanGetDamaged)
         {

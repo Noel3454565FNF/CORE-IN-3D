@@ -15,6 +15,7 @@ using System.Collections;
 using Unity.Mathematics;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
@@ -80,6 +81,16 @@ public class COREManager : MonoBehaviour
     public Color LineOVERRIDEColor;
 
 
+    public TMPro.TextMeshProUGUI MiddleUpTextScreen;
+    public Vector3 MiddleUpTextScreenDefaultPos;
+    public Vector3 MiddleUpTextScreenMovedPos;
+
+    public TMPro.TextMeshProUGUI MiddleSubTextScreen;
+    public Vector3 MiddleSubTextScreenDefaultPos;
+    public Vector3 MiddleSubTextScreenMovedPos;
+
+
+
     [Header("Core State")]
     //global
     public bool CoreInEvent = false;
@@ -134,19 +145,23 @@ public class COREManager : MonoBehaviour
 
     private void Awake()
     {
-        eventmanager = new EventManager();
-        CPSYS = new CorePurgeSYS();
         instance = this;
     }
 
 
     private void Start()
     {
+        MiddleSubTextScreenMovedPos = MiddleSubTextScreen.gameObject.GetComponent<RectTransform>().position;
+        MiddleUpTextScreenMovedPos = MiddleUpTextScreen.gameObject.GetComponent<RectTransform>().position;
+
+        MiddleSubTextScreenDefaultPos.y = MiddleSubTextScreenMovedPos.y + 1f;
+        MiddleUpTextScreenDefaultPos.y = MiddleUpTextScreenMovedPos.y - 1f;
         startup = Startup.instance;
         Stablist.Add(Stab1);
         Stablist.Add(Stab2);
         Stablist.Add(Stab3);
         Stablist.Add(Stab4);
+        MiddleScreenHideSpecialReason();
         UpdateCoreTemperature();
     }
 
@@ -372,8 +387,21 @@ public class COREManager : MonoBehaviour
         CoreUS.color = new Color(160, 32, 240);
     }
 
+    public void CoreHideNormalDisplay()
+    {
+        CoreWS.gameObject.SetActive(false);
+        CoreUS.gameObject.SetActive(false);
+        CoreDiag.gameObject.SetActive(false);
+        TempText.gameObject.SetActive(false);
+        StateText.gameObject.SetActive(false);
+    }
+
     public void CoreDisplayTimer(int minute, int seconds)
     {
+        foreach(GlobalScreenManager glob in Startup.instance.gsm)
+        {
+            glob.MakeMemeGoAway();
+        }
         CoreWS.gameObject.SetActive(false);
         CoreUS.gameObject.SetActive(false);
         CoreDiag.gameObject.SetActive(false);
@@ -383,6 +411,50 @@ public class COREManager : MonoBehaviour
         CoreTR.GetComponent<TimeTicking>().StartTimer(minute, seconds, 0000);
     }
 
+    public void MiddleScreenDisplaySpecialReason(string reason, Color reasoncolor, string subtitle, Color subtitlecolor)
+    {
+        CoreHideNormalDisplay();
+        if (CoreTR.GetComponent<TimeTicking>().IsRunning == false)
+        {
+            CoreTR.gameObject.SetActive(true);
+            CoreTR.GetComponent<TimeTicking>().timetext.text = "N/A";
+        }
+        MiddleSubTextScreen.gameObject.GetComponent<TextMeshProUGUI>().enabled = true;
+        MiddleUpTextScreen.gameObject.GetComponent<TextMeshProUGUI>().enabled = true;
+        MiddleUpTextScreen.text = reason;
+        LeanTween.value(gameObject, MiddleUpTextScreen.color, reasoncolor, 0.9f)
+            .setEase(LeanTweenType.easeInOutQuad)
+            .setOnUpdate((Color c) =>
+            {
+                MiddleUpTextScreen.color = c;
+            });
+
+        
+        MiddleSubTextScreen.text = subtitle;
+        LeanTween.value(gameObject, MiddleSubTextScreen.color, subtitlecolor, 0.9f)
+            .setEase(LeanTweenType.easeInOutQuad)
+            .setOnUpdate((Color c) =>
+            {
+                MiddleSubTextScreen.color = c;
+            });
+    }
+    public void MiddleScreenHideSpecialReason()
+    {
+        MiddleSubTextScreen.gameObject.GetComponent<TextMeshProUGUI>().enabled = false;
+        MiddleSubTextScreen.text = "";
+        MiddleUpTextScreen.gameObject.GetComponent<TextMeshProUGUI>().enabled = false;
+        MiddleUpTextScreen.text = "";
+        //MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "EVACUATE IMMEDIATLY - ALL EVACUATION ZONE EFFECTIVE", COREManager.instance.LineUnknownColor);
+    }
+
+    public void MiddleScreenMoveIn()
+    {
+
+    }
+    public void MiddleScreenMoveOut()
+    {
+        MiddleSubTextScreen.gameObject.LeanMove(new Vector3(), 1);
+    }
 
 
     public void ShutdownChecker()
@@ -396,12 +468,13 @@ public class COREManager : MonoBehaviour
 
 
 
-    public async Task CoreSizeChanger(Vector3 size, int time)
+    public IEnumerator CoreSizeChanger(Vector3 size, int time)
     {
         if (RegenHandler.instance.AppRunning)
         {
             Startup.instance.Core.transform.LeanScale(size, time);
         }
+        yield break;
     }
 
 

@@ -49,4 +49,29 @@ public class ScreenFlash : MonoBehaviour
     }
 
     
+
+    /// <summary>
+    /// take smt like 9 seconds
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator DeathFlash()
+    {
+        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 1)
+            .setOnUpdate((Color t) =>
+            {
+                image.color = t;
+                Debug.Log(t);
+            });
+
+        yield return new WaitForSeconds(5f);
+
+        LeanTween.value(this.gameObject, image.color, new Color(0, 0, 0, 0), 3)
+            .setOnUpdate((Color t) =>
+            {
+                image.color = t;
+                Debug.Log(t);
+            });
+
+        yield break;
+    }
 }

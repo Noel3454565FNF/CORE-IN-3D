@@ -1,9 +1,23 @@
+using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+
+    [Header("Limbo.")]
+    private string l = "nothing";
+    public static PlayerController me;
+    public enum LimboPlaces
+    {
+        sdv1,
+        stallSD,
+        purgeSD
+    }
+
     [Header("Player Movement Related")]
     public Rigidbody rgb;
     public float moveSpeed = 5f;       // Adjusted for practical movement
@@ -19,6 +33,11 @@ public class PlayerController : MonoBehaviour
         {
             rgb = GetComponent<Rigidbody>();
         }
+    }
+
+    private void Awake()
+    {
+        me = this;
     }
 
     // Update is called once per frame
@@ -68,6 +87,28 @@ public class PlayerController : MonoBehaviour
 
             // Apply movement to the rigidbody
             rgb.velocity = moveDirection;
+        }
+    }
+
+
+    
+
+    //public void LIMBOTELEPORT(LimboPlaces where)
+    //{
+        
+    //    SceneManager.UnloadSceneAsync("main");
+    //    SceneManager.LoadScene("Limbo");
+    //}
+
+    public void OSTPLAYER(AudioClip ost)
+    {
+        if (ost != null)
+        {
+            GameObject newsss = new GameObject(ost.name + " ID " + Random.Range(0, 999999));
+            AudioSource newsssAUD = newsss.AddComponent<AudioSource>();
+            newsssAUD.clip = ost;
+            GameObject last = GameObject.Instantiate(newsss);
+            last.GetComponent<AudioSource>().Play();
         }
     }
 }

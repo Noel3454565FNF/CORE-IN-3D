@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class SelfDestructV1 : MonoBehaviour
 {
@@ -8,9 +10,9 @@ public class SelfDestructV1 : MonoBehaviour
     [HideInInspector]public static SelfDestructV1 instance;
 
     [Header("Component")]
-    public STABSLasers stab1, stab2, stab3, stab4, stab5, stab6;
     public AudioClip SDV1ost;
     public AudioSource AS;
+    public STABSLasers stab1, stab2, stab3, stab4, stab5, stab6;
 
 
 
@@ -20,10 +22,15 @@ public class SelfDestructV1 : MonoBehaviour
         instance = this;
     }
 
+    private void Start()
+    {
+        Startup.instance.Core.GetComponent<Material>().color = Color.red; Startup.instance.Core.GetComponent<Volume>().GetComponent<Bloom>().active = true;
+    }
 
     public void SDV1caller()
     {
         StartCoroutine(SDV1());
+        //FAS.GFAS.WriteAnAnnouncement("Administrator: Anta.C", "An unknown threat has been detected within the facility. Security AND integrity have been COMPROMISED! Self destruct protocol now in effect. All employee are tasked to EVACUATE TO THEIR DESIGNATED SAFEZONE IMMEDIATLY!", 10);
     }
 
     public void SDV1naturalCaller()
@@ -33,10 +40,12 @@ public class SelfDestructV1 : MonoBehaviour
 
     IEnumerator Preparation()
     {
-        if (COREManager.instance.CoreState != "OFFLINE")
-        {
-            COREManager.instance.CoreSizeChanger(new Vector3(0, 0, 0), 0);
-        }
+        COREManager.instance.CanUpdateTemp = false; COREManager.instance.CoreInEvent = true; COREManager.instance.CoreAllowGridEvent = false;
+        //if (COREManager.instance.CoreState != "OFFLINE")
+        //{
+        //    COREManager.instance.CoreSizeChanger(new Vector3(0, 0, 0), 6);
+        //    COREManager.instance.CoreState = "OFFLINE";
+        //}
         yield break;
     }
 
@@ -44,22 +53,37 @@ public class SelfDestructV1 : MonoBehaviour
     {
         AS.clip = SDV1ost;
         AS.Play();
+        COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
+        LightsManager.GLM.LevelNeg3LightsControl(0, 300, Negate3roomsName.ALL);
+        StartCoroutine(Preparation());
+
+        yield return new WaitForSeconds(5f);
+
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("UNABLE TO CONNECT WITH REACTOR SYSTEMS!", COREManager.instance.LineUnknownColor);
+
+        yield return new WaitForSeconds(3f);
+
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS NOW ONLINE!", Color.blue);
+
+        yield return new WaitForSeconds(22f); //30 seconds past
+
+        COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> SElF DESTRUCT IN EFFECT, PLEASE EVACUATE TO YOUR DESIGNATED SAFEZONE <-", Color.red);
         COREManager.instance.CoreDisplayTimer(1, 30);
-        FAS.GFAS.WriteAnAnnouncement("Administrator: Patrick.A", "An unknown threat has been reported within the facility. Security AND integrity have been COMPROMISED! Self destruct protocol now in effect. All employee are tasked to EVACUATE TO THEIR SAFEZONE IMMEDIATLY!", 10);
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("!Self-destruct signal received!", COREManager.instance.LineUnknownColor);
 
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(60f); //90 seconds past
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("!Core detonation has been scheduled!", COREManager.instance.LineUnknownColor);
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("!Evacuate immediatly!", COREManager.instance.LineUnknownColor);
+        LightsManager.GLM.LevelNeg3LightsControl(1000, 200, Negate3roomsName.ALL);
 
-        yield return new WaitForSeconds(75);
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
+        COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);
 
+        yield return new WaitForSeconds(30f);
 
+        StartCoroutine(ScreenFlash.GSF.DeathFlash());
 
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(10f);
 
-        //death.
+        Death.instance.TeleportToLimbo(Death.DeathReason.sd);
 
         yield break;
     }

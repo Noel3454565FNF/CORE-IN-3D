@@ -99,7 +99,7 @@ public class ForcedEventTriggerUI : Editor
     [MenuItem("Tools/Events/Chaotic/SDV1")]
     static void SDV1()
     {
-
+        SelfDestructV1.instance.SDV1caller();
     }
     [MenuItem("Tools/Events/Chaotic/OverloadV1")]
     static void OverloadV1()

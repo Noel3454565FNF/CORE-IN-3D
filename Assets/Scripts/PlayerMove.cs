@@ -24,12 +24,19 @@ public class CameraFollowAndControl : MonoBehaviour
 
     private bool lateApplying = false;
 
+    public static CameraFollowAndControl instance;
+
     private void Start()
     {
         // Initialize the yaw to match the player's horizontal rotation
         yaw = player.eulerAngles.y;
 
         // Lock and hide the cursor initially
+    }
+
+    private void Awake()
+    {
+        instance = this;
     }
 
     private void Update()

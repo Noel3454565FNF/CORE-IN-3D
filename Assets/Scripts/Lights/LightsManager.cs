@@ -36,7 +36,7 @@ public class LightsManager : MonoBehaviour
 
     public IEnumerator LevelNeg3LightsControl(int intensity, int SwitchTime, Negate3roomsName whatroom)
     {
-        if (whatroom == Negate3roomsName.CORE_CONTROL_ROOM)
+        if (whatroom == Negate3roomsName.CORE_CONTROL_ROOM || whatroom == Negate3roomsName.ALL)
         {
             var lol = 0;
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
