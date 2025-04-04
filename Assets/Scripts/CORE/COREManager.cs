@@ -63,6 +63,7 @@ public class COREManager : MonoBehaviour
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
     public static COREManager instance;
+    public MeshRenderer COREMeshRenderer;
 
     [Header("Screen")]
     public TMPro.TextMeshProUGUI TempText;

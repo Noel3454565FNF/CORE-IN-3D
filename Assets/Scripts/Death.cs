@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
@@ -20,15 +21,17 @@ public class Death : MonoBehaviour
         kill
     };
 
+    [Header("Death count")]
     public int SdDeathCount;
     public int KillDeathCount;
-    //[Header("Limbo related")]
 
-
+    [Header("Limbo related")]
+    public bool Confirm = false;
+    public LimboTalkingObjectAlt Bleh;
 
     private void Awake()
     {
-        GameObject.DontDestroyOnLoad(this);
+        GameObject.DontDestroyOnLoad(gameObject);
         instance = this;
     }
 
@@ -39,6 +42,11 @@ public class Death : MonoBehaviour
         SceneManager.UnloadSceneAsync("Main");
 
         yield return new WaitForSeconds(1f);
+
+        if (where == DeathReason.sd)
+        {
+
+        }
 
         yield break;
     }
@@ -51,10 +59,13 @@ public class Death : MonoBehaviour
     //!!!!!ONLY USE IN LIMBO!!!!!
 
 
+
+
+
 }
 
 
-[SerializeField]
+[System.Serializable]
 public class LimboTalkingObject
 {
     /// <summary>
@@ -83,9 +94,11 @@ public class LimboTalkingObject
     public bool TheEnd = false;
 }
 
+
+[System.Serializable]
 public class LimboTalkingObjectAlt
 {
 
-    public LimboTalkingObject[] ObjAlt;
+    public string test;
 
 }

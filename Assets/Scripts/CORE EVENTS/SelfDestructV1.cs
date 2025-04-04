@@ -24,7 +24,7 @@ public class SelfDestructV1 : MonoBehaviour
 
     private void Start()
     {
-        Startup.instance.Core.GetComponent<Material>().color = Color.red; Startup.instance.Core.GetComponent<Volume>().GetComponent<Bloom>().active = true;
+        COREManager.instance.COREMeshRenderer.material.color = Color.red; Startup.instance.Core.GetComponent<Volume>().GetComponent<Bloom>().active = true;
     }
 
     public void SDV1caller()
@@ -51,8 +51,8 @@ public class SelfDestructV1 : MonoBehaviour
 
     IEnumerator SDV1()
     {
-        AS.clip = SDV1ost;
-        AS.Play();
+        PlayerController.me.OSTPLAYER(SDV1ost);
+        COREManager.instance.CoreHideNormalDisplay();
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
         LightsManager.GLM.LevelNeg3LightsControl(0, 300, Negate3roomsName.ALL);
         StartCoroutine(Preparation());
@@ -67,7 +67,7 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(22f); //30 seconds past
 
-        COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> SElF DESTRUCT IN EFFECT, PLEASE EVACUATE TO YOUR DESIGNATED SAFEZONE <-", Color.red);
+        COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> SELF DESTRUCT IN EFFECT, PLEASE EVACUATE TO YOUR DESIGNATED SAFEZONE <-", Color.red);
         COREManager.instance.CoreDisplayTimer(1, 30);
 
         yield return new WaitForSeconds(60f); //90 seconds past

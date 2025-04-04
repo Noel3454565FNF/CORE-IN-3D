@@ -56,7 +56,7 @@ public class ScreenFlash : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DeathFlash()
     {
-        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 1)
+        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 0.2f)
             .setOnUpdate((Color t) =>
             {
                 image.color = t;
