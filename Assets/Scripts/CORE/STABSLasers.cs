@@ -35,9 +35,10 @@ public class STABSLasers : MonoBehaviour
         DESTROYED,
         OVERLOAD,
         OVERCLOCK,
-        ADMINLOCK
+        ADMINLOCK,
+        MAINTENANCE
     };
-    
+
     [HideInInspector] public int LTColorCurTween;
 
 
@@ -61,6 +62,8 @@ public class STABSLasers : MonoBehaviour
     public bool CanRotate = false;
     public bool CanUsePower = true;
     public bool CanStart = true;
+    public bool CanEnterMaintenance = true;
+    public bool AllowMaintenance = false;
 
 
     public enum WhatStab
@@ -93,6 +96,7 @@ public class STABSLasers : MonoBehaviour
     public bool StabDamaged = false;
     public bool StabERROR = false;
     public bool StabAdminLock = false;
+    public bool MaintenanceRequired = false;
 
 
     [Header("Color")]
@@ -103,6 +107,18 @@ public class STABSLasers : MonoBehaviour
 
     [HideInInspector] public IEnumerator stabtempcheckvar;
     [HideInInspector] public IEnumerator stabintcheckvar;
+
+    [Header("Movement Manager")]
+    public Vector3 NormalOperationPos, MaintenancePos, TerminationPos, Destroyed;
+
+    public enum StabPossiblePosition
+    {
+        NormalOperation,
+        Maintenance,
+        Termination,
+        Destroyed
+    }
+    public StabPossiblePosition StabCurrentPosition = new StabPossiblePosition();
 
     [Header("Optional Vars")]
     public Vector3 rotationAxis = Vector3.up;
@@ -390,6 +406,11 @@ public class STABSLasers : MonoBehaviour
         if (StabStatus == "ONLINE" && CanGetDamaged)
         {
             StructuralIntegrity -= Mathf.CeilToInt(integrityLoss);
+            if (StructuralIntegrity > 1 && StructuralIntegrity < 30 && CanEnterMaintenance == false)
+            {
+                CanEnterMaintenance = true;
+            }
+
             if (StructuralIntegrity <= 1f && CanKys)
             {
                 StabKys();
@@ -728,13 +749,28 @@ public class STABSLasers : MonoBehaviour
         }
         else
         {
-            //Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
+            Cm.ReactorSysLogsScreen.EntryPoint("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!", Color.green);
             Debug.LogError("! " + WS.ToString() + " PURGE SEQUENCE AUTHORIZED!");
             return true;
         }
     }
 
 
+
+
+
+    //MAINTENANCE CODE THING
+    public void MaintenanceManager()
+    {
+        if (CanEnterMaintenance)
+        {
+
+        }
+    }
+
+
+
+    //MOVEMENT MANAGER
 
 }
     public class Utility : MonoBehaviour
