@@ -38,12 +38,12 @@ public class LightsManager : MonoBehaviour
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
             {
                 yield return new WaitForSeconds(0.1f);
-
-                LeanTween.value(gameObject, light.intensity, intensity, SwitchTime)
-                    .setOnUpdate((float t) =>
-                    {
-                        light.intensity = t;
-                    });
+                light.intensity = intensity;
+                //LeanTween.value(gameObject, light.intensity, intensity, SwitchTime)
+                //    .setOnUpdate((float t) =>
+                //    {
+                //        light.intensity = t;
+                //    });
                 LightSoundPlayer(light, LightsSound);
                 lol++;
             }
@@ -84,34 +84,73 @@ public class LightsManager : MonoBehaviour
     }
 
 
-    public void LevelNeg3LightsFlick(int MaxFlicker, Negate3roomsName where)
-    {
-        var howmanyFLICKERS = 0;
-        while (howmanyFLICKERS < MaxFlicker)
-        {
-            if (where == Negate3roomsName.CORE_CONTROL_ROOM)
-            {
-                var lol = 0;
-                foreach (Light light in negate3RoomsL[lol].corecontrolroom)
-                {
-                    StartCoroutine(Flickering(light));
-                    lol++;
-                }
-                howmanyFLICKERS++;
-            }
+    //public void LevelNeg3LightsFlick(int MaxFlicker, Negate3roomsName where)
+    //{
+    //    var howmanyFLICKERS = 0;
+    //    while (howmanyFLICKERS < MaxFlicker)
+    //    {
+    //        if (where == Negate3roomsName.CORE_CONTROL_ROOM || where == Negate3roomsName.ALL)
+    //        {
+    //            var lol = 0;
+    //            foreach (Light light in negate3RoomsL[lol].corecontrolroom)
+    //            {
+    //                StartCoroutine(Flickering(light));
+    //                lol++;
+    //            }
+    //            howmanyFLICKERS++;
+    //        }
 
+    //    }
+
+    //}
+
+    private IEnumerator Flickering(Light light, int flickers = 4, float minDelay = 0.05f, float maxDelay = 0.2f)
+    {
+        // Optional: Wait before starting flicker
+        yield return new WaitForSeconds(Random.Range(0f, 1.5f));
+
+        // Optional: Play sound once
+        if (light != null)
+            LightSoundPlayer(light, LightsDisrupt);
+
+        for (int i = 0; i < flickers; i++)
+        {
+            if (light == null) yield break;
+
+            light.intensity = 0f;
+            yield return new WaitForSeconds(Random.Range(minDelay, maxDelay));
+
+            light.intensity = 1f;
+            yield return new WaitForSeconds(Random.Range(minDelay, maxDelay));
         }
 
+        // Ensure light is left on
+        if (light != null)
+            light.intensity = 1f;
     }
 
-    private IEnumerator Flickering(Light light)
+
+    public void LevelNeg3LightsFlick(int maxFlickers, Negate3roomsName where)
     {
-        float range = Random.Range(0, 3);
-        yield return new WaitForSeconds(range);
-        LightSoundPlayer(light, LightsDisrupt);
-        light.intensity = 0;
-        yield return new WaitForSeconds(0.25f);
-        light.intensity = 1;
+        print("called");
+        StartCoroutine(FlickerRoutine(maxFlickers, where));
+    }
+
+    private IEnumerator FlickerRoutine(int maxFlickers, Negate3roomsName where)
+    {
+        for (int i = 0; i < maxFlickers; i++)
+        {
+            if (where == Negate3roomsName.CORE_CONTROL_ROOM || where == Negate3roomsName.ALL)
+            {
+                foreach (Light light in negate3RoomsL[i].corecontrolroom)
+                {
+                    print("bleh");
+                    StartCoroutine(Flickering(light));
+                }
+            }
+
+            // Wait a bit before next flicker round (adjust time as needed)
+        }
         yield break;
     }
 

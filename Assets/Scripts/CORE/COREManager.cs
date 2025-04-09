@@ -64,6 +64,7 @@ public class COREManager : MonoBehaviour
     public float debugTempChange = 0; // For debugging CoreTempChange
     public static COREManager instance;
     public MeshRenderer COREMeshRenderer;
+    public Renderer CORERenderer;
 
     [Header("Screen")]
     public TMPro.TextMeshProUGUI TempText;
@@ -393,6 +394,10 @@ public class COREManager : MonoBehaviour
 
     public void CoreHideNormalDisplay()
     {
+        foreach (GlobalScreenManager glob in Startup.instance.gsm)
+        {
+            glob.MakeMemeGoAway();
+        }
         CoreWS.gameObject.SetActive(false);
         CoreUS.gameObject.SetActive(false);
         CoreDiag.gameObject.SetActive(false);

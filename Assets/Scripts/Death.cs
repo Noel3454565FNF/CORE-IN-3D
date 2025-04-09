@@ -27,7 +27,7 @@ public class Death : MonoBehaviour
 
     [Header("Limbo related")]
     public bool Confirm = false;
-    public LimboTalkingObjectAlt Bleh;
+    public LimboTalkingObjectAlt[] Sdv1;
 
     private void Awake()
     {
@@ -99,6 +99,7 @@ public class LimboTalkingObject
 public class LimboTalkingObjectAlt
 {
 
-    public string test;
+    [SerializeField]
+    public LimboTalkingObject[] variant;
 
 }

@@ -24,9 +24,8 @@ public class SelfDestructV1 : MonoBehaviour
 
     private void Start()
     {
-        COREManager.instance.COREMeshRenderer.material.SetColor("_Color", Color.red);
-        COREManager.instance.COREMeshRenderer.material.SetColor("_EmissionColor", Color.red * 2f);
     }
+
 
     public void SDV1caller()
     {
@@ -52,10 +51,10 @@ public class SelfDestructV1 : MonoBehaviour
 
     IEnumerator SDV1()
     {
-        PlayerController.me.OSTPLAYER(SDV1ost);
+        PlayerController.me.OSTPLAYER(SDV1ost, 0.3f);
         COREManager.instance.CoreHideNormalDisplay();
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
-        LightsManager.GLM.LevelNeg3LightsControl(0, 300, Negate3roomsName.ALL);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
         StartCoroutine(Preparation());
 
         yield return new WaitForSeconds(5f);
@@ -73,7 +72,7 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(60f); //90 seconds past
 
-        LightsManager.GLM.LevelNeg3LightsControl(1000, 200, Negate3roomsName.ALL);
+        LightsManager.GLM.LevelNeg3LightsControl(1000, 0, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL);
 
         COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);

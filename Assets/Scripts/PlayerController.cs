@@ -100,13 +100,14 @@ public class PlayerController : MonoBehaviour
     //    SceneManager.LoadScene("Limbo");
     //}
 
-    public void OSTPLAYER(AudioClip ost)
+    public void OSTPLAYER(AudioClip ost, float volume)
     {
         if (ost != null)
         {
             GameObject newsss = new GameObject(ost.name + " ID " + Random.Range(0, 999999));
             AudioSource newsssAUD = newsss.AddComponent<AudioSource>();
             newsssAUD.clip = ost;
+            newsssAUD.volume = volume;
             GameObject last = GameObject.Instantiate(newsss);
             last.GetComponent<AudioSource>().Play();
         }
