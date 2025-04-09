@@ -149,7 +149,10 @@ public class COREManager : MonoBehaviour
         instance = this;
     }
 
-
+    public void TestOverheat()
+    {
+        Stab1.EnterOverheat();
+    }
     private void Start()
     {
         MiddleSubTextScreenMovedPos = MiddleSubTextScreen.gameObject.GetComponent<RectTransform>().position;

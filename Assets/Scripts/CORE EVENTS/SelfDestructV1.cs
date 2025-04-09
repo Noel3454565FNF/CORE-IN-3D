@@ -24,7 +24,8 @@ public class SelfDestructV1 : MonoBehaviour
 
     private void Start()
     {
-        COREManager.instance.COREMeshRenderer.material.color = Color.red; Startup.instance.Core.GetComponent<Volume>().GetComponent<Bloom>().active = true;
+        COREManager.instance.COREMeshRenderer.material.SetColor("_Color", Color.red);
+        COREManager.instance.COREMeshRenderer.material.SetColor("_EmissionColor", Color.red * 2f);
     }
 
     public void SDV1caller()

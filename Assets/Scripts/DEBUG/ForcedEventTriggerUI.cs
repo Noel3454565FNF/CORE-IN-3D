@@ -84,7 +84,7 @@ public class ForcedEventTriggerUI : Editor
     [MenuItem("Tools/Events/ReactorSys/Stabs/Enter Overheat")]
     static void c()
     {
-        
+        COREManager.instance.TestOverheat();
     }
 
     //MCFS EVENT
