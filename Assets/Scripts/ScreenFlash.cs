@@ -56,16 +56,16 @@ public class ScreenFlash : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DeathFlash()
     {
-        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 0.2f)
+        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 0.01f)
             .setOnUpdate((Color t) =>
             {
                 image.color = t;
                 Debug.Log(t);
             });
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(7f);
 
-        LeanTween.value(this.gameObject, image.color, new Color(0, 0, 0, 0), 3)
+        LeanTween.value(this.gameObject, image.color, new Color(0, 0, 0, 1), 3)
             .setOnUpdate((Color t) =>
             {
                 image.color = t;

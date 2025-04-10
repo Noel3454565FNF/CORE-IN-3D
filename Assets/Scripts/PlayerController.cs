@@ -112,4 +112,50 @@ public class PlayerController : MonoBehaviour
             last.GetComponent<AudioSource>().Play();
         }
     }
+
+
+    /// <summary>
+    /// call a coroutine at the end of the ost
+    /// </summary>
+    /// <param name="ost"></param>
+    /// <param name="volume"></param>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    public IEnumerator OSTPLAYER(AudioClip ost, float volume, IEnumerator callback)
+    {
+        if (ost != null)
+        {
+            GameObject newsss = new GameObject(ost.name + " ID " + Random.Range(0, 999999));
+            AudioSource newsssAUD = newsss.AddComponent<AudioSource>();
+            newsssAUD.clip = ost;
+            newsssAUD.volume = volume;
+            GameObject last = GameObject.Instantiate(newsss);
+            last.GetComponent<AudioSource>().Play();
+            
+            yield return new WaitForSeconds(ost.length);
+            StartCoroutine(callback);
+        }
+    }
+
+    /// <summary>
+    /// return the audiosource for better audio control
+    /// </summary>
+    /// <param name="ost"></param>
+    /// <param name="volume"></param>
+    /// <param name="useless"></param>
+    /// <returns></returns>
+    public AudioSource OSTPLAYER(AudioClip ost, float volume, string useless = "placeholder do not use me!")
+    {
+        if (ost != null)
+        {
+            GameObject newsss = new GameObject(ost.name + " ID " + Random.Range(0, 999999));
+            AudioSource newsssAUD = newsss.AddComponent<AudioSource>();
+            newsssAUD.clip = ost;
+            newsssAUD.volume = volume;
+            GameObject last = GameObject.Instantiate(newsss);
+            last.GetComponent<AudioSource>().Play();
+            return last.GetComponent<AudioSource>();
+        }
+        return null;
+    }
 }

@@ -860,7 +860,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.142
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1023,8 +1023,8 @@ MonoBehaviour:
   Stab2: {fileID: 1509911879}
   Stab3: {fileID: 1069833268}
   Stab4: {fileID: 1511887563}
-  Stab5: {fileID: 0}
-  Stab6: {fileID: 0}
+  Stab5: {fileID: 104957496}
+  Stab6: {fileID: 231202628}
   Stablist: []
   debugTempChange: 0
   COREMeshRenderer: {fileID: 460791167}
@@ -1830,7 +1830,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
-  WS: 2
+  WS: 4
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -1887,15 +1887,15 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  stabrotorimg: {fileID: 1600155601}
-  stablaserimg: {fileID: 780970918}
-  stabsstructuralpillarimg: {fileID: 584869055}
-  temperature: {fileID: 1710500800}
-  rpm: {fileID: 768423170}
-  cooling: {fileID: 1671052428}
-  stabInput: {fileID: 799739696}
-  strucINT: {fileID: 1553482108}
-  globalStatus: {fileID: 881535562}
+  stabrotorimg: {fileID: 0}
+  stablaserimg: {fileID: 0}
+  stabsstructuralpillarimg: {fileID: 0}
+  temperature: {fileID: 0}
+  rpm: {fileID: 0}
+  cooling: {fileID: 0}
+  stabInput: {fileID: 0}
+  strucINT: {fileID: 0}
+  globalStatus: {fileID: 0}
 --- !u!1 &115333704
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,7 +2101,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.142
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -8608,7 +8608,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
-  WS: 2
+  WS: 5
   LowTempWarning: 0
   HighTempWarning: 0
   StabOverHeat: 0
@@ -8665,15 +8665,15 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  stabrotorimg: {fileID: 1600155601}
-  stablaserimg: {fileID: 780970918}
-  stabsstructuralpillarimg: {fileID: 584869055}
-  temperature: {fileID: 1710500800}
-  rpm: {fileID: 768423170}
-  cooling: {fileID: 1671052428}
-  stabInput: {fileID: 799739696}
-  strucINT: {fileID: 1553482108}
-  globalStatus: {fileID: 881535562}
+  stabrotorimg: {fileID: 0}
+  stablaserimg: {fileID: 0}
+  stabsstructuralpillarimg: {fileID: 0}
+  temperature: {fileID: 0}
+  rpm: {fileID: 0}
+  cooling: {fileID: 0}
+  stabInput: {fileID: 0}
+  strucINT: {fileID: 0}
+  globalStatus: {fileID: 0}
 --- !u!1 &246685799
 GameObject:
   m_ObjectHideFlags: 0
@@ -37919,7 +37919,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
     corechamber: []
-  LightsSound: {fileID: 8300000, guid: 603a1b9bab1a123488237a8b164eb129, type: 3}
+  LightsSound: {fileID: 8300000, guid: 3c787c79b9dcdcd489b97146f5419abf, type: 3}
   LightsDisrupt: {fileID: 8300000, guid: 1993d6d820eace248a9f0e3b85eab004, type: 3}
 --- !u!4 &906418699
 Transform:
@@ -38334,7 +38334,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.142
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -51103,7 +51103,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1142859228
 Transform:
   m_ObjectHideFlags: 0
@@ -62782,6 +62782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SDV1ost: {fileID: 8300000, guid: 487bee82a9559ed42a3bdc6d88bbb7cc, type: 3}
+  powerlost: {fileID: 8300000, guid: f3bfecfef29568142a8221cd76ce5b35, type: 3}
   AS: {fileID: 0}
   stab1: {fileID: 0}
   stab2: {fileID: 0}
@@ -89013,7 +89014,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1712660818
 Transform:
   m_ObjectHideFlags: 0
@@ -101065,7 +101066,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.142
   m_Pitch: 1
   Loop: 0
   Mute: 0

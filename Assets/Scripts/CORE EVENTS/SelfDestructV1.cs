@@ -10,9 +10,10 @@ public class SelfDestructV1 : MonoBehaviour
     [HideInInspector]public static SelfDestructV1 instance;
 
     [Header("Component")]
-    public AudioClip SDV1ost;
+    public AudioClip SDV1ost, powerlost;
     public AudioSource AS;
     public STABSLasers stab1, stab2, stab3, stab4, stab5, stab6;
+
 
 
 
@@ -54,7 +55,7 @@ public class SelfDestructV1 : MonoBehaviour
         PlayerController.me.OSTPLAYER(SDV1ost, 0.3f);
         COREManager.instance.CoreHideNormalDisplay();
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
         StartCoroutine(Preparation());
 
         yield return new WaitForSeconds(5f);
@@ -72,7 +73,7 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(60f); //90 seconds past
 
-        LightsManager.GLM.LevelNeg3LightsControl(1000, 0, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
 
         COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);

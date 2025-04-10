@@ -176,11 +176,14 @@ public class STABSLasers : MonoBehaviour
 
     void Update()
     {
-        temperature.text = Mathf.FloorToInt(StabTemp) + "C°";
-        rpm.text = RPM.ToString();
-        stabInput.text = Power.ToString() + "%";
-        cooling.text = CoolantInput.ToString() + "%";
-        strucINT.text = StructuralIntegrity.ToString() + "%";
+        if (temperature != null && rpm != null && stabInput != null && cooling != null && strucINT != null)
+        {
+            temperature.text = Mathf.FloorToInt(StabTemp) + "C°";
+            rpm.text = RPM.ToString();
+            stabInput.text = Power.ToString() + "%";
+            cooling.text = CoolantInput.ToString() + "%";
+            strucINT.text = StructuralIntegrity.ToString() + "%";
+        }
     }
 
 
@@ -255,7 +258,7 @@ public class STABSLasers : MonoBehaviour
             rpm.color = Color.yellow;
         }
         yield return new WaitForSeconds(1f);
-        if (globalStatus.ToString().ToLower() != StabStatus.ToString().ToLower())
+        if (globalStatus != null && globalStatus.ToString().ToLower() != StabStatus.ToString().ToLower())
         {
             globalStatus.text = StabStatus.ToString().ToUpper();
         }

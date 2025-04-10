@@ -37,13 +37,13 @@ public class LightsManager : MonoBehaviour
             var lol = 0;
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
                 light.intensity = intensity;
-                //LeanTween.value(gameObject, light.intensity, intensity, SwitchTime)
-                //    .setOnUpdate((float t) =>
-                //    {
-                //        light.intensity = t;
-                //    });
+                LeanTween.value(gameObject, light.intensity, intensity, SwitchTime)
+                    .setOnUpdate((float t) =>
+                    {
+                        light.intensity = t;
+                    });
                 LightSoundPlayer(light, LightsSound);
                 lol++;
             }
@@ -58,12 +58,13 @@ public class LightsManager : MonoBehaviour
             var lol = 0;
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.05f);
                 light.intensity = Mathf.Lerp(light.intensity, intensity, SwitchTime);
 
                 LeanTween.value(gameObject, light.color, LightColor, LightColorSwitchTime)
                     .setOnUpdate((Color t) =>
                     {
+                        print("aaa");
                         light.color = t;
                     });
                 LightSoundPlayer(light, LightsSound);
@@ -78,7 +79,7 @@ public class LightsManager : MonoBehaviour
     private void LightSoundPlayer(Light light, AudioClip sound)
     {
         var sonu = light.gameObject.GetComponent<AudioSource>();
-        sonu.volume = 0.3f;
+        sonu.volume = 0.1f;
         sonu.clip = sound;
         sonu.Play();
     }
