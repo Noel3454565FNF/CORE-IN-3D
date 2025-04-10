@@ -21,6 +21,7 @@ public class STABSLasers : MonoBehaviour
     public GameObject Laser;
     public AudioSource ASSTAB;
     public GameObject BuildUp;
+    public GameObject STABParent;
 
 
     [Header("Particles things")]
@@ -109,16 +110,21 @@ public class STABSLasers : MonoBehaviour
     [HideInInspector] public IEnumerator stabintcheckvar;
 
     [Header("Movement Manager")]
-    public Vector3 NormalOperationPos, MaintenancePos, TerminationPos, Destroyed;
+    public Vector3 NormalOperationPos;
+    public Vector3 MaintenancePos;
+    public Vector3 TerminationPos;
+    public Vector3 DestroyedPos;
 
-    public enum StabPossiblePosition
+    public enum StabPosition
     {
         NormalOperation,
         Maintenance,
         Termination,
         Destroyed
     }
-    public StabPossiblePosition StabCurrentPosition = new StabPossiblePosition();
+    public StabPosition StabCurrentPosition = new StabPosition();
+    public AudioSource RotorAudioPlayer;
+    public AudioClip MovementSound;
 
     [Header("Optional Vars")]
     public Vector3 rotationAxis = Vector3.up;
@@ -408,7 +414,7 @@ public class STABSLasers : MonoBehaviour
 
         if (StabStatus == "ONLINE" && CanGetDamaged)
         {
-            StructuralIntegrity -= Mathf.CeilToInt(integrityLoss);
+            //StructuralIntegrity -= Mathf.CeilToInt(integrityLoss);
             if (StructuralIntegrity > 1 && StructuralIntegrity < 30 && CanEnterMaintenance == false)
             {
                 CanEnterMaintenance = true;
@@ -416,7 +422,7 @@ public class STABSLasers : MonoBehaviour
 
             if (StructuralIntegrity <= 1f && CanKys)
             {
-                StabKys();
+                //StabKys();
             }
         }
         yield return new WaitForSeconds(1f);
@@ -593,7 +599,7 @@ public class STABSLasers : MonoBehaviour
             if (WW.ChanceMath(50f) == true)
             {
                 print("kys");
-                StabKys();
+                //StabKys();
             }
             else
             {
@@ -774,7 +780,47 @@ public class STABSLasers : MonoBehaviour
 
 
     //MOVEMENT MANAGER
+    public void MoveStab(StabPosition pos)
+    {
+        if (pos != StabCurrentPosition)
+        {
+            if (pos == StabPosition.Maintenance)
+            {
+                movingfunc(MaintenancePos);
+            }
+            if (pos == StabPosition.NormalOperation)
+            {
+                movingfunc(NormalOperationPos);
+            }
+            if (pos == StabPosition.Termination)
+            {
+                movingfunc(TerminationPos);
+            }
+            if (pos == StabPosition.Destroyed)
+            {
+                movingfunc(DestroyedPos);
+            }
+        }
+    }
 
+    public void movingfunc(Vector3 pos, float time = 20)
+    {
+        RotorAudioPlayer.clip = MovementSound;
+        RotorAudioPlayer.loop = true;
+        RotorAudioPlayer.Play();
+        LeanTween.value(STABParent, STABParent.transform.position, pos, time)
+           .setEaseInOutQuad()
+           .setOnUpdate((Vector3 t) =>
+             {
+                 STABParent.transform.position = t;
+             })
+           .setOnComplete(stopSoundLoopMove);
+
+    }
+    private void stopSoundLoopMove()
+    {
+        RotorAudioPlayer.Stop();
+    }
 }
     public class Utility : MonoBehaviour
     {

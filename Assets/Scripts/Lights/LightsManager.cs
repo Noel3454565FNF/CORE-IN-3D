@@ -59,12 +59,16 @@ public class LightsManager : MonoBehaviour
             foreach (Light light in negate3RoomsL[lol].corecontrolroom)
             {
                 yield return new WaitForSeconds(0.05f);
-                light.intensity = Mathf.Lerp(light.intensity, intensity, SwitchTime);
+
+                LeanTween.value(gameObject, light.intensity, intensity, SwitchTime)
+                    .setOnUpdate((float t) =>
+                    {
+                        light.intensity = t;
+                    });
 
                 LeanTween.value(gameObject, light.color, LightColor, LightColorSwitchTime)
                     .setOnUpdate((Color t) =>
                     {
-                        print("aaa");
                         light.color = t;
                     });
                 LightSoundPlayer(light, LightsSound);

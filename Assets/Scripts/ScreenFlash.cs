@@ -60,16 +60,14 @@ public class ScreenFlash : MonoBehaviour
             .setOnUpdate((Color t) =>
             {
                 image.color = t;
-                Debug.Log(t);
             });
 
         yield return new WaitForSeconds(7f);
 
-        LeanTween.value(this.gameObject, image.color, new Color(0, 0, 0, 1), 3)
+        LeanTween.value(gameObject, new Color(255, 255, 255, 1), new Color(0, 0, 0, 1), 3)
             .setOnUpdate((Color t) =>
             {
                 image.color = t;
-                Debug.Log(t);
             });
 
         yield break;

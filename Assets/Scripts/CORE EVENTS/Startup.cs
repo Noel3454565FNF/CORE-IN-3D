@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Data.SqlTypes;
 
 [System.Serializable]
 public class Startup : MonoBehaviour
@@ -30,6 +31,8 @@ public class Startup : MonoBehaviour
     public STABSLasers Stab2;
     public STABSLasers Stab3;
     public STABSLasers Stab4;
+    public STABSLasers Stab5;
+    public STABSLasers Stab6;
 
     [Header("Core")]
     public MeshRenderer Core;
@@ -69,7 +72,8 @@ public class Startup : MonoBehaviour
         Stab2.CanGetDamaged = false; Stab2.CanHeat = false; Stab2.CanKys = false;
         Stab3.CanGetDamaged = false; Stab3.CanHeat = false; Stab3.CanKys = false;
         Stab4.CanGetDamaged = false; Stab4.CanHeat = false; Stab4.CanKys = false;
-
+        Stab5.CanGetDamaged = false; Stab5.CanHeat = false; Stab5.CanKys = false;
+        Stab6.CanGetDamaged = false; Stab6.CanHeat = false; Stab6.CanKys = false;
 
 
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition signal received. Ignition is imminent.", 3); CM.ReactorSysLogsScreen.EntryPoint("IGNITION IMMINENT!", Color.yellow);
@@ -88,12 +92,13 @@ public class Startup : MonoBehaviour
         Task.Run(Stab2.StabStart);
         Task.Run(Stab3.StabStart);
         Task.Run(Stab4.StabStart);
-        print("hello there");
+        Task.Run(Stab5.StabStart);
+        Task.Run(Stab6.StabStart);
         yield return new WaitForSeconds(21);
 
         StartCoroutine(ScreenFlash.GSF.ScreenFlashF(new Color(255f, 255f, 255f, 0.7f), 0.3f, 1, 0.5f, 0.5f)); CM.ReactorSysLogsScreen.EntryPoint("Firing Lasers!", Color.gray);
 
-        Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true);
+        Stab1.Laser.gameObject.SetActive(true); Stab2.Laser.gameObject.SetActive(true); Stab3.Laser.gameObject.SetActive(true); Stab4.Laser.gameObject.SetActive(true); Stab5.Laser.gameObject.SetActive(true); Stab6.Laser.gameObject.SetActive(true);
 
         LeanTween.value(CM.CoreTemp, 7000, 5)
             .setOnUpdate((float t) =>
@@ -101,7 +106,7 @@ public class Startup : MonoBehaviour
                 CM.CoreTemp = Mathf.CeilToInt(t);
             });
 
-        plrCAM.TriggerScreenShake(5f, 4f); CM.ReactorSysLogsScreen.EntryPoint("Heating Core to operation temperature", Color.yellow);
+        plrCAM.TriggerScreenShake(5f, 2f); CM.ReactorSysLogsScreen.EntryPoint("Heating Core to operation temperature", Color.yellow);
 
         StartCoroutine(ShockwaveHandler.GSwH.ShockWaveBuilder(l.DefaultGameObject, l.DefaultMaterial, new Vector3(500, 500, 500), 2f, Core.gameObject.transform.position));
         CoreShield.gameObject.transform.LeanScale(CoreShieldSize, 5f); MCFS.instance.ShieldToOnline();
@@ -119,11 +124,13 @@ public class Startup : MonoBehaviour
         CM.CoreTempChange = 1;
         CM.CanUpdateTemp = true;
         CM.CoreToOnline();
-        Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35);
+        Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35); Stab5.StabRpmTweenDown(250, 35); Stab6.StabRpmTweenDown(250, 35);
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanKys = true; Stab1.StabAdminLock = false;
         Stab2.CanGetDamaged = true; Stab2.CanHeat = true; Stab2.CanKys = true; Stab2.StabAdminLock = false;
         Stab3.CanGetDamaged = true; Stab3.CanHeat = true; Stab3.CanKys = true; Stab3.StabAdminLock = false;
         Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanKys = true; Stab4.StabAdminLock = false;
+        Stab5.CanGetDamaged = true; Stab5.CanHeat = true; Stab5.CanKys = true; Stab5.StabAdminLock = false;
+        Stab6.CanGetDamaged = true; Stab6.CanHeat = true; Stab6.CanKys = true; Stab6.StabAdminLock = false;
         Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
         Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30;
 

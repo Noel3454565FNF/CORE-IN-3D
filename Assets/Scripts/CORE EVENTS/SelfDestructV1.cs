@@ -12,7 +12,13 @@ public class SelfDestructV1 : MonoBehaviour
     [Header("Component")]
     public AudioClip SDV1ost, powerlost;
     public AudioSource AS;
-    public STABSLasers stab1, stab2, stab3, stab4, stab5, stab6;
+    public STABSLasers stab1;
+    public STABSLasers stab2;
+    public STABSLasers stab3;
+    public STABSLasers stab4;
+    public STABSLasers stab5;
+    public STABSLasers stab6;
+    public List<STABSLasers> stabList;
 
 
 
@@ -52,8 +58,8 @@ public class SelfDestructV1 : MonoBehaviour
 
     IEnumerator SDV1()
     {
-        PlayerController.me.OSTPLAYER(SDV1ost, 0.3f);
-        COREManager.instance.CoreHideNormalDisplay();
+        PlayerController.me.OSTPLAYER(SDV1ost, 0.18f);
+        COREManager.instance.CoreHideNormalDisplay(); 
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
         StartCoroutine(Preparation());
@@ -64,16 +70,33 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(3f);
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS NOW ONLINE!", Color.blue);
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("POWER CONNECTION LOST!", Color.red);
 
         yield return new WaitForSeconds(22f); //30 seconds past
+
+        foreach(STABSLasers stab in stabList)
+        {
+            stab.StabRPMCHANGING(0, 5);
+            stab.Laser.SetActive(false);
+
+            if (stab.WS == STABSLasers.WhatStab.Stab1)
+            {
+                stab1.MoveStab(STABSLasers.StabPosition.Maintenance);
+            }
+            if (stab.WS == STABSLasers.WhatStab.Stab2)
+            {
+
+            }
+        }
+
+        
 
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> SELF DESTRUCT IN EFFECT, PLEASE EVACUATE TO YOUR DESIGNATED SAFEZONE <-", Color.red);
         COREManager.instance.CoreDisplayTimer(1, 30);
 
         yield return new WaitForSeconds(60f); //90 seconds past
 
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 3, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
 
         COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);
