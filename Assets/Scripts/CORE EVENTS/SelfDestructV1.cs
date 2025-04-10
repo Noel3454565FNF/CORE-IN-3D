@@ -101,7 +101,14 @@ public class SelfDestructV1 : MonoBehaviour
         COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);
 
-        yield return new WaitForSeconds(30f);
+        yield return new WaitForSeconds(18f);
+
+        foreach(STABSLasers stab in stabList)
+        {
+            stab.
+        }
+
+        yield return new WaitForSeconds(12f);
 
         StartCoroutine(ScreenFlash.GSF.DeathFlash());
 
