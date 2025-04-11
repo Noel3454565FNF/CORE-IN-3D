@@ -11,6 +11,15 @@ public class WarnsPanelIcon : MonoBehaviour
     public AudioSource audiosource;
     public RawImage BG;
     public Color BGBlink = new Color(255, 255, 255);
+
+    /// <summary>
+    /// in second
+    /// </summary>
+    public float TimeToBlink = 1f;
+    /// <summary>
+    /// also in second
+    /// </summary>
+    public float TimeToWait = 1.5f;
     public Color BGBlack = new Color(0, 0, 0);
     
     
@@ -47,6 +56,7 @@ public class WarnsPanelIcon : MonoBehaviour
         }
         else
         {
+            StopCoroutine(AlarmLoop());
             StartCoroutine(AlarmLoop());
         }
     }
@@ -55,8 +65,20 @@ public class WarnsPanelIcon : MonoBehaviour
     {
         if (Active)
         {
-            audiosource.Play();
-            yield return null;
+            if (audiosource != null && AlarmSound != null)
+            {
+                audiosource.Play();
+            }
+
+            BG.color = BGBlink;
+
+            yield return new WaitForSeconds(TimeToBlink);
+
+            BG.color = BGBlack;
+
+            yield return new WaitForSeconds(TimeToWait);
+
+            StartCoroutine(AlarmLoop());
         }
     }
 

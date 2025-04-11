@@ -12,7 +12,8 @@ public class ScreenFlash : MonoBehaviour
     public static ScreenFlash GSF;
 
     public Image image;
-    
+
+    public AudioClip HearsRINGGING;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -56,11 +57,8 @@ public class ScreenFlash : MonoBehaviour
     /// <returns></returns>
     public IEnumerator DeathFlash()
     {
-        LeanTween.value(this.gameObject, image.color, new Color(255, 255, 255, 1), 0.01f)
-            .setOnUpdate((Color t) =>
-            {
-                image.color = t;
-            });
+        image.color = new Color(255, 255, 255, 1);
+        PlayerController.me.OSTPLAYER(HearsRINGGING, 1f);
 
         yield return new WaitForSeconds(7f);
 

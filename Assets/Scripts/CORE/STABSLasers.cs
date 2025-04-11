@@ -141,6 +141,7 @@ public class STABSLasers : MonoBehaviour
     public AudioClip StabDie;
     public AudioClip StabTogetherIgnit;
     public AudioClip StabSoloIgnit;
+    public AudioClip StabLoudIgnit;
 
     [Header("Screen things")]
     public UnityEngine.UI.Image stabrotorimg;

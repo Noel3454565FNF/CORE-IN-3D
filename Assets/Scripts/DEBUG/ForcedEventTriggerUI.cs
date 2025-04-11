@@ -129,6 +129,14 @@ public class ForcedEventTriggerUI : Editor
     {
         Stall.instance.ParticleShockwaveCaller();
     }
+
+
+    //LIMBO
+    [MenuItem("Tools/Limbo/SDV1")]
+    static void sdv1Limbo()
+    {
+        Death.instance.TeleportToLimbo(Death.DeathReason.sd);
+    }
     //private void Awake()
     //{
     //    Debug.LogWarning("i can see you.");

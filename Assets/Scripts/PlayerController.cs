@@ -110,9 +110,15 @@ public class PlayerController : MonoBehaviour
             newsssAUD.volume = volume;
             GameObject last = GameObject.Instantiate(newsss);
             last.GetComponent<AudioSource>().Play();
+            StartCoroutine(ScheduleForRemoval(ost, last));
         }
     }
 
+    private IEnumerator ScheduleForRemoval(AudioClip clip, GameObject todestroy)
+    {
+        yield return new WaitForSeconds(clip.length + 1);
+        GameObject.Destroy(todestroy);
+    }
 
     /// <summary>
     /// call a coroutine at the end of the ost

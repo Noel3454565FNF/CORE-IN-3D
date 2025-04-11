@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Death : MonoBehaviour
 {
-    // Start is called before the first frame update
 
 
     [Header("Death related")]
@@ -29,6 +29,13 @@ public class Death : MonoBehaviour
     public bool Confirm = false;
     public LimboTalkingObjectAlt[] Sdv1;
 
+    [Header("Text machine & stuff")]
+    public TMPro.TextMeshProUGUI txt;
+    public RawImage BG;
+    public AudioSource AS;
+    public AudioClip Ambiance;
+    public int CurrentDiag;
+
     private void Awake()
     {
         GameObject.DontDestroyOnLoad(gameObject);
@@ -36,22 +43,31 @@ public class Death : MonoBehaviour
     }
 
 
-    public IEnumerator TeleportToLimbo(DeathReason where)
+    private IEnumerator TeleportToLimbo(DeathReason where, string useless = "a")
     {
         SceneManager.LoadSceneAsync("Limbo");
         SceneManager.UnloadSceneAsync("Main");
 
+        Debug.LogError("LIMBOOOO");
+
         yield return new WaitForSeconds(1f);
+
+        txt = GameObject.Find("text").GetComponent<TMPro.TextMeshProUGUI>();
+        BG = GameObject.Find("BG").GetComponent<RawImage>();
+        AS = GameObject.Find("Main Camera").GetComponent<AudioSource>();
 
         if (where == DeathReason.sd)
         {
-
+            Next(Sdv1[SdDeathCount]);
         }
 
         yield break;
     }
 
-
+    public void TeleportToLimbo(DeathReason where)
+    {
+        StartCoroutine(TeleportToLimbo(where, ""));
+    }
 
 
 
@@ -59,9 +75,45 @@ public class Death : MonoBehaviour
     //!!!!!ONLY USE IN LIMBO!!!!!
 
 
+    private IEnumerator TextMachine(LimboTalkingObject thing, LimboTalkingObjectAlt Cache)
+    {
+        string text = thing.Text;
+        txt.text = "";
+
+        foreach (char c in text)
+        {
+            yield return new WaitForSeconds(thing.WaitingTimePerCharacter);
+            txt.text += c;
+        }
+        print("Finish");
+        yield return new WaitForSeconds(thing.WaitingTime);
+
+        if (thing.TheEnd)
+        {
+            //MAKE IT SO IT CHECK IF ITS IN THE EDITOR OR NORMAL
+            //i'll do it later: Noel
+            //you wont do it.....: Grey
+            //gosh i'll do it: Thread
+            //Nooooooooo i wanted to do it :( Noel345
+            //too slow~ Grey
+            //GRRRRRRRR: Noel345
+            SceneManager.LoadSceneAsync("Main");
+            SceneManager.UnloadSceneAsync("Limbo");
+        }
+        else
+        {
+            CurrentDiag++;
+            Next(Cache);
+        }
+
+        yield break;
+    }
 
 
-
+    private void Next(LimboTalkingObjectAlt t)
+    {
+        StartCoroutine(TextMachine(t.variant[CurrentDiag], t));
+    }
 }
 
 

@@ -61,7 +61,7 @@ public class SelfDestructV1 : MonoBehaviour
         PlayerController.me.OSTPLAYER(SDV1ost, 0.18f);
         COREManager.instance.CoreHideNormalDisplay(); 
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
         StartCoroutine(Preparation());
 
         yield return new WaitForSeconds(5f);
@@ -105,7 +105,12 @@ public class SelfDestructV1 : MonoBehaviour
 
         foreach(STABSLasers stab in stabList)
         {
-            stab.
+            if (stab.WS != STABSLasers.WhatStab.Stab1 && stab.WS != STABSLasers.WhatStab.Stab2)
+            {
+                stab.ASSTAB.clip = stab.StabLoudIgnit;
+                stab.ASSTAB.Play();
+                stab.StabRPMCHANGING(1000f, 10f);
+            }
         }
 
         yield return new WaitForSeconds(12f);
