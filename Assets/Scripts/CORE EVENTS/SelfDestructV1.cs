@@ -96,7 +96,7 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(60f); //90 seconds past
 
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 3, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(500, 3, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
 
         COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);
@@ -107,8 +107,7 @@ public class SelfDestructV1 : MonoBehaviour
         {
             if (stab.WS != STABSLasers.WhatStab.Stab1 && stab.WS != STABSLasers.WhatStab.Stab2)
             {
-                stab.ASSTAB.clip = stab.StabLoudIgnit;
-                stab.ASSTAB.Play();
+                PlayerController.me.OSTPLAYER(stab.StabLoudIgnit, 0.3f);
                 stab.StabRPMCHANGING(1000f, 10f);
             }
         }

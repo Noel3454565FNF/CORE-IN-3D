@@ -246,23 +246,23 @@ public class STABSLasers : MonoBehaviour
         if (RPM >= 370 && HighRPM == false)
         {
             HighRPM = true;
-            rpm.color = Color.yellow;
+            if (rpm != null) rpm.color = Color.yellow;
         }
         if (RPM < 370 && HighRPM)
         {
             HighRPM = false;
-            rpm.color = Color.white;
+            if (rpm != null) rpm.color = Color.white;
         }
 
         if (RPM >= 420 && RotorOverLoad == false)
         {
             RotorOverLoad = true;
-            rpm.color = Color.red;
+            if (rpm != null) rpm.color = Color.red;
         }
         if (RPM < 420 && RotorOverLoad)
         {
             RotorOverLoad = false;
-            rpm.color = Color.yellow;
+            if (rpm != null) rpm.color = Color.yellow;
         }
         yield return new WaitForSeconds(1f);
         if (globalStatus != null && globalStatus.ToString().ToLower() != StabStatus.ToString().ToLower())

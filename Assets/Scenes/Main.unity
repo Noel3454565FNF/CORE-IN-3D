@@ -1984,7 +1984,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -2048,7 +2048,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 0}
   stablaserimg: {fileID: 0}
   stabsstructuralpillarimg: {fileID: 0}
@@ -8478,7 +8478,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -8542,7 +8542,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 0}
   stablaserimg: {fileID: 0}
   stabsstructuralpillarimg: {fileID: 0}
@@ -39629,7 +39629,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -39693,7 +39693,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 2115347649}
   stablaserimg: {fileID: 1715656297}
   stabsstructuralpillarimg: {fileID: 1575823067}
@@ -50724,7 +50724,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -50788,7 +50788,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 1600155601}
   stablaserimg: {fileID: 780970918}
   stabsstructuralpillarimg: {fileID: 584869055}
@@ -72716,7 +72716,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -72780,7 +72780,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 1286812042}
   stablaserimg: {fileID: 714769374}
   stabsstructuralpillarimg: {fileID: 67150468}
@@ -72872,7 +72872,7 @@ MonoBehaviour:
   CurrChange: 0
   CurrPowerChangeDir: none
   CurrCoolingChangeDir: none
-  CanRotate: 0
+  CanRotate: 1
   CanUsePower: 1
   CanStart: 1
   CanEnterMaintenance: 1
@@ -72936,7 +72936,7 @@ MonoBehaviour:
   StabDie: {fileID: 8300000, guid: 27a06c11b9a1d7444b8753cb5f870874, type: 3}
   StabTogetherIgnit: {fileID: 8300000, guid: 3b926e66a9653f5418daa86303c09ec5, type: 3}
   StabSoloIgnit: {fileID: 8300000, guid: f1c25634c0108d0449a2b86dc4bea811, type: 3}
-  StabLoudIgnit: {fileID: 0}
+  StabLoudIgnit: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
   stabrotorimg: {fileID: 343549809}
   stablaserimg: {fileID: 1127131104}
   stabsstructuralpillarimg: {fileID: 1285348530}
@@ -126892,11 +126892,12 @@ AudioSource:
   m_GameObject: {fileID: 2058603857}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 0813e816ce287454d9b1872acffa359c,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.59
-  m_Pitch: 1
+  m_Volume: 1
+  m_Pitch: 3
   Loop: 0
   Mute: 0
   Spatialize: 0

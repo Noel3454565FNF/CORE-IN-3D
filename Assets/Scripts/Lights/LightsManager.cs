@@ -51,6 +51,16 @@ public class LightsManager : MonoBehaviour
         }
         yield return null;
     }
+
+    /// <summary>
+    /// Switch lights to a specific color
+    /// </summary>
+    /// <param name="intensity">DEFAULT INTENSITY IS 500!</param>
+    /// <param name="SwitchTime"></param>
+    /// <param name="LightColor"></param>
+    /// <param name="LightColorSwitchTime"></param>
+    /// <param name="whatroom"></param>
+    /// <returns></returns>
     public IEnumerator LevelNeg3LightsControl(int intensity, int SwitchTime, Color LightColor, float LightColorSwitchTime, Negate3roomsName whatroom)
     {
         if (whatroom == Negate3roomsName.CORE_CONTROL_ROOM || whatroom == Negate3roomsName.ALL)
