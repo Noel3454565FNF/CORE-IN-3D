@@ -56,9 +56,13 @@ public class Startup : MonoBehaviour
 
     public void CoreStartupCaller()
     {
-        print("startup invoked");
-        CM.StateText.color = Color.white;
-        StartCoroutine(CoreStarup());
+        if (COREManager.instance.CoreInEvent == false)
+        {
+            COREManager.instance.CoreInEvent = true;
+            print("startup invoked");
+            CM.StateText.color = Color.white;
+            StartCoroutine(CoreStarup());
+        }
     }
 
     public IEnumerator CoreStarup()
@@ -123,6 +127,7 @@ public class Startup : MonoBehaviour
         CM.changeSpeedCoreInfluence = 1;
         CM.CoreTempChange = 1;
         CM.CanUpdateTemp = true;
+        CM.CoreInEvent = false;
         CM.CoreToOnline();
         Stab1.StabRpmTweenDown(250, 35); Stab2.StabRpmTweenDown(250, 35); Stab3.StabRpmTweenDown(250, 35); Stab4.StabRpmTweenDown(250, 35); Stab5.StabRpmTweenDown(250, 35); Stab6.StabRpmTweenDown(250, 35);
         Stab1.CanGetDamaged = true; Stab1.CanHeat = true; Stab1.CanKys = true; Stab1.StabAdminLock = false;
@@ -131,8 +136,8 @@ public class Startup : MonoBehaviour
         Stab4.CanGetDamaged = true; Stab4.CanHeat = true; Stab4.CanKys = true; Stab4.StabAdminLock = false;
         Stab5.CanGetDamaged = true; Stab5.CanHeat = true; Stab5.CanKys = true; Stab5.StabAdminLock = false;
         Stab6.CanGetDamaged = true; Stab6.CanHeat = true; Stab6.CanKys = true; Stab6.StabAdminLock = false;
-        Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25;
-        Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30;
+        Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25; Stab5.Power = 25; Stab6.Power = 25;
+        Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30; Stab5.CoolantInput = 30; Stab6.CoolantInput = 30;
 
         yield break;
 

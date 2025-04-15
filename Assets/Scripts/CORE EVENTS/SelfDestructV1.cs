@@ -59,7 +59,7 @@ public class SelfDestructV1 : MonoBehaviour
     IEnumerator SDV1()
     {
         PlayerController.me.OSTPLAYER(SDV1ost, 0.18f);
-        COREManager.instance.CoreHideNormalDisplay(); 
+        COREManager.instance.CoreHideNormalDisplay(); COREManager.instance.CoreInEvent = true;
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
         StartCoroutine(Preparation());

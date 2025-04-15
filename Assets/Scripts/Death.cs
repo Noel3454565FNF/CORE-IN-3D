@@ -59,6 +59,7 @@ public class Death : MonoBehaviour
         if (where == DeathReason.sd)
         {
             Next(Sdv1[SdDeathCount]);
+            SdDeathCount++;
         }
 
         yield break;
