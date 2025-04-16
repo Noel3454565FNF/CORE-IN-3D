@@ -6,8 +6,8 @@ public class ReactorSysServerClone : MonoBehaviour
 {
     public enum StatusEnum
     {
-        ONLINE,
         OFFLINE,
+        ONLINE,
         CRASH,
         MAINTENANCE,
         ADMINLOCK

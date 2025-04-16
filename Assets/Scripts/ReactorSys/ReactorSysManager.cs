@@ -5,11 +5,12 @@ using UnityEngine;
 public class ReactorSysManager : MonoBehaviour
 {
     public static ReactorSysManager instance;
+    [SerializeField]
     public List<ReactorSysServerClone> ServerArray;
     public enum StatusEnum
     {
-        ONLINE,
         OFFLINE,
+        ONLINE,
         MAINTENANCE,
         ADMINLOCK,
         CRASH
@@ -17,6 +18,7 @@ public class ReactorSysManager : MonoBehaviour
     public StatusEnum Status = new StatusEnum();
     public enum EventEnum
     {
+        NONE,
         BOOTUP,
         SHUTDOWN,
         CRASH,
