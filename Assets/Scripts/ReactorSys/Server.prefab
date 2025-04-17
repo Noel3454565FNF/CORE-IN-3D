@@ -120,12 +120,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9a47806083cb914e853cc6533aaeb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Status: 1
+  Status: 0
   OnlineColor: {r: 0.3135202, g: 1, b: 0, a: 0}
   OfflineColor: {r: 0, g: 0, b: 0, a: 0}
   CrashColor: {r: 0, g: 0.37522697, b: 1, a: 0}
   MaintenanceColor: {r: 1, g: 0.4541694, b: 0, a: 0}
   AdminlockColor: {r: 1, g: 0, b: 0.77121687, a: 0}
+  PastBlinkColor: {r: 0, g: 0, b: 0, a: 0}
   CurrentBlinkColor: {r: 0, g: 0, b: 0, a: 0}
   CanBlink: 0
   RebootButton: {fileID: 345082719191671613}
@@ -258,6 +259,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
+  ScriptEvent: 0
+  ScriptEventCall:
+    m_PersistentCalls:
+      m_Calls: []
   CallOnPress:
     m_PersistentCalls:
       m_Calls: []
@@ -399,6 +404,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
+  ScriptEvent: 0
+  ScriptEventCall:
+    m_PersistentCalls:
+      m_Calls: []
   CallOnPress:
     m_PersistentCalls:
       m_Calls: []

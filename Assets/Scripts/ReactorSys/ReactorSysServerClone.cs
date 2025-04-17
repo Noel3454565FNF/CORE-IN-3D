@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ReactorSysServerClone : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class ReactorSysServerClone : MonoBehaviour
     public Color MaintenanceColor;
     public Color AdminlockColor;
 
+    public Color PastBlinkColor;
     public Color CurrentBlinkColor;
     public bool CanBlink = false;
 
@@ -64,6 +66,10 @@ public class ReactorSysServerClone : MonoBehaviour
             Status = StatusEnum.OFFLINE;
             Led.material.color = OfflineColor;
         }
+
+        UnityEvent a = new UnityEvent();
+        a.AddListener(RebootCaller);
+        RebootButton.ScriptEventCall = a;
     }
 
 
@@ -74,13 +80,24 @@ public class ReactorSysServerClone : MonoBehaviour
             SystemBusy = true;
             bool actionUsed = false;
 
-            if (action == Act.SHUTDOWN)
+            if (action == Act.SHUTDOWN && actionUsed == false)
             {
                 if (Status != StatusEnum.OFFLINE && Status != StatusEnum.CRASH && Status != StatusEnum.MAINTENANCE && Status != StatusEnum.ADMINLOCK)
                 {
                     actionUsed = true;
+                }
+            }
+            else if (action == Act.BOOTUP && actionUsed == false)
+            {
+                if (Status != StatusEnum.ONLINE && Status != StatusEnum.CRASH && Status != StatusEnum.MAINTENANCE && Status != StatusEnum.ADMINLOCK)
+                {
+                    actionUsed = true;
                     BootupCaller();
                 }
+            }
+            else if (action == Act.CRASH && actionUsed == false)
+            {
+                CrashCaller();
             }
 
 
@@ -91,6 +108,23 @@ public class ReactorSysServerClone : MonoBehaviour
         }
     }
 
+    public void ChangeLedColor(StatusEnum ledcolor)
+    {
+        if (ledcolor == StatusEnum.ONLINE)
+        { 
+            
+        }
+        
+        if (ledcolor == StatusEnum.OFFLINE)
+        {
+
+        }
+
+        if (ledcolor == StatusEnum.CRASH)
+        {
+            Led.material.color = CrashColor;
+        }
+    }
 
 
 
@@ -105,27 +139,53 @@ public class ReactorSysServerClone : MonoBehaviour
     }
     public IEnumerator Bootup()
     {
-        Logs.EntryPoint(ServerName + " booting up...", Color.blue);
+        //Logs.EntryPoint(ServerName + " booting up...", Color.blue);
         StartBlink(1f, 0.5f, OnlineColor);
         
         yield return new WaitForSeconds(Random.Range(5f, 10f));
         
         StopBlink();
-        Logs.EntryPoint(ServerName + " online!", Color.green);
+        ChangeLedColor(StatusEnum.ONLINE);
+        //Logs.EntryPoint(ServerName + " online!", Color.green);
         Status = StatusEnum.ONLINE;
+        ServerPower = 100;
         SystemBusy = false;
 
         yield break;
     }
 
+    public void CrashCaller()
+    {
+        StartCoroutine(Crash());
+    }
+    public IEnumerator Crash()
+    {
+        Status = StatusEnum.CRASH;
+        ServerPower = 0;
+        ChangeLedColor(StatusEnum.CRASH);
+        StartBlink(0.5f, 0.5f);
+        RebootButton.canBePressed = true;
+
+        yield break;
+    }
+
+    public void RebootCaller()
+    {
+        if (Status == StatusEnum.CRASH)
+        {
+            Status = StatusEnum.ONLINE;
+            ServerPower = 100;
+            ServerIntegrity = 100;
+        }
+    }
 
 
-
-
+    //BLINK FUNC'S
     public void StartBlink(float BlinkTime, float BlackTime)
     {
         StopBlink();
         CanBlink = true;
+        PastBlinkColor = Led.material.color;
         CurrentBlinkColor = Led.material.color;
         StartCoroutine(BlinkFunc(BlinkTime, BlackTime));
     }
@@ -133,6 +193,7 @@ public class ReactorSysServerClone : MonoBehaviour
     {
         StopBlink();
         CanBlink = true;
+        PastBlinkColor = Led.material.color;
         CurrentBlinkColor = BlinkTo;
         StartCoroutine(BlinkFunc(BlinkTime, BlackTime, BlinkTo));
     }
@@ -140,7 +201,7 @@ public class ReactorSysServerClone : MonoBehaviour
     {
         CanBlink = false;
         StopCoroutine("BlinkFunc");
-        Led.material.color = CurrentBlinkColor;
+        Led.material.color = PastBlinkColor;
         CurrentBlinkColor = Color.clear;
     }
 

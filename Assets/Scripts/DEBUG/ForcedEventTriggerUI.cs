@@ -114,7 +114,17 @@ public class ForcedEventTriggerUI : Editor
         CPS.cps.POWERPURGECALLER();
     }
 
-
+    //REACTORSYS
+    [MenuItem("Tools/Events/ReactorSys/Bootup")]
+    static void RSB()
+    {
+        ReactorSysManager.instance.ReactorSysBootupCALLER();
+    }
+    [MenuItem("Tools/Events/ReactorSys/Crash")]
+    static void RSC()
+    {
+        ReactorSysManager.instance.EventManagerCaller(ReactorSysManager.EventEnum.CRASH);
+    }
 
     //DEV EVENT
     [MenuItem("Tools/Events/DEV/FFSD")]

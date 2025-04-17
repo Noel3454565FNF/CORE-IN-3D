@@ -12,6 +12,8 @@ public class ButtonHandler : MonoBehaviour
 
     [Header("Component")]
     public GameObject button;
+    public bool ScriptEvent = false;
+    public UnityEvent ScriptEventCall;
     public UnityEvent<PassiveArgs> CallOnPress;
     [SerializeField]
     public PassiveArgs Argstopass;
@@ -71,7 +73,15 @@ public class ButtonHandler : MonoBehaviour
         {
             animhere();
             canBePressed = false;
-            CallOnPress.Invoke(Argstopass);
+            if (ScriptEvent == false)
+            {
+                CallOnPress.Invoke(Argstopass);
+            }
+            else
+            {
+                ScriptEventCall.Invoke();
+            }
+
             if (CanPlayAudio && KEEPQUIET == false)
             {
                 ButtonAudioSource.Play();

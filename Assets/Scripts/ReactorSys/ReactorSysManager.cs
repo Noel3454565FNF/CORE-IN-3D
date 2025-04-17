@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ReactorSysManager : MonoBehaviour
@@ -22,7 +23,9 @@ public class ReactorSysManager : MonoBehaviour
         BOOTUP,
         SHUTDOWN,
         CRASH,
+        COMPLETE_CRASH,
         MAINTENANCE,
+        EXIT_MAINTENANCE,
         ADMINLOCK
     };
     public EventEnum Event = new EventEnum();
@@ -31,7 +34,8 @@ public class ReactorSysManager : MonoBehaviour
     public int ReactorSysAvailability = 100;
     
     public bool EventInProgress = false;
-    public bool ShutdownAllowed = false;
+    public bool AllowServerEvent = true;
+    public bool ShutdownAllowed = true;
 
     private void Awake()
     {
@@ -57,11 +61,11 @@ public class ReactorSysManager : MonoBehaviour
 
     public void EventManagerCaller(EventEnum bleh)
     {
-        if (EventInProgress)
+        if (EventInProgress && AllowServerEvent == false)
         {
             //NOPE
         }
-        else
+        else if (EventInProgress == false && AllowServerEvent)
         {
             EventInProgress = true;
             StartCoroutine(EventManager(bleh));
@@ -73,7 +77,7 @@ public class ReactorSysManager : MonoBehaviour
         {
             if (Status != StatusEnum.ONLINE && Status != StatusEnum.ADMINLOCK && Status != StatusEnum.MAINTENANCE && Status != StatusEnum.CRASH)
             {
-
+                ReactorSysBootupCALLER();
                 yield break;
             }
         }
@@ -85,20 +89,102 @@ public class ReactorSysManager : MonoBehaviour
                 yield break;
             }
         }
+        else if(Ename == EventEnum.CRASH)
+        {
+            if (Status != StatusEnum.OFFLINE)
+            {
+                foreach (ReactorSysServerClone r in ServerArray)
+                {
+                    r.ChangeStatus(ReactorSysServerClone.Act.CRASH);
+                }
+                yield break;
+            }
+        }
         yield break;
     }
 
+    private IEnumerator ReactorSysStat()
+    {
+        int e = 0;
+        int count = 0;
 
+        yield return new WaitForSeconds(0.1f);
+
+        foreach (ReactorSysServerClone r in ServerArray)
+        {
+            e = e + r.ServerPower;
+            count++;
+        }
+        ReactorSysAvailability = e / count;
+
+        if(AllowServerEvent && Status != StatusEnum.OFFLINE)
+        {
+            if (Status != StatusEnum.MAINTENANCE && ReactorSysAvailability < 30)
+            {
+                EventManagerCaller(EventEnum.MAINTENANCE);
+            }
+
+            if (Status == StatusEnum.MAINTENANCE && ReactorSysAvailability > 49)
+            {
+                EventManagerCaller(EventEnum.EXIT_MAINTENANCE);
+            }
+        }
+
+        yield break;
+    }
 
     //EVENTS
 
     public void ReactorSysBootupCALLER()
     {
-
+        StartCoroutine(BootUp());
     }
     private IEnumerator BootUp()
     {
+        foreach(ReactorSysServerClone r in ServerArray)
+        {
+            r.ChangeStatus(ReactorSysServerClone.Act.BOOTUP);
+        }
 
+        yield return new WaitForSeconds(11f);
+
+        Status = StatusEnum.ONLINE;
+        EventInProgress = false;
+        Logs.EntryPoint("Main Computer ONLINE!", Color.green);
+
+        yield break;
+    }
+
+    public void ENTERING_MAINTENANCE_Caller()
+    {
+        StartCoroutine("MAINTENANCE_MODE");
+    }
+    private IEnumerator MAINTENANCE_MODE()
+    {
+        Status = StatusEnum.MAINTENANCE;
+        foreach (ReactorSysServerClone r in ServerArray)
+        {
+            r.ChangeStatus(ReactorSysServerClone.Act.ENTER_MAINTENANCE);
+            yield return new WaitForSeconds(0.2f);
+        }
+        Logs.EntryPoint("!ENTERING MAINTENANCE MODE!", COREManager.instance.LineWarnColor);
+        EventInProgress = false;
+
+        yield break;
+    }
+
+    public void EXIT_MAINTENANCE_Caller()
+    {
+        StartCoroutine("MAINTENANCE_EXIT");
+    }
+    private IEnumerator MAINTENANCE_EXIT()
+    {
+        Status = StatusEnum.ONLINE;
+        foreach(ReactorSysServerClone r in ServerArray)
+        {
+            r.ChangeStatus(ReactorSysServerClone.Act.EXIT_MAINTENANCE);
+        }
+        Logs.EntryPoint("EXITING MAINTENANCE MODE", Color.green);
         yield break;
     }
 }

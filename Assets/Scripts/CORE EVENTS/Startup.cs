@@ -85,7 +85,7 @@ public class Startup : MonoBehaviour
         Stab1.StabAdminLock = true; Stab2.StabAdminLock = true; Stab3.StabAdminLock = true; Stab4.StabAdminLock = true;
 
 
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1, Negate3roomsName.CORE_CONTROL_ROOM));
 
         CM.CoreEvent = "STARTUP";
         print("hello there");
@@ -117,7 +117,7 @@ public class Startup : MonoBehaviour
         Core.gameObject.transform.LeanScale(CoreSize, 5f); CM.CoreToOnline();
         yield return new WaitForSeconds(9);
 
-        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1, 1000, Negate3roomsName.CORE_CONTROL_ROOM));
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(500, 1, Negate3roomsName.CORE_CONTROL_ROOM));
 
         sk.WriteAnAnnouncement("ReactorSys", "Reactor Core ignition success. now switching to manual control.", 5); CM.ReactorSysLogsScreen.EntryPoint("Ignition success!", Color.green);
 
