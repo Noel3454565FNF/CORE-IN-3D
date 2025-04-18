@@ -97,6 +97,7 @@ public class ReactorSysServerClone : MonoBehaviour
             }
             else if (action == Act.CRASH && actionUsed == false)
             {
+                actionUsed = true;
                 CrashCaller();
             }
 
@@ -111,13 +112,13 @@ public class ReactorSysServerClone : MonoBehaviour
     public void ChangeLedColor(StatusEnum ledcolor)
     {
         if (ledcolor == StatusEnum.ONLINE)
-        { 
-            
+        {
+            Led.material.color = OnlineColor;
         }
         
         if (ledcolor == StatusEnum.OFFLINE)
         {
-
+            Led.material.color = OfflineColor;
         }
 
         if (ledcolor == StatusEnum.CRASH)
@@ -126,6 +127,29 @@ public class ReactorSysServerClone : MonoBehaviour
         }
     }
 
+    public Color ReturnSupposedColor()
+    {
+        if (Status == StatusEnum.ONLINE)
+        {
+            return OnlineColor;
+        }
+        else if (Status == StatusEnum.MAINTENANCE)
+        {
+            return MaintenanceColor;
+        }
+        else if (Status == StatusEnum.CRASH)
+        {
+            return CrashColor;
+        }
+        else if (Status != StatusEnum.ADMINLOCK)
+        {
+            return AdminlockColor;
+        }
+        else
+        {
+            return OfflineColor;
+        }
+    }
 
 
 
@@ -139,17 +163,18 @@ public class ReactorSysServerClone : MonoBehaviour
     }
     public IEnumerator Bootup()
     {
-        //Logs.EntryPoint(ServerName + " booting up...", Color.blue);
+        Logs.EntryPoint(ServerName + " booting up...", Color.blue);
         StartBlink(1f, 0.5f, OnlineColor);
         
         yield return new WaitForSeconds(Random.Range(5f, 10f));
         
         StopBlink();
-        ChangeLedColor(StatusEnum.ONLINE);
-        //Logs.EntryPoint(ServerName + " online!", Color.green);
+        Logs.EntryPoint(ServerName + " online!", Color.green);
         Status = StatusEnum.ONLINE;
         ServerPower = 100;
         SystemBusy = false;
+        ChangeLedColor(StatusEnum.ONLINE);
+
 
         yield break;
     }
@@ -160,10 +185,11 @@ public class ReactorSysServerClone : MonoBehaviour
     }
     public IEnumerator Crash()
     {
+        Logs.EntryPoint(ServerName + " ERROR", Color.red);
         Status = StatusEnum.CRASH;
         ServerPower = 0;
         ChangeLedColor(StatusEnum.CRASH);
-        StartBlink(0.5f, 0.5f);
+        StartBlink(0.5f, 0.5f, Color.red);
         RebootButton.canBePressed = true;
 
         yield break;
@@ -173,9 +199,11 @@ public class ReactorSysServerClone : MonoBehaviour
     {
         if (Status == StatusEnum.CRASH)
         {
+            StopBlink();
             Status = StatusEnum.ONLINE;
             ServerPower = 100;
             ServerIntegrity = 100;
+            Logs.EntryPoint(ServerName + " REBOOTED!", Color.green);
         }
     }
 
@@ -185,7 +213,7 @@ public class ReactorSysServerClone : MonoBehaviour
     {
         StopBlink();
         CanBlink = true;
-        PastBlinkColor = Led.material.color;
+        PastBlinkColor = ReturnSupposedColor();
         CurrentBlinkColor = Led.material.color;
         StartCoroutine(BlinkFunc(BlinkTime, BlackTime));
     }
@@ -193,7 +221,7 @@ public class ReactorSysServerClone : MonoBehaviour
     {
         StopBlink();
         CanBlink = true;
-        PastBlinkColor = Led.material.color;
+        PastBlinkColor = ReturnSupposedColor();
         CurrentBlinkColor = BlinkTo;
         StartCoroutine(BlinkFunc(BlinkTime, BlackTime, BlinkTo));
     }
@@ -207,32 +235,38 @@ public class ReactorSysServerClone : MonoBehaviour
 
     private IEnumerator BlinkFunc(float BlinkTime, float BlackTime)
     {
-        Led.material.color = CurrentBlinkColor;
-        yield return new WaitForSeconds(BlinkTime);
-        Led.material.color = Color.black;
-        yield return new WaitForSeconds(BlackTime);
         if (CanBlink)
         {
-            StartCoroutine(BlinkFunc(BlinkTime, BlackTime));
-        }
-        else
-        {
-            yield break;
+            Led.material.color = CurrentBlinkColor;
+            yield return new WaitForSeconds(BlinkTime);
+            Led.material.color = Color.black;
+            yield return new WaitForSeconds(BlackTime);
+            if (CanBlink)
+            {
+                StartCoroutine(BlinkFunc(BlinkTime, BlackTime));
+            }
+            else
+            {
+                yield break;
+            }
         }
     }
     private IEnumerator BlinkFunc(float BlinkTime, float BlackTime, Color BlinkTo)
     {
-        Led.material.color = BlinkTo;
-        yield return new WaitForSeconds(BlinkTime);
-        Led.material.color = Color.black;
-        yield return new WaitForSeconds(BlackTime);
         if (CanBlink)
         {
-            StartCoroutine(BlinkFunc(BlinkTime, BlackTime, BlinkTo));
-        }
-        else
-        {
-            yield break;
+            Led.material.color = BlinkTo;
+            yield return new WaitForSeconds(BlinkTime);
+            Led.material.color = Color.black;
+            yield return new WaitForSeconds(BlackTime);
+            if (CanBlink)
+            {
+                StartCoroutine(BlinkFunc(BlinkTime, BlackTime, BlinkTo));
+            }
+            else
+            {
+                yield break;
+            }
         }
     }
 

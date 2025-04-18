@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 0}
-  ScriptEvent: 0
+  ScriptEvent: 1
   ScriptEventCall:
     m_PersistentCalls:
       m_Calls: []
@@ -276,15 +276,15 @@ MonoBehaviour:
   TriggerUsed: 0
   haveCooldown: 0
   onCooldown: 0
-  CooldownTime: 3000
+  CooldownTime: 0
   Pos: 0
   Moving: 0
   ClickedAnim: {fileID: 0}
   ButtonAnimator: {fileID: 0}
   ButtonAudioSource: {fileID: 0}
   ButtonAudioClip: {fileID: 0}
-  CanPlayAudio: 1
-  KEEPQUIET: 0
+  CanPlayAudio: 0
+  KEEPQUIET: 1
 --- !u!1 &3922572671460063925
 GameObject:
   m_ObjectHideFlags: 0
