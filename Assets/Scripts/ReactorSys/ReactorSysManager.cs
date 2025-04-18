@@ -89,7 +89,7 @@ public class ReactorSysManager : MonoBehaviour
                 yield break;
             }
         }
-        else if(Ename == EventEnum.CRASH)
+        else if(Ename == EventEnum.COMPLETE_CRASH)
         {
             if (Status != StatusEnum.OFFLINE)
             {
@@ -100,9 +100,24 @@ public class ReactorSysManager : MonoBehaviour
                 yield break;
             }
         }
+        else if(Ename == EventEnum.CRASH)
+        {
+            if (Status != StatusEnum.OFFLINE)
+            {
+                foreach(ReactorSysServerClone r in ServerArray)
+                {
+                    if (Random.Range(0, 100) <= 15)
+                    {
+                        r.ChangeStatus(ReactorSysServerClone.Act.CRASH);
+                    }
+                }
+            }
+        }
         yield break;
     }
 
+
+    //Loops & logics :3
     private IEnumerator ReactorSysStat()
     {
         int e = 0;
@@ -123,13 +138,30 @@ public class ReactorSysManager : MonoBehaviour
             {
                 EventManagerCaller(EventEnum.MAINTENANCE);
             }
+            if (Status != StatusEnum.MAINTENANCE && ReactorSysAvailability <= 0)
+            {
+                
+            }
 
-            if (Status == StatusEnum.MAINTENANCE && ReactorSysAvailability > 49)
+                if (Status == StatusEnum.MAINTENANCE && ReactorSysAvailability > 49)
             {
                 EventManagerCaller(EventEnum.EXIT_MAINTENANCE);
             }
         }
-
+        else if (Status == StatusEnum.CRASH)
+        {
+            if (ReactorSysAvailability == 100)
+            {
+                EventInProgress = false;
+                Status = StatusEnum.ONLINE;
+                foreach(ReactorSysServerClone r in ServerArray)
+                {
+                    r.ChangeLedColor(ReactorSysServerClone.StatusEnum.ONLINE);
+                }
+                Logs.EntryPoint("Main Computer Restored!", Color.green);
+            }
+        }
+        StartCoroutine(ReactorSysStat());
         yield break;
     }
 
@@ -151,6 +183,11 @@ public class ReactorSysManager : MonoBehaviour
         Status = StatusEnum.ONLINE;
         EventInProgress = false;
         Logs.EntryPoint("Main Computer ONLINE!", Color.green);
+        foreach(ReactorSysServerClone r in ServerArray)
+        {
+            r.ChangeLedColor(ReactorSysServerClone.StatusEnum.ONLINE);
+        }
+        StartCoroutine(ReactorSysStat());
 
         yield break;
     }

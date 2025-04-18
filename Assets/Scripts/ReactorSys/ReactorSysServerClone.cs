@@ -163,12 +163,14 @@ public class ReactorSysServerClone : MonoBehaviour
     }
     public IEnumerator Bootup()
     {
-        Logs.EntryPoint(ServerName + " booting up...", Color.blue);
         StartBlink(1f, 0.5f, OnlineColor);
         
         yield return new WaitForSeconds(Random.Range(5f, 10f));
         
         StopBlink();
+
+        yield return new WaitForSeconds(0.1f);
+
         Logs.EntryPoint(ServerName + " online!", Color.green);
         Status = StatusEnum.ONLINE;
         ServerPower = 100;
@@ -195,7 +197,12 @@ public class ReactorSysServerClone : MonoBehaviour
         yield break;
     }
 
+
     public void RebootCaller()
+    {
+        StartCoroutine(RebootCallerf());
+    }
+    private IEnumerator RebootCallerf()
     {
         if (Status == StatusEnum.CRASH)
         {
@@ -204,6 +211,10 @@ public class ReactorSysServerClone : MonoBehaviour
             ServerPower = 100;
             ServerIntegrity = 100;
             Logs.EntryPoint(ServerName + " REBOOTED!", Color.green);
+
+            yield return new WaitForSeconds(1.5f);
+
+            ChangeLedColor(StatusEnum.ONLINE);
         }
     }
 
@@ -228,8 +239,9 @@ public class ReactorSysServerClone : MonoBehaviour
     public void StopBlink()
     {
         CanBlink = false;
-        StopCoroutine("BlinkFunc");
-        Led.material.color = PastBlinkColor;
+        StopCoroutine(BlinkFunc(0, 0));
+        StopCoroutine(BlinkFunc(0, 0, Color.white));
+        Led.material.color = ReturnSupposedColor();
         CurrentBlinkColor = Color.clear;
     }
 
