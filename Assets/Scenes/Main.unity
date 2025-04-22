@@ -18496,7 +18496,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.0000119179085, y: 0.009446394, z: -0.00000011258627, w: -0.9999554}
   m_LocalPosition: {x: 0, y: 0, z: -23.830002}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1782007398}
@@ -69317,6 +69317,8 @@ MonoBehaviour:
   - {fileID: 1511887563}
   - {fileID: 104957496}
   - {fileID: 231202628}
+  Cancelable: 0
+  Canceled: 0
 --- !u!1 &1308610964
 GameObject:
   m_ObjectHideFlags: 0

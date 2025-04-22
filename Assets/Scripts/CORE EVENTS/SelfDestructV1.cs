@@ -20,6 +20,9 @@ public class SelfDestructV1 : MonoBehaviour
     public STABSLasers stab6;
     public List<STABSLasers> stabList;
 
+    [Header("Values")]
+    public bool Cancelable = false;
+    public bool Canceled = false;
 
 
 
@@ -58,7 +61,11 @@ public class SelfDestructV1 : MonoBehaviour
 
     IEnumerator SDV1()
     {
-        PlayerController.me.OSTPLAYER(SDV1ost, 0.18f);
+        if (Random.Range(0, 100) <= 5)
+        {
+            Cancelable = true;
+        }
+        AudioSource sss = PlayerController.me.OSTPLAYER(SDV1ost, 0.18f, "");
         COREManager.instance.CoreHideNormalDisplay(); COREManager.instance.CoreInEvent = true;
         COREManager.instance.MiddleScreenDisplaySpecialReason("! UNKNWON REACTOR STATUS !", Color.red, "-> ReactorSys detected an imminent threat from the core, contigency systems online <-", Color.blue);
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(0, 1, Negate3roomsName.CORE_CONTROL_ROOM)); PlayerController.me.OSTPLAYER(powerlost, 0.5f);
@@ -66,11 +73,20 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("UNABLE TO CONNECT WITH REACTOR SYSTEMS!", COREManager.instance.LineUnknownColor);
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("POWER CONNECTION LOST", Color.red);
 
         yield return new WaitForSeconds(3f);
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("POWER CONNECTION LOST!", Color.red);
+        if (Cancelable)
+        {
+            ReactorSysManager.instance.EventManagerCaller(ReactorSysManager.EventEnum.COMPLETE_CRASH);
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("CONNECTION LOST WITH SERVERS!", COREManager.instance.LineUnknownColor);
+            StartCoroutine(crashRecoveryLoop());
+        }
+        else
+        {
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("POWER CONNECTION LOST!", COREManager.instance.LineUnknownColor);
+        }
 
         yield return new WaitForSeconds(22f); //30 seconds past
 
@@ -98,28 +114,79 @@ public class SelfDestructV1 : MonoBehaviour
 
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(500, 3, COREManager.instance.LineUnknownColor, 1, Negate3roomsName.ALL));
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("ASDS READY", COREManager.instance.LineUnknownColor);
+        COREManager.instance.ReactorSysLogsScreen.EntryPoint("SYSTEMS READY FOR DETONATION", COREManager.instance.LineUnknownColor);
         COREManager.instance.MiddleScreenDisplaySpecialReason("! SELF-DESTRUCT !", COREManager.instance.LineUnknownColor, "-> EVACUATION WINDOW EXPIRED - THANKS YOU FOR YOUR SERVICE <-", COREManager.instance.LineUnknownColor);
 
         yield return new WaitForSeconds(18f);
 
-        foreach(STABSLasers stab in stabList)
+        if (Canceled)
         {
-            if (stab.WS != STABSLasers.WhatStab.Stab1 && stab.WS != STABSLasers.WhatStab.Stab2)
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("Connection to servers restored!", Color.green);
+
+
+
+            LeanTween.value(sss.volume, 0, 5f)
+                .setOnUpdate((float t) =>
+                {
+                    sss.volume = t;
+                })
+                .setOnComplete(() =>
+                {
+                    amoud(sss);
+                });
+
+            yield return new WaitForSeconds(5f);
+
+
+            COREManager.instance.MiddleScreenDisplaySpecialReason("ERROR", Color.red, "ERRORER-ROR-ERRORER-RORERRORE-RROR", Color.red);
+            COREManager.instance.ReactorSysLogsScreen.EntryPoint("Self-destruct sequence aborted!", COREManager.instance.LineOVERRIDEColor);
+
+            yield break;
+        }
+        else
+        {
+            foreach (STABSLasers stab in stabList)
             {
-                PlayerController.me.OSTPLAYER(stab.StabLoudIgnit, 0.3f);
-                stab.StabRPMCHANGING(1000f, 10f);
+                if (stab.WS != STABSLasers.WhatStab.Stab1 && stab.WS != STABSLasers.WhatStab.Stab2)
+                {
+                    PlayerController.me.OSTPLAYER(stab.StabLoudIgnit, 0.3f);
+                    stab.StabRPMCHANGING(1000f, 10f);
+                }
             }
+
+            yield return new WaitForSeconds(12f);
+
+            StartCoroutine(ScreenFlash.GSF.DeathFlash());
+
+            yield return new WaitForSeconds(10f);
+
+            Death.instance.TeleportToLimbo(Death.DeathReason.sd);
+
+            yield break;
+        }
+    }
+
+
+
+    private IEnumerator crashRecoveryLoop()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        if (ReactorSysManager.instance.Status != ReactorSysManager.StatusEnum.CRASH)
+        {
+            Canceled = true;
+        }
+        else
+        {
+            StartCoroutine(crashRecoveryLoop());
         }
 
-        yield return new WaitForSeconds(12f);
-
-        StartCoroutine(ScreenFlash.GSF.DeathFlash());
-
-        yield return new WaitForSeconds(10f);
-
-        Death.instance.TeleportToLimbo(Death.DeathReason.sd);
-
         yield break;
+    }
+
+    private void amoud(AudioSource sss)
+    {
+        sss.Stop();
+        GameObject.Destroy(sss.gameObject);
     }
 }
