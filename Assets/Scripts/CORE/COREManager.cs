@@ -167,6 +167,8 @@ public class COREManager : MonoBehaviour
         Stablist.Add(Stab2);
         Stablist.Add(Stab3);
         Stablist.Add(Stab4);
+        Stablist.Add(Stab5);
+        Stablist.Add(Stab6); 
         MiddleScreenHideSpecialReason();
         UpdateCoreTemperature();
     }
@@ -181,6 +183,18 @@ public class COREManager : MonoBehaviour
         TempText.text = CoreTemp.ToString();
     }
 
+    public int STABSMoyenne()
+    {
+        int s = 0;
+        int a = 0;
+        foreach(STABSLasers stab in Stablist)
+        {
+            stab.StructuralIntegrity += a;
+            s++;
+        }
+        return a/s;
+
+    }
 
     //private void Start()
     //{
