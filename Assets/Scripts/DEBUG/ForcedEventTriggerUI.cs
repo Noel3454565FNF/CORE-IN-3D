@@ -66,6 +66,11 @@ public class ForcedEventTriggerUI : Editor
             Stall.instance.InstantStall();
         }
     }
+    [MenuItem("Tools/Events/Core/EMP")]
+    static void EMPwave()
+    {
+        EMP.instance.NewEMP();
+    }
 
 
     //REACTOR GRID EVENT

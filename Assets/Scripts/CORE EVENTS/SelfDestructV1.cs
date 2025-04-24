@@ -73,7 +73,6 @@ public class SelfDestructV1 : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
 
-        COREManager.instance.ReactorSysLogsScreen.EntryPoint("POWER CONNECTION LOST", Color.red);
 
         yield return new WaitForSeconds(3f);
 
