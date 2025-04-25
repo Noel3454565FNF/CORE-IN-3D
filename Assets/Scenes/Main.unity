@@ -42307,7 +42307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef075faa88e191144a055ce8d7118e58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EMPCLONETHING: {fileID: 4924753902267419780, guid: e7fd7a26f8680934b9d8e11b8b49702c,
+  EMPCLONETHING: {fileID: 6963820299281833079, guid: e7fd7a26f8680934b9d8e11b8b49702c,
     type: 3}
   ElectricLoop: {fileID: 8300000, guid: 81dac86c8152f4e4db81e6a04960a8f4, type: 3}
   Warn: {fileID: 8300000, guid: e17bc56789ad2c04285e61a2263d9248, type: 3}

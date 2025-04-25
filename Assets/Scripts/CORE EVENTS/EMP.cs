@@ -67,7 +67,7 @@ public class EMPClone:MonoBehaviour
         AS.loop = true;
         AS.Play();
 
-        LeanTween.value(WAVE, WAVE.transform.localScale, EMPnormal, 0.7f)
+        LeanTween.value(WAVE, WAVE.transform.localScale, EMPnormal, 0.3f)
             .setEaseInOutQuad()
             .setOnUpdate((Vector3 v)
             =>
