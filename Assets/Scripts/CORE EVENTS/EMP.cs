@@ -23,7 +23,7 @@ public class EMP : MonoBehaviour
     {
         GameObject k = GameObject.Instantiate(EMPCLONETHING, COREManager.instance.COREMeshRenderer.gameObject.transform, false);
         EMPClone clone = k.AddComponent<EMPClone>();
-        clone.create(k);
+        StartCoroutine(clone.create(k));
         Debug.LogWarning(clone.gameObject.name);
         return clone;
         
@@ -43,17 +43,20 @@ public class EMPClone:MonoBehaviour
 
     public int EMPStrengh;
     public COREManager CM;
+    public LineClone LC;
 
     public int recontainmentChance = 0;
     public int dissipationChance = 0;
 
     private void Awake()
     {
-        
+        CM = COREManager.instance;
+        LC = CM.ReactorSysLogsScreen;
     }
 
-    public void create(GameObject Base, int EMPStrenghOVERRIDE = 0)
+    public IEnumerator create(GameObject Base, int EMPStrenghOVERRIDE = 0)
     {
+        LC.EntryPoint("DANGER: EMP RUNAWAY DETECTED!", Color.red);
         WAVE = Base;
         //WAVE.gameObject.transform.position = new Vector3(0, 0, 0);
         GameObject.Find("Right screen (global warnings)").GetComponent<AudioSource>().clip = EMP.instance.Warn;
@@ -84,7 +87,33 @@ public class EMPClone:MonoBehaviour
             EMPStrengh = Random.Range(1, 100);
         }
 
-        //math
+        yield return new WaitForSeconds(Random.Range(2, 4));
         
+        LC.EntryPoint("ATTEMPTING TO DISSIPATE EMP WAVE", CM.LineOVERRIDEColor);
+
+        foreach(STABSLasers stab in CM.Stablist)
+        {
+            if (true)
+            {
+                stab.CanRotate = true;
+                //stab.PowerPurge1.Play();
+                //stab.PowerPurge2.Play();
+                stab.StabRPMCHANGING(900, 3);
+            }
+        }
+
+    }
+
+
+
+
+
+    //SCREEN THINGS
+    public IEnumerator cinematicBlackBands(float value, float timetovalue, float timetostay, float timefarvalue)
+    {
+
+
+
+        yield break;
     }
 }
