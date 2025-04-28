@@ -10,7 +10,7 @@ public class MCFS : MonoBehaviour
     public bool canUpdate = true;
     [HideInInspector]public static MCFS instance;
     [Header("Important Vars")]
-    public float ShieldIntegrity = 0;
+    public int ShieldIntegrity = 0;
     public Color ShieldIntegrityC = new Color(0, 255, 0);
     public int ShieldPower = 0;
     public int ShieldMaxPower;

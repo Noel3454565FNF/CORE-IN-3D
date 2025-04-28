@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks.Triggers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -78,6 +79,8 @@ public class EMPClone:MonoBehaviour
                 WAVE.transform.localScale = v;
             });
 
+        recontainmentChance = Random.Range(0, 100); dissipationChance = Random.Range(0, 100);
+
         if (EMPStrenghOVERRIDE != 0)
         {
             EMPStrengh = EMPStrenghOVERRIDE;
@@ -98,13 +101,65 @@ public class EMPClone:MonoBehaviour
                 stab.CanRotate = true;
                 //stab.PowerPurge1.Play();
                 //stab.PowerPurge2.Play();
-                stab.StabRPMCHANGING(900, 3);
+                stab.StabRPMCHANGING(900, 2);
             }
         }
+
+        yield return new WaitForSeconds(2f);
+
+        LC.EntryPoint("PURGING EMP WAVE...", Color.yellow);
+        LeanTween.value(WAVE, WAVE.transform.position, new Vector3(20, 20, 20), 6)
+            .setEaseInBack()
+            .setEaseOutBack()
+            .setOnUpdate((Vector3 v) =>
+            {
+                WAVE.transform.position = v;
+            });
+            
+
+            if (dissipationChance <= 20)
+            {
+                LC.EntryPoint("EMP WAVE DISSIPATION SUCCESSFUL!", Color.green);
+                Vector3 math1 = new Vector3(0, 0, 0);
+                math1.x = WAVE.transform.position.x + 4;
+                math1.y = WAVE.transform.position.y + 4;
+                math1.z = WAVE.transform.rotation.z + 4;
+            LeanTween.value(WAVE, WAVE.transform.position, math1, 0.2f)
+                .setEaseInBack()
+                .setEaseOutBack()
+                .setOnUpdate((Vector3 v) =>
+                {
+                    WAVE.transform.position = v;
+                })
+                .setOnComplete(DIE);
+            }
+            else
+        {
+            LC.EntryPoint("EMP WAVE PERSISTANT!", Color.red);
+            yield return new WaitForSeconds(0.3f);
+            LC.EntryPoint("EMP WAVE RUNAWAY IMMINENT!", Color.red);
+            yield return new WaitForSeconds(Random.Range(3, 10));
+
+            LeanTween.value(WAVE, WAVE.transform.position, WAVE.transform.position, 3)
+                .setEaseInBack()
+                .setEaseOutBack()
+                .setOnUpdate((Vector3 v) =>
+                {
+                    WAVE.transform.position = v; 
+                });
+            yield return new WaitForSeconds(3f);
+        }
+        
+
+            
 
     }
 
 
+    public void DIE()
+    {
+        GameObject.Destroy(this);
+    }
 
 
 
