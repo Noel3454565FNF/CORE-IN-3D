@@ -66,6 +66,14 @@ public class ForcedEventTriggerUI : Editor
             Stall.instance.InstantStall();
         }
     }
+    [MenuItem("Tools/Events/Core/StartupV2")]
+    static void StartupV2F()
+    {
+        if (EditorApplication.isPlaying)
+        {
+            StartupV2.instance.StartupV2CALLER();
+        }
+    }
     [MenuItem("Tools/Events/Core/EMP")]
     static void EMPwave()
     {

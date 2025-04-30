@@ -896,3 +896,16 @@ public class argStabVarchange
     public string type;
     public string d;
 }
+
+
+public class BlinkingPartThing:MonoBehaviour
+{
+
+
+
+    public IEnumerator TheThing()
+    {
+
+        yield break;
+    }
+}

@@ -28104,13 +28104,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CM: {fileID: 0}
+  COREgm: {fileID: 0}
   FuelSolutionInjection: {fileID: 8300000, guid: 20354fb66144b954fa977108011ca772,
     type: 3}
-  LasersStartReaction: {fileID: 8300000, guid: f2a87615b70453d49842e84b4cb66378, type: 3}
-  startupv2ost: {fileID: 8300000, guid: 82dd0603a76c7224fadb532e54e7088d, type: 3}
-  shieldIDLE: {fileID: 0}
-  stab1PART: {fileID: 0}
-  stab2PART: {fileID: 0}
+  LasersStartReaction: {fileID: 8300000, guid: 82dd0603a76c7224fadb532e54e7088d, type: 3}
+  startupv2ost: {fileID: 8300000, guid: 81bc06195fba372419a7eabb47ad2013, type: 3}
+  shieldIDLE: {fileID: 1649307306}
+  stab1PART: {fileID: 2014017322}
+  stab2PART: {fileID: 1000962272}
+  ConstantSteam: {fileID: 1691466121}
+  boomPart: {fileID: 0}
   shieldIDLparticlestarget: 15000
 --- !u!1 &659438422
 GameObject:
@@ -44093,7 +44096,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1000962270
 Transform:
   m_ObjectHideFlags: 0
@@ -44373,7 +44376,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -44822,7 +44825,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 90, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 0.7, y: 0.7, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -44901,7 +44904,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.0001
       mode: 0
       spread: 0
       speed:
@@ -74344,6 +74347,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1286813391}
   - component: {fileID: 1286813392}
+  - component: {fileID: 1286813393}
   m_Layer: 0
   m_Name: EVENTSOBJ
   m_TagString: Untagged
@@ -74396,6 +74400,30 @@ MonoBehaviour:
   - {fileID: 231202628}
   Cancelable: 0
   Canceled: 0
+--- !u!114 &1286813393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286813390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7059f26719712a4bbdf229d7bc2d423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CM: {fileID: 45969259}
+  COREgm: {fileID: 460791164}
+  FuelSolutionInjection: {fileID: 8300000, guid: 20354fb66144b954fa977108011ca772,
+    type: 3}
+  LasersStartReaction: {fileID: 8300000, guid: 82dd0603a76c7224fadb532e54e7088d, type: 3}
+  startupv2ost: {fileID: 8300000, guid: 81bc06195fba372419a7eabb47ad2013, type: 3}
+  shieldIDLE: {fileID: 1649307306}
+  stab1PART: {fileID: 2014017322}
+  stab2PART: {fileID: 1000962272}
+  ConstantSteam: {fileID: 1691466121}
+  boomPart: {fileID: 1782007400}
+  shieldIDLparticlestarget: 15000
 --- !u!1 &1308610964
 GameObject:
   m_ObjectHideFlags: 0
@@ -91751,7 +91779,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1649307304
 Transform:
   m_ObjectHideFlags: 0
@@ -91977,7 +92005,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: 0
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -92031,7 +92059,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -92678,7 +92706,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 15000
+      scalar: 0
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -101987,7 +102015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1691466119
 Transform:
   m_ObjectHideFlags: 0
@@ -102160,7 +102188,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 4
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -102213,7 +102241,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 7
+      scalar: 16
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -103020,7 +103048,7 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 0
+    enabled: 1
     curve:
       serializedVersion: 2
       minMaxState: 1
@@ -103535,7 +103563,7 @@ ParticleSystem:
     flipU: 0
     flipV: 0
   VelocityModule:
-    enabled: 0
+    enabled: 1
     x:
       serializedVersion: 2
       minMaxState: 0
@@ -105663,9 +105691,9 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 4
-    type: 0
+    type: 1
     collisionMode: 0
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
@@ -147736,7 +147764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2014017320
 Transform:
   m_ObjectHideFlags: 0
@@ -148016,7 +148044,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 1}
+      maxColor: {r: 0, g: 0, b: 0, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -148465,7 +148493,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 90, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 0.7, y: 0.7, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -148544,7 +148572,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.0001
       mode: 0
       spread: 0
       speed:
