@@ -9,6 +9,7 @@ using UnityEngine;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UIElements;
+using UnityEditor.ShaderGraph;
 
 public class STABSLasers : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class STABSLasers : MonoBehaviour
     public AudioSource ASSTAB;
     public GameObject BuildUp;
     public GameObject STABParent;
+    public BlinkingPartThing blinkMANAGER;
 
 
     [Header("Particles things")]
@@ -822,6 +824,23 @@ public class STABSLasers : MonoBehaviour
     {
         RotorAudioPlayer.Stop();
     }
+
+
+
+    //Rotor Blink
+    public void RegisterRotorBlink(Color col, float timeoncol, float timeonblack)
+    {
+        GameObject game = Rotor;
+        if (blinkMANAGER != null)
+        {
+            blinkMANAGER.KILL();
+            blinkMANAGER = null;
+        }
+
+        blinkMANAGER = this.gameObject.AddComponent<BlinkingPartThing>();
+        blinkMANAGER.setup(game, col, timeoncol, timeonblack);
+
+    }
 }
     public class Utility : MonoBehaviour
     {
@@ -898,14 +917,56 @@ public class argStabVarchange
 }
 
 
+[SerializeField]
 public class BlinkingPartThing:MonoBehaviour
 {
 
+    public MeshRenderer MR;
+    public Color colortoblink;
+    public float ColorTime;
+    public float BlackTime;
 
+    public void KILL()
+    {
+        StopCoroutine(TheThing());
+        LeanTween.cancelAll();
+        MR.material.SetColor("_Color", Color.white);
+        MonoBehaviour.Destroy(this);
+
+    }
+
+    public void setup(GameObject game, Color col, float timeoncol, float timeonblack)
+    {
+        MR = game.GetComponent<MeshRenderer>();
+        colortoblink = col;
+        ColorTime = timeoncol;
+        BlackTime = timeonblack;
+
+        StartCoroutine(TheThing());
+    }
 
     public IEnumerator TheThing()
     {
+        while (true)
+        {
+            // Blink to color
+            bool finished = false;
+            LeanTween.color(MR.gameObject, colortoblink, ColorTime)
+                .setEaseInOutQuad()
+                .setOnUpdate((Color c) => MR.material.color = c)
+                .setOnComplete(() => finished = true);
 
-        yield break;
+            yield return new WaitUntil(() => finished);
+
+            // Blink to white with alpha
+            finished = false;
+            LeanTween.color(MR.gameObject, new Color(1f, 1f, 1f, 0.2f), BlackTime)
+                .setEaseInOutQuad()
+                .setOnUpdate((Color c) => MR.material.color = c)
+                .setOnComplete(() => finished = true);
+
+            yield return new WaitUntil(() => finished);
+        }
     }
+
 }

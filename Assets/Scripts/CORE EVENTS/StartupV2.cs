@@ -97,28 +97,49 @@ public class StartupV2 : MonoBehaviour
         PlayerController.me.OSTPLAYER(LasersStartReaction, 0.3f);
         CM.ReactorSysLogsScreen.EntryPoint("powering up lasers...", Color.yellow);
         CM.Stab1.StabRPMCHANGING(900, 4);
-        CM.Stab2.StabRPMCHANGING(900, 4);
-        CM.Stab3.StabRPMCHANGING(750, 7);
-        CM.Stab4.StabRPMCHANGING(750, 7);
-        CM.Stab5.StabRPMCHANGING(750, 7);
-        CM.Stab6.StabRPMCHANGING(750, 7);
+        CM.Stab2.StabRPMCHANGING(900, 4); //CM.Stab2.RegisterRotorBlink(Color.yellow, 0.7f, 1f);
+        CM.Stab3.StabRPMCHANGING(750, 7); CM.Stab3.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
+        CM.Stab4.StabRPMCHANGING(750, 7); CM.Stab4.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
+        CM.Stab5.StabRPMCHANGING(750, 7); CM.Stab5.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
+        CM.Stab6.StabRPMCHANGING(750, 7); CM.Stab6.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
 
-        yield return new WaitForSeconds(7.5f);
+
+
+        yield return new WaitForSeconds(7f);
 
         CM.ReactorSysLogsScreen.EntryPoint("firing...", Color.yellow);
         CM.Stab1.Laser.SetActive(true); CM.Stab2.Laser.SetActive(true); CM.Stab3.Laser.SetActive(true); CM.Stab4.Laser.SetActive(true); CM.Stab5.Laser.SetActive(true); CM.Stab6.Laser.SetActive(true);
-        shieldIDLE.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
+        shieldIDLE.startSpeed = -3;
         ConstantSteam.gameObject.SetActive(true); ConstantSteam.Play();
+        boomPart.gameObject.SetActive(true); boomPart.Play();
 
-        yield return new WaitForSeconds(9f);
-        CM.Stab1.StabRPMCHANGING(400, 4);
-        CM.Stab2.StabRPMCHANGING(400, 4);
-        CM.Stab3.StabRPMCHANGING(300, 4);
-        CM.Stab4.StabRPMCHANGING(300, 4);
-        CM.Stab5.StabRPMCHANGING(300, 4);
-        CM.Stab6.StabRPMCHANGING(300, 4);
+        
+        CM.COREMeshRenderer.gameObject.transform.LeanScale(new Vector3(8, 8, 8), 9f)
+            .setOnUpdate((Vector3 v3) =>
+            {
+                CM.COREMeshRenderer.gameObject.transform.localScale = v3;
+            });
 
-        //form reactor shield here
+
+        yield return new WaitForSeconds(5f);
+
+        shieldIDLE.Stop(false, ParticleSystemStopBehavior.StopEmitting); boomPart.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+        //make shield here
+        MCFS.instance.Shield.transform.localScale = new Vector3(20, 20, 20);
+        MCFS.instance.Shield.transform.LeanScale(new Vector3(12, 12, 12), 4f)
+            .setOnUpdate((Vector3 v3) =>
+            {
+                MCFS.instance.Shield.transform.localScale = v3;
+            });
+
+        yield return new WaitForSeconds(4f);
+        CM.Stab1.StabRPMCHANGING(250, 4); 
+        CM.Stab2.StabRPMCHANGING(250, 4);
+        CM.Stab3.StabRPMCHANGING(200, 4); CM.Stab3.blinkMANAGER.KILL(); CM.Stab3.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
+        CM.Stab4.StabRPMCHANGING(200, 4); CM.Stab4.blinkMANAGER.KILL(); CM.Stab4.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
+        CM.Stab5.StabRPMCHANGING(200, 4); CM.Stab5.blinkMANAGER.KILL(); CM.Stab5.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
+        CM.Stab6.StabRPMCHANGING(200, 4); CM.Stab6.blinkMANAGER.KILL(); CM.Stab6.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
+
 
         yield break;
     }
