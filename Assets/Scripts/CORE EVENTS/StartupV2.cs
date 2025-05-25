@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ public class StartupV2 : MonoBehaviour
     public COREManager CM;
     public static StartupV2 instance;
     public GameObject COREgm;
+    //public Animation ShieldanimPlayer;
+    public Animator ShieldanimPlayer;
 
 
     [Header("Audio")]
@@ -27,6 +30,9 @@ public class StartupV2 : MonoBehaviour
     [Header("Value")]
     public int shieldIDLparticlestarget = 15000;
 
+    [Header("anim files")]
+    public AnimationClip shieldspawn;
+
 
 
 
@@ -43,7 +49,8 @@ public class StartupV2 : MonoBehaviour
     }
     private IEnumerator STARTUPV2COUR()
     {
-        PlayerController.me.OSTPLAYER(startupv2ost, 0.7f);
+       Startup.instance.makememegoaway();
+       AudioSource osting = PlayerController.me.OSTPLAYER(startupv2ost, 0.7f, "");
 
         yield return new WaitForSeconds(1f);
 
@@ -84,6 +91,7 @@ public class StartupV2 : MonoBehaviour
         yield return new WaitForSeconds(7f);
 
         astemp.Stop();
+        GameObject.Destroy(astemp.gameObject);
         stab1PART.Stop(); stab2PART.Stop();
         CM.ReactorSysLogsScreen.EntryPoint("core ready for ignition!", Color.green);
 
@@ -105,9 +113,12 @@ public class StartupV2 : MonoBehaviour
 
 
 
-        yield return new WaitForSeconds(7f);
+        yield return new WaitForSeconds(7.5f);
 
         CM.ReactorSysLogsScreen.EntryPoint("firing...", Color.yellow);
+
+        CM.LeantweenTemp(12000, 9f);
+
         CM.Stab1.Laser.SetActive(true); CM.Stab2.Laser.SetActive(true); CM.Stab3.Laser.SetActive(true); CM.Stab4.Laser.SetActive(true); CM.Stab5.Laser.SetActive(true); CM.Stab6.Laser.SetActive(true);
         shieldIDLE.startSpeed = -3;
         ConstantSteam.gameObject.SetActive(true); ConstantSteam.Play();
@@ -125,21 +136,74 @@ public class StartupV2 : MonoBehaviour
 
         shieldIDLE.Stop(false, ParticleSystemStopBehavior.StopEmitting); boomPart.Stop(false, ParticleSystemStopBehavior.StopEmitting);
         //make shield here
-        MCFS.instance.Shield.transform.localScale = new Vector3(20, 20, 20);
-        MCFS.instance.Shield.transform.LeanScale(new Vector3(12, 12, 12), 4f)
-            .setOnUpdate((Vector3 v3) =>
-            {
-                MCFS.instance.Shield.transform.localScale = v3;
-            });
+        CM.ReactorSysLogsScreen.EntryPoint("deploying main shielding...", Color.yellow);
+
+        ShieldanimPlayer.Play("shieldspawn");
+
+        //MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.color = new Color(0, 197, 255, 0);
+        //MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 0, 0));
+        //Color brah = new Color(0, 197, 255, 0) * 10;
+        //LeanTween.color(MCFS.instance.Shield, brah, 1f)
+        //    .setEaseInOutQuad()
+        //    .setOnUpdate((Color c) =>
+        //    {
+        //        MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", c);
+        //    });
+
+
+
+        //MCFS.instance.Shield.transform.localScale = new Vector3(20, 20, 20);
+        //MCFS.instance.Shield.transform.LeanScale(new Vector3(12, 12, 12), 4f)
+        //    .setEaseInOutQuad()
+        //    .setOnUpdate((Vector3 v3) =>
+        //    {
+        //        MCFS.instance.Shield.transform.localScale = v3;
+        //    });
+        //LeanTween.color(MCFS.instance.Shield.gameObject, new Color(0, 197, 255, 0.7f), 3f)
+        //    .setEaseInOutCirc()
+        //    .setOnUpdate((Color c) =>
+        //    {
+        //        MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.color = c;
+        //    });
 
         yield return new WaitForSeconds(4f);
-        CM.Stab1.StabRPMCHANGING(250, 4); 
-        CM.Stab2.StabRPMCHANGING(250, 4);
+        CM.ReactorSysLogsScreen.EntryPoint("no shield error detected", Color.white);
+        CM.Stab1.StabRPMCHANGING(225f, 4f); 
+        CM.Stab2.StabRPMCHANGING(225, 4);
         CM.Stab3.StabRPMCHANGING(200, 4); CM.Stab3.blinkMANAGER.KILL(); CM.Stab3.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
         CM.Stab4.StabRPMCHANGING(200, 4); CM.Stab4.blinkMANAGER.KILL(); CM.Stab4.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
         CM.Stab5.StabRPMCHANGING(200, 4); CM.Stab5.blinkMANAGER.KILL(); CM.Stab5.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
         CM.Stab6.StabRPMCHANGING(200, 4); CM.Stab6.blinkMANAGER.KILL(); CM.Stab6.Rotor.GetComponent<MeshRenderer>().material.color = Color.white;
 
+        yield return new WaitForSeconds(3f);
+
+        LeanTween.value(osting.volume, 0f, 5f)
+            .setEaseInOutCirc()
+            .setOnUpdate((float f) =>
+            {
+                osting.volume = f;
+            })
+            .setOnComplete(Action =>
+            {
+                print("its over.");
+                osting.Stop();
+                GameObject.Destroy(osting.gameObject);
+            });
+
+        CM.ReactorSysLogsScreen.EntryPoint("CORE IGNITION WAS SUCCESSFUL!", Color.green);
+
+        yield return new WaitForSeconds(1f);
+
+        CM.ReactorSysLogsScreen.EntryPoint("MANUAL CONTROL AUTHORIZED!", Color.green);
+        StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(500, 1, Negate3roomsName.ALL));
+        CM.Stab1.StabRPMCHANGING(225, 4);
+        CM.Stab2.StabRPMCHANGING(225, 4);
+        CM.Stab3.StabRPMCHANGING(200, 4);
+        CM.Stab4.StabRPMCHANGING(200, 4);
+        CM.Stab5.StabRPMCHANGING(200, 4);
+        CM.Stab6.StabRPMCHANGING(200, 4);
+
+        Startup.instance.corestartstats();
 
         yield break;
     }

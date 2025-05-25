@@ -106,6 +106,7 @@ public class COREManager : MonoBehaviour
         Meltdown,
         Freezedown,
         FreezedownHISTORY,
+        ReactorFault,
 
     }
 
@@ -121,6 +122,7 @@ public class COREManager : MonoBehaviour
 
     //Custom Pre State
     public bool ReactorHandleLoss = false;
+    public bool ReactorFault = false;
 
     //Catastrophic State
     public bool Freezedown = false;
@@ -226,8 +228,16 @@ public class COREManager : MonoBehaviour
         {
             CoreTempChange += MaxHeatUnitEfficiency * (Stab4.Power / 100f);
         }
+        if (Stab5.StabCheckForCoreVal())
+        {
+            CoreTempChange += MaxHeatUnitEfficiency * (Stab5.Power / 100f);
+        }
+        if (Stab6.StabCheckForCoreVal())
+        {
+            CoreTempChange += MaxHeatUnitEfficiency * (Stab6.Power / 100f);
+        }
 
-        // Cooling unit effect
+        // Cooling lasers effect
         if (Stab1.StabCheckForCoreVal())
         {
             CoreTempChange -= MaxCoolingUnitEfficiency * (Stab1.Power / 100f);
@@ -236,6 +246,12 @@ public class COREManager : MonoBehaviour
         {
             CoreTempChange -= MaxCoolingUnitEfficiency * (Stab2.Power / 100f);
         }
+
+        //Cooling unit effect
+
+
+        //Power extraction effect
+
 
         // Shield effect
         CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
@@ -247,7 +263,7 @@ public class COREManager : MonoBehaviour
         CoreTempChange *= 0.8f; // Damping factor to smooth abrupt changes
 
         // Clamp CoreTempChange to prevent extreme values
-        CoreTempChange = Mathf.Clamp(CoreTempChange, -100f, 100f); // Adjust range as needed
+        //CoreTempChange = Mathf.Clamp(CoreTempChange, -100f, 100f); // Adjust range as needed
 
         // Debug: Log CoreTempChange after damping and clamping
 
@@ -284,49 +300,6 @@ public class COREManager : MonoBehaviour
     {
         if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-            if (CoreTemp > 12000 && Overheating == false && CritOverheating == false)
-            {
-                Overheating = true;
-                //P1 PREMELT.
-                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "!Warning Core overheating, nuclear meltodwn IMMINENT!", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
-                StartCoroutine(CoreStabilityDecrease());
-                TempText.color = Color.yellow;
-                //LightsManager.GLM.LevelNeg3LightsFlick(3, Negate3roomsName.ALL);
-            }
-            if (coreStability == 0 && Overheating == true && CritOverheating == false)
-            {
-                CritOverheating = true;
-                //P2 PREMELT.
-                FAS.GFAS.WriteAnAnnouncement("ReactorSys", "Shield absortion capacity have reached its limit. PLEASE engage the Core Power Purge IMMEDIATLY.", 9); ReactorSysLogsScreen.EntryPoint("Core overheating! please engage cooling systems.", Color.yellow);
-                MCFS.instance.CanShieldDegrad = true;
-                StartCoroutine(MCFS.instance.ShieldDegradationFunc());
-                MCFS.instance.integrityTxt.color = Color.yellow;
-                //LightsManager.GLM.LevelNeg3LightsFlick(7, Negate3roomsName.ALL);
-            }
-            if (MCFS.instance.ShieldIntegrity <= 10 && Overheating && CritOverheating && Premeltdown == false)
-            {
-                //P3 PREMELT.
-                CoreInEvent = true;
-                Premeltdown = true;
-                MCFS.instance.CanShieldDegrad = false;
-                Premelt.instance.Caller();
-            }
-
-
-            if (CoreTemp < 7500 && Overheating == true &&  CritOverheating == false)
-            {
-                //BAI PREMELT.
-                StopCoroutine(CoreStabilityIncrease());
-                Overheating = false;
-                TempText.color = Color.white;
-            }
-
-
-
-            if (CoreTemp < 500)
-            {
-                //PRE-FREEZE/STALL.
-            }
 
         }
     }

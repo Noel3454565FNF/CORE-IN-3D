@@ -10,6 +10,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.UIElements;
 using UnityEditor.ShaderGraph;
+//using System.Drawing;
 
 public class STABSLasers : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class STABSLasers : MonoBehaviour
     [Header("Particles things")]
     public ParticleSystem PowerPurge1;
     public ParticleSystem PowerPurge2;
+    public ParticleSystem Error1;
 
     public enum StabStatusEnum
     {
@@ -67,6 +69,7 @@ public class STABSLasers : MonoBehaviour
     public bool CanStart = true;
     public bool CanEnterMaintenance = true;
     public bool AllowMaintenance = false;
+    public bool CanUpdateTemp = true;
 
 
     public enum WhatStab
@@ -202,7 +205,7 @@ public class STABSLasers : MonoBehaviour
         float TempTar2 = 0;
         float TempTar3 = 0;
         float TempTarA = 0;
-        if (StabStatus == "ONLINE")
+        if (CanUpdateTemp)
         {
             TempTar = RPM / 40f;
             if (canCool)
@@ -221,24 +224,24 @@ public class STABSLasers : MonoBehaviour
             StartCoroutine(CanCoolCooldownThing());
         }
 
-        if (StabTemp >= 300 && HighTempWarning == false)
+        if (StabTemp >= 800 && HighTempWarning == false)
         {
             HighTempWarning = true;
             temperature.color = Color.yellow;
         }
-        if (StabTemp < 300 && HighTempWarning)
+        if (StabTemp < 800 && HighTempWarning)
         {
             HighTempWarning = false;
             temperature.color = Color.white;
         }
 
-        if (StabTemp >= 400 && StabOverHeat == false)
+        if (StabTemp >= 1200 && StabOverHeat == false)
         {
             StabOverHeat = true;
             StartCoroutine(EnterOverheat());
             temperature.color = Color.red;
         }
-        if (StabTemp < 400 && StabOverHeat)
+        if (StabTemp < 1200 && StabOverHeat)
         {
             StabOverHeat = false;
             StartCoroutine(ExitOverheat());
@@ -769,6 +772,72 @@ public class STABSLasers : MonoBehaviour
 
 
 
+    public void LaserCritOverheat()
+    {
+        RotorShockwave(Color.yellow, new Vector3(10, 10, 10), 1.5f);
+        Cm.ReactorSysLogsScreen.EntryPoint(WS.ToString() + "TEMPERATURE TRESHOLD REACHED", Color.red);
+        StabRPMCHANGING(0, 5);
+        StabStatus = StabStatusEnum.ERROR.ToString();
+        Laser.SetActive(false);
+        Power = 0;
+        CanGetDamaged = false;
+        CanKys = false;
+        CanStart = false;
+        CanUsePower = false;
+        CanHeat = false;
+    }
+
+
+    public void RotorShockwave(UnityEngine.Color color, Vector3 size, float time)
+    {
+        StartCoroutine(RSmaker(color, size, time));
+    }
+    private IEnumerator RSmaker(UnityEngine.Color color, Vector3 size, float time)
+    {
+        GameObject tempGMsw = new GameObject("Shockwave");
+        MeshRenderer mrsw = tempGMsw.AddComponent<MeshRenderer>();
+        tempGMsw = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        GameObject.Instantiate(tempGMsw, Rotor.transform);
+
+        tempGMsw.transform.localScale = new Vector3(0, 0, 0);
+        mrsw.material.SetColor("_Color", color);
+
+        tempGMsw.transform.LeanScale(size, time)
+            .setEaseInOutCirc()
+            .setOnUpdate((Vector3 v3) =>
+            {
+                tempGMsw.transform.localScale = v3;
+            });
+
+        float math1 = time * 0.95f;
+        float math2 = time - math1;
+        yield return new WaitForSeconds(math1);
+
+        LeanTween.color(tempGMsw, new Color(color.r, color.g, color.b, 0), math2)
+            .setEaseInOutCirc()
+            .setOnUpdate((Color c) =>
+            {
+                tempGMsw.GetComponent<MeshRenderer>().material.SetColor("_Color", c);
+            })
+            .setOnComplete(function =>
+            {
+                GameObject.Destroy(tempGMsw);
+            });
+
+        yield break;
+    }
+
+
+
+    public void TweenRotorColor(Color color, float time)
+    {
+        LeanTween.color(Rotor, color, time)
+            .setEaseInOutSine()
+            .setOnUpdate((Color C) =>
+            {
+                Rotor.GetComponent<MeshRenderer>().material.SetColor("_Color", C);
+            });
+    }
 
 
     //MAINTENANCE CODE THING
@@ -890,7 +959,10 @@ public class STABSLasers : MonoBehaviour
             return false;
         }
 
-        //public void TweenLightsIntensity(Light light, float to, float DimFactor)
+        //public void TweenLights
+        //
+        //
+        //(Light light, float to, float DimFactor)
         //{
         //    if (to > light.intensity)
         //    {
