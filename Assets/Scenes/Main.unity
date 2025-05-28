@@ -1056,6 +1056,7 @@ MonoBehaviour:
   PowerLoss: 0
   ReactionLoss: 0
   ReactorHandleLoss: 0
+  ReactorFault: 0
   Freezedown: 0
   FreezedownHISTORY: 0
   Meltdown: 0
@@ -2125,6 +2126,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 1634925588}
   PowerPurge2: {fileID: 1023927821}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -2145,6 +2147,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 4
   LowTempWarning: 0
   HighTempWarning: 0
@@ -8660,6 +8663,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 1867230904}
   PowerPurge2: {fileID: 625104796}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -8680,6 +8684,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 5
   LowTempWarning: 0
   HighTempWarning: 0
@@ -42188,6 +42193,7 @@ GameObject:
   - component: {fileID: 906418703}
   - component: {fileID: 906418705}
   - component: {fileID: 906418706}
+  - component: {fileID: 906418707}
   m_Layer: 0
   m_Name: MANAGERS
   m_TagString: Untagged
@@ -42341,6 +42347,21 @@ MonoBehaviour:
     type: 3}
   ElectricLoop: {fileID: 8300000, guid: 81dac86c8152f4e4db81e6a04960a8f4, type: 3}
   Warn: {fileID: 8300000, guid: e17bc56789ad2c04285e61a2263d9248, type: 3}
+--- !u!114 &906418707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906418697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d069c3e66873b459e3192fa0c304ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClientID: 1293921619575701564
+  AllowDiscordRPCUpdate: 1
+  DiscordUpateTime: 3
 --- !u!1 &911228228
 GameObject:
   m_ObjectHideFlags: 0
@@ -43608,6 +43629,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 2070408471}
   PowerPurge2: {fileID: 896431938}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -43628,6 +43650,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 0
   LowTempWarning: 0
   HighTempWarning: 0
@@ -59620,6 +59643,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 122472685}
   PowerPurge2: {fileID: 1175870794}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -59640,6 +59664,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 2
   LowTempWarning: 0
   HighTempWarning: 0
@@ -83131,6 +83156,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 1955370262}
   PowerPurge2: {fileID: 1357810005}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -83151,6 +83177,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 1
   LowTempWarning: 0
   HighTempWarning: 0
@@ -83288,6 +83315,7 @@ MonoBehaviour:
   blinkMANAGER: {fileID: 0}
   PowerPurge1: {fileID: 1281781163}
   PowerPurge2: {fileID: 723515200}
+  Error1: {fileID: 0}
   LTColorCurTween: 0
   StabStatus: OFFLINE
   PendingEvent: none
@@ -83308,6 +83336,7 @@ MonoBehaviour:
   CanStart: 1
   CanEnterMaintenance: 1
   AllowMaintenance: 0
+  CanUpdateTemp: 1
   WS: 3
   LowTempWarning: 0
   HighTempWarning: 0
