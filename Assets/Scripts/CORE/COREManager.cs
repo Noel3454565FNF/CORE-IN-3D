@@ -42,8 +42,9 @@ public class COREManager : MonoBehaviour
     public bool CanStartup = true; public bool ForceDisableStartup = false;
 
     [Header("Temperature and Efficiency Vars")]
-    public float MaxHeatUnitEfficiency = 20;
+    public float MaxHeatUnitEfficiency = 70;
     public float MaxCoolingUnitEfficiency = 25;
+    public float MaxCoolantEfficiency = 40;
     public float MaxShieldCoolingEfficiency = 50;
     public float MasCoreInstabilityEfficiency = 20;
 
@@ -101,13 +102,18 @@ public class COREManager : MonoBehaviour
     public enum CoreEventEnum
     {
         Startup,
+        StartupFailure,
+        StartupFailureChaotic,
         Shutdown,
         ShutdownFailure,
+        Premelt,
         Meltdown,
+        MeltdownChaotic,
         Freezedown,
         FreezedownHISTORY,
-        ReactorFault,
-
+        Stall,
+        StallChaotic,
+        ReactorFault
     }
 
     //Pre Melt state
@@ -217,7 +223,7 @@ public class COREManager : MonoBehaviour
         CoreTempChange = CAH;
 
         // Core instability effect
-        CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
+        //CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -248,24 +254,42 @@ public class COREManager : MonoBehaviour
         }
 
         //Cooling unit effect
+        if (CoreCoolantFlowManager.instance.CoolantLogicOn && CoreCoolantFlowManager.instance.CurrCoolantStatus == CoreCoolantFlowManager.CoolantStatus.Online)
+        {
+            CoreCoolantFlowManager insta = CoreCoolantFlowManager.instance;
+            int pumptemp = 0;
+            
+            if (insta.pump1Active)
+            {
+                pumptemp += insta.pump1Flow;
+            }
+            if (insta.pump2Active)
+            {
+                pumptemp += insta.pump2Flow;
+            }
+            if (insta.pump3Active)
+            {
+                pumptemp += insta.pump3Flow;
+            }
+            if (insta.pump4Active)
+            {
+                pumptemp += insta.pump4Flow;
+            }
+            pumptemp = pumptemp / 4;
+            int cooltemp = (int)MaxCoolantEfficiency * (pumptemp / 100);
 
+            //Coolant canals logic
+
+            CoreTempChange -= cooltemp;
+        }
 
         //Power extraction effect
 
 
-        // Shield effect
         CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
 
-        // Debug: Log CoreTempChange before damping
-        debugTempChange = CoreTempChange;
 
-        // Apply a damping factor to reduce sensitivity
         CoreTempChange *= 0.8f; // Damping factor to smooth abrupt changes
-
-        // Clamp CoreTempChange to prevent extreme values
-        //CoreTempChange = Mathf.Clamp(CoreTempChange, -100f, 100f); // Adjust range as needed
-
-        // Debug: Log CoreTempChange after damping and clamping
 
         // Calculate adjustment speed
         float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;
@@ -273,7 +297,6 @@ public class COREManager : MonoBehaviour
         // Accumulate time for smooth updates
         timeAccumulator += Time.deltaTime * adjustmentSpeed;
 
-        // Debug: Log time accumulator value
 
         // Apply temperature changes based on the time accumulator
         while (timeAccumulator >= 1f && CanUpdateTemp)

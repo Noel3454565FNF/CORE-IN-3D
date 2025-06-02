@@ -23,22 +23,22 @@ public class CoolantMAIN : MonoBehaviour
     public bool CoolantNetworkFault = false;
 
     [Header("Pumps")]
-    public int pump1Flow = 75;
+    public int pump1Flow = 50;
     public int pump1MaxFlow = 100;
     public int pump1MaxRawFlow = 2500;
     public bool pump1Active = true;
 
-    public int pump2Flow = 75;
+    public int pump2Flow = 50;
     public int pump2MaxFlow = 100;
     public int pump2MaxRawFlow = 2500;
     public bool pump2Active = true;
 
-    public int pump3Flow = 75;
+    public int pump3Flow = 50;
     public int pump3MaxFlow = 100;
     public int pump3MaxRawFlow = 2500;
     public bool pump3Active = true;
 
-    public int pump4Flow = 75;
+    public int pump4Flow = 50;
     public int pump4MaxFlow = 100;
     public int pump4MaxRawFlow = 2500;
     public bool pump4Active = true;
@@ -81,8 +81,38 @@ public class CoreCoolantFlowManager:MonoBehaviour
 
     [Header("Condition")]
     public bool CoolantLogicOn = true;
-    public bool CoolantFlowFault = false;
+    public enum CoolantStatus
+    {
+        Online,
+        Offline,
+        Fault
+    };
+    public CoolantStatus CurrCoolantStatus = CoolantStatus.Offline;
 
+
+    public bool CoolantCanalAActive = true;
+    public bool CoolantCanalBActive = true;
+
+    [Header("Pumps")]
+    public int pump1Flow = 50;
+    public int pump1MaxFlow = 100;
+    public float pump1MaxRawFlow = 25;
+    public bool pump1Active = true;
+
+    public int pump2Flow = 50;
+    public int pump2MaxFlow = 100;
+    public float pump2MaxRawFlow = 25;
+    public bool pump2Active = true;
+
+    public int pump3Flow = 50;
+    public int pump3MaxFlow = 100;
+    public float pump3MaxRawFlow = 25;
+    public bool pump3Active = true;
+
+    public int pump4Flow = 50;
+    public int pump4MaxFlow = 100;
+    public float pump4MaxRawFlow = 25;
+    public bool pump4Active = true;
 
 
 
@@ -96,7 +126,20 @@ public class CoreCoolantFlowManager:MonoBehaviour
     {
      if (CoolantLogicOn)
         {
+            
+        }
+    }
 
+
+    public void SwitchCoolantStatusBUTTON()
+    {
+        if (CoolantLogicOn && CurrCoolantStatus == CoolantStatus.Online)
+        {
+            CurrCoolantStatus = CoolantStatus.Offline;
+        }
+        if (CoolantLogicOn && CurrCoolantStatus != CoolantStatus.Offline)
+        {
+            CurrCoolantStatus = CoolantStatus.Online;
         }
     }
 }
