@@ -33,7 +33,7 @@ public class DRPCM : MonoBehaviour
             //Application.Quit();
         }
         print("RPC loading...");
-        discord = new Discord.Discord(ClientID, (System.UInt64)Discord.CreateFlags.Default);
+        discord = new Discord.Discord(ClientID, (System.UInt64)Discord.CreateFlags.NoRequireDiscord);
         UM = discord.GetUserManager();
         UM.OnCurrentUserUpdate += () =>
         {
