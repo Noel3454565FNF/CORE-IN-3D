@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.WSA;
-using System.Diagnostics;
 using System.Reflection;
 using UnityEditor.PackageManager;
 using System.Threading.Tasks;
@@ -152,6 +151,10 @@ public class COREManager : MonoBehaviour
     [Header("Events scripts")]
     public Startup startup;
 
+    [Header("Core Emission strenght")]
+    public float normalCoreEmission = 6135f;
+    public float minimumCoreEmission = 0.7490196f;
+    public float transparentCoreEmission = 0.0007314644f;
 
     private void Awake()
     {
@@ -188,6 +191,8 @@ public class COREManager : MonoBehaviour
         }
         StateText.text = CoreStatus.ToLower();
         TempText.text = CoreTemp.ToString();
+
+        COREMeshRenderer.material.SetColor("_EmissionColor", new Color(6135f, 6135f, 6135f));
     }
 
     public int STABSMoyenne()

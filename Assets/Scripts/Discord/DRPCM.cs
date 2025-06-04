@@ -65,7 +65,7 @@ public class DRPCM : MonoBehaviour
             if (res == Discord.Result.Ok)
             {
                 //nothing to say everything is fine
-                print("RPC LOADED!");
+                //print("RPC LOADED!");
 
 
             }

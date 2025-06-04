@@ -185,4 +185,18 @@ public class MCFS : MonoBehaviour
     }
 
 
+
+
+    //SHIELD ANIM
+    public IEnumerator ShieldCreationV2()
+    {
+        Shield.transform.LeanScale(new Vector3(20, 20, 20), 4)
+            .setEaseOutCubic()
+            .setOnUpdate((Vector3 v) =>
+            {
+                Shield.transform.localScale = v;
+            });
+
+        yield break;
+    }
 }

@@ -104,8 +104,8 @@ public class StartupV2 : MonoBehaviour
 
         PlayerController.me.OSTPLAYER(LasersStartReaction, 0.3f);
         CM.ReactorSysLogsScreen.EntryPoint("powering up lasers...", Color.yellow);
-        CM.Stab1.StabRPMCHANGING(900, 4);
-        CM.Stab2.StabRPMCHANGING(900, 4); //CM.Stab2.RegisterRotorBlink(Color.yellow, 0.7f, 1f);
+        CM.Stab1.StabRPMCHANGING(900, 4); CM.Stab1.RegisterRotorBlink(Color.cyan, 0.7f, 1f);
+        CM.Stab2.StabRPMCHANGING(900, 4); CM.Stab2.RegisterRotorBlink(Color.cyan, 0.7f, 1f);
         CM.Stab3.StabRPMCHANGING(750, 7); CM.Stab3.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
         CM.Stab4.StabRPMCHANGING(750, 7); CM.Stab4.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
         CM.Stab5.StabRPMCHANGING(750, 7); CM.Stab5.RegisterRotorBlink(Color.yellow, 1f, 0.9f);
@@ -113,7 +113,7 @@ public class StartupV2 : MonoBehaviour
 
 
 
-        yield return new WaitForSeconds(7.5f);
+        yield return new WaitForSeconds(6f);
 
         CM.ReactorSysLogsScreen.EntryPoint("firing...", Color.yellow);
 
@@ -138,33 +138,6 @@ public class StartupV2 : MonoBehaviour
         //make shield here
         CM.ReactorSysLogsScreen.EntryPoint("deploying main shielding...", Color.yellow);
 
-        ShieldanimPlayer.Play("shieldspawn");
-
-        //MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.color = new Color(0, 197, 255, 0);
-        //MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", new Color(0, 0, 0));
-        //Color brah = new Color(0, 197, 255, 0) * 10;
-        //LeanTween.color(MCFS.instance.Shield, brah, 1f)
-        //    .setEaseInOutQuad()
-        //    .setOnUpdate((Color c) =>
-        //    {
-        //        MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.SetColor("_EmissionColor", c);
-        //    });
-
-
-
-        //MCFS.instance.Shield.transform.localScale = new Vector3(20, 20, 20);
-        //MCFS.instance.Shield.transform.LeanScale(new Vector3(12, 12, 12), 4f)
-        //    .setEaseInOutQuad()
-        //    .setOnUpdate((Vector3 v3) =>
-        //    {
-        //        MCFS.instance.Shield.transform.localScale = v3;
-        //    });
-        //LeanTween.color(MCFS.instance.Shield.gameObject, new Color(0, 197, 255, 0.7f), 3f)
-        //    .setEaseInOutCirc()
-        //    .setOnUpdate((Color c) =>
-        //    {
-        //        MCFS.instance.Shield.gameObject.GetComponent<MeshRenderer>().material.color = c;
-        //    });
 
         yield return new WaitForSeconds(4f);
         CM.ReactorSysLogsScreen.EntryPoint("no shield error detected", Color.white);

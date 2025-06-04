@@ -1069,6 +1069,9 @@ MonoBehaviour:
   CPSYS: {fileID: 0}
   CPSYSButton: {fileID: 0}
   startup: {fileID: 0}
+  normalCoreEmission: 6135
+  minimumCoreEmission: 0.7490196
+  transparentCoreEmission: 0.0007314644
 --- !u!114 &45969260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18487,8 +18490,6 @@ GameObject:
   - component: {fileID: 460791166}
   - component: {fileID: 460791169}
   - component: {fileID: 460791170}
-  - component: {fileID: 460791172}
-  - component: {fileID: 460791171}
   m_Layer: 6
   m_Name: COREC
   m_TagString: Untagged
@@ -18710,42 +18711,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!111 &460791171
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 460791164}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!95 &460791172
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 460791164}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fb49c1301f2b5e44c8a1c5821631e8af, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &461392618
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74531,7 +74496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CM: {fileID: 45969259}
   COREgm: {fileID: 460791164}
-  ShieldanimPlayer: {fileID: 1385195622}
+  ShieldanimPlayer: {fileID: 0}
   FuelSolutionInjection: {fileID: 8300000, guid: 20354fb66144b954fa977108011ca772,
     type: 3}
   LasersStartReaction: {fileID: 8300000, guid: 82dd0603a76c7224fadb532e54e7088d, type: 3}
@@ -80803,8 +80768,6 @@ GameObject:
   - component: {fileID: 1385195620}
   - component: {fileID: 1385195619}
   - component: {fileID: 1385195618}
-  - component: {fileID: 1385195622}
-  - component: {fileID: 1385195621}
   m_Layer: 0
   m_Name: SHIELD
   m_TagString: Untagged
@@ -80899,42 +80862,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385195616}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!111 &1385195621
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1385195616}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
---- !u!95 &1385195622
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1385195616}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bdab685c22d975544be02ea5efe3abd0, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1385923267
 GameObject:
   m_ObjectHideFlags: 0
