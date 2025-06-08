@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Common;
 using Cysharp.Threading.Tasks.Triggers;
+using System.Runtime.CompilerServices;
 public class COREManager : MonoBehaviour
 {
     [Header("Important Vars")]
@@ -31,24 +32,46 @@ public class COREManager : MonoBehaviour
     public float changeSpeed = 0f; // Base speed of temperature change
     public float changeSpeedCoreInfluence = 0f; // Core influence on change speed
     private float timeAccumulator = 0; // Tracks time for smoother updates
+
+    public int CoreEnergy = 0;
+    public float CoreEnergyChange = 1;
+    public float energyChangeSpeed = 0;
+    public float energyChangeSpeedInfluence = 0f;
+    private float energyTimeAccumulator = 0;
+
+
     public int coreStability = 100;
 
     public bool CanDecreaseCoreStability = true;
     public bool CanIncreaseCoreStability = true;
 
-    public bool CanUpdateTemp = false;
+    public bool CanUpdateTemp = false; public bool CanUpdateEnergy = false;
     public bool CanShutdown = false; public bool ForceDisableShutdown = false;
     public bool CanStartup = true; public bool ForceDisableStartup = false;
 
     [Header("Temperature and Efficiency Vars")]
-    public float MaxHeatUnitEfficiency = 70;
-    public float MaxCoolingUnitEfficiency = 25;
-    public float MaxCoolantEfficiency = 40;
+    public float MaxHeatUnitEfficiency = 90;
+    public float MaxHeatByEnergy = 50;
+    public float MaxHeatByPowerExtraction = 40;
+    public float MaxCoolingUnitEfficiency = 45;
+    public float MaxCoolantEfficiency = 70;
     public float MaxShieldCoolingEfficiency = 50;
     public float MasCoreInstabilityEfficiency = 20;
 
     public float CoreStabilityDecreasingSpeed = 0.2f;
     public float CoreStabilityIncreasingSpeed = 0.1f;
+
+    public int CoreTempForStall = 6000;
+    public int CoreTempCauseInstability = 18000;
+    public int CoreShieldDestabilized = 22000;
+
+    public int MaxProduceblaPower = 43000;
+    public int CurrentReactorGridPower = 0;
+
+    public float MaxEnergyByHeat = 42000;
+    public float MaxEnergyByPL = 10000;
+    public float MaxEnergyBySL = 20000;
+    public float MaxEnergyByExtractor = 50000;
 
     [Header("Stabs Connection")]
     public STABSLasers Stab1; // Stabilization Unit
@@ -57,8 +80,14 @@ public class COREManager : MonoBehaviour
     public STABSLasers Stab4; // Power Unit
     public STABSLasers Stab5; // Combustion/Aux Unit
     public STABSLasers Stab6; // Combustion/Aux Unit
-
     [HideInInspector] public List<STABSLasers> Stablist;
+
+    [Header("Extractors Connection")]
+    public CoreExtractor Extractor1;
+    public CoreExtractor Extractor2;
+    public CoreExtractor Extractor3;
+    public CoreExtractor Extractor4;
+    [HideInInspector]public List<CoreExtractor> ExtractorList;
 
     [Header("Debug Vars")]
     public float debugTempChange = 0; // For debugging CoreTempChange
@@ -100,6 +129,7 @@ public class COREManager : MonoBehaviour
 
     public enum CoreEventEnum
     {
+        None,
         Startup,
         StartupFailure,
         StartupFailureChaotic,
@@ -114,27 +144,11 @@ public class COREManager : MonoBehaviour
         StallChaotic,
         ReactorFault
     }
+    public CoreEventEnum CoreCurrentEvent = CoreEventEnum.None;
 
-    //Pre Melt state
-    public bool Overheating = false;
-    public bool CritOverheating = false;
-    public bool Premeltdown = false;
-    public bool ShieldDetonationImminent = false;
-    
-    //Pre Freeze state
-    public bool PowerLoss = false;
-    public bool ReactionLoss = false;
-
-    //Custom Pre State
-    public bool ReactorHandleLoss = false;
-    public bool ReactorFault = false;
-
-    //Catastrophic State
-    public bool Freezedown = false;
-    public bool FreezedownHISTORY = false;
-    public bool Meltdown = false;
-    public bool Overload = false;
-    public bool ControlLoss = false;
+    public bool StallPossible = false; public int StallOdds = 6;
+    public bool CoreUnstable = false;
+    public bool Premelt = false;
 
     [Header("Screen Connection")]
     public GlobalScreenManager MCFSscreen;
@@ -178,7 +192,11 @@ public class COREManager : MonoBehaviour
         Stablist.Add(Stab3);
         Stablist.Add(Stab4);
         Stablist.Add(Stab5);
-        Stablist.Add(Stab6); 
+        Stablist.Add(Stab6);
+        ExtractorList.Add(Extractor1);
+        ExtractorList.Add(Extractor2);
+        ExtractorList.Add(Extractor3);
+        ExtractorList.Add(Extractor4);
         MiddleScreenHideSpecialReason();
         UpdateCoreTemperature();
     }
@@ -188,11 +206,11 @@ public class COREManager : MonoBehaviour
         if (CoreStatus != CoreStatusEnum.Offline.ToString())
         {
             UpdateCoreTemperature();
+            UpdateCoreEnergy();
         }
         StateText.text = CoreStatus.ToLower();
         TempText.text = CoreTemp.ToString();
 
-        COREMeshRenderer.material.SetColor("_EmissionColor", new Color(6135f, 6135f, 6135f));
     }
 
     public int STABSMoyenne()
@@ -221,6 +239,45 @@ public class COREManager : MonoBehaviour
 
 
 
+    private void UpdateCoreEnergy()
+    {
+
+        CoreEnergyChange += MaxEnergyByHeat * (CoreTemp / 100f);
+
+        CoreEnergyChange += (MaxEnergyByPL * (Stab3.Power/100f)) + (MaxEnergyByPL * (Stab4.Power/100f)) + (MaxEnergyByPL * (Stab5.Power/100f)) + (MaxEnergyByPL * (Stab6.Power/100f));
+
+        CoreEnergyChange -= (MaxEnergyBySL * (Stab1.Power/100f)) + (MaxEnergyBySL * (Stab2.Power/100f));
+
+        //CoreEnergyChange -= (MaxEnergyByExtractor * (Extractor1.Power/100f))
+
+
+        CoreEnergyChange *= 0.4f; // Damping factor to smooth abrupt changes
+
+        // Calculate adjustment speed
+        float adjustmentSpeed = Mathf.Abs(CoreEnergyChange) * energyChangeSpeed * energyChangeSpeedInfluence;
+
+        // Accumulate time for smooth updates
+        energyTimeAccumulator += Time.deltaTime * adjustmentSpeed;
+
+        while (energyTimeAccumulator >= 1f && CanUpdateEnergy)
+        {
+            if (Mathf.Abs(CoreEnergyChange) > 0.1f) // Apply only significant changes
+            {
+                // Convert the floating-point result to an integer
+                CoreEnergy += (int)Mathf.Sign(CoreEnergyChange) * Mathf.Min(1, (int)Mathf.Abs(CoreEnergyChange));
+
+            }
+            else
+            {
+                UnityEngine.Debug.Log("Core is stable.");
+            }
+
+            // Debug: Log updated CoreTemp value
+
+            //TempText.text = $"{CoreTemp}C°"; // Update temperature text
+            energyTimeAccumulator -= 1f;
+        }
+    }
 
     private void UpdateCoreTemperature()
     {
@@ -229,6 +286,9 @@ public class COREManager : MonoBehaviour
 
         // Core instability effect
         //CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
+
+        //Energy effect
+        CoreTempChange += MaxHeatByEnergy * (CoreTemp / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -289,8 +349,9 @@ public class COREManager : MonoBehaviour
         }
 
         //Power extraction effect
+        CoreTempChange += (MaxHeatByPowerExtraction * (Extractor1.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor2.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor3.Power/100f)) + (MaxHeatByPowerExtraction * (Extractor4.Power/100f));
 
-
+        //Shield cooling logic
         CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
 
 
@@ -310,6 +371,7 @@ public class COREManager : MonoBehaviour
             {
                 // Convert the floating-point result to an integer
                 CoreTemp += (int)Mathf.Sign(CoreTempChange) * Mathf.Min(1, (int)Mathf.Abs(CoreTempChange));
+
             }
             else
             {
@@ -328,9 +390,48 @@ public class COREManager : MonoBehaviour
     {
         if(RegenHandler.instance.AppRunning && CoreStatus != "OFFLINE" && CoreInEvent == false)
         {
-
+            if (CoreTemp < CoreTempForStall && StallPossible == false)
+            {
+                StallPossible = true;
+                TempText.color = Color.cyan;
+                StartCoroutine(StallMayHappend());
+            }
+            if (CoreTemp > CoreTempForStall + 500 && StallPossible == true)
+            {
+                StallPossible = false;
+                TempText.color = Color.white;
+                StopCoroutine(StallMayHappend());
+            }
         }
     }
+
+    public IEnumerator StallMayHappend()
+    {
+        yield return new WaitForSeconds(5f);
+        int m = UnityEngine.Random.Range(0, 100);
+        if (m <= StallOdds)
+        {
+            int c = UnityEngine.Random.Range(0, 100);
+            if (c <= 20)
+            {
+                //chaotic stall
+            }
+            else
+            {
+                //normal stall
+            }
+            yield break;
+        }
+        else
+        {
+            if (StallPossible)
+            {
+                StartCoroutine(StallMayHappend());
+            }
+            yield break;
+        }
+    }
+
 
 
 
@@ -483,11 +584,11 @@ public class COREManager : MonoBehaviour
 
     public void ShutdownChecker()
     {
-        if (CoreTemp > 6000 && CoreTemp < 8000 && Premeltdown == false && ControlLoss == false && CoreInEvent == false && ReactorGrid.instance.GridSTS == ReactorGrid.GridStatus.ONLINE.ToString() && ForceDisableShutdown == false)
-        {
-            CanShutdown = false;
-            Shutdown.instance.ShutdownCaller();
-        }
+        //if (CoreTemp > 6000 && CoreTemp < 8000 && Premeltdown == false && ControlLoss == false && CoreInEvent == false && ReactorGrid.instance.GridSTS == ReactorGrid.GridStatus.ONLINE.ToString() && ForceDisableShutdown == false)
+        //{
+        //    CanShutdown = false;
+        //    Shutdown.instance.ShutdownCaller();
+        //}
     }
 
 
@@ -509,6 +610,52 @@ public class COREManager : MonoBehaviour
         Startup.instance.StartupButton.TriggerUsed = false;
         CanStartup = true;
         CanShutdown = false;
+    }
+
+
+    //CORE ANIM
+    public IEnumerator CoreStallAnim()
+    {
+        GameObject cor = COREMeshRenderer.gameObject;
+        cor.transform.LeanScale(new Vector3(16, 16, 16), 6)
+            .setOnUpdate((Vector3 V) =>
+            {
+                cor.transform.localScale = V;
+            });
+        LeanTween.color(cor, new Color(minimumCoreEmission, minimumCoreEmission, minimumCoreEmission), 6)
+            .setOnUpdate((Color C) =>
+            {
+                COREMeshRenderer.material.SetColor("_EmissionColor", C);
+            });
+
+        yield return new WaitForSeconds(6f);
+
+        cor.transform.LeanScale(new Vector3(19, 19, 19), 0.7f)
+            .setEaseInOutQuad()
+            .setOnUpdate((Vector3 V) =>
+            {
+                cor.transform.localScale = V;
+            });
+
+        LeanTween.color(cor, new Color(transparentCoreEmission, transparentCoreEmission, transparentCoreEmission), 0.6f)
+            .setOnUpdate((Color C) =>
+            {
+                COREMeshRenderer.material.SetColor("_EmissionColor", C);
+            });
+        LeanTween.color(cor, new Color(255, 255, 255, 0), 0.6f)
+            .setOnUpdate((Color C) =>
+            {
+                COREMeshRenderer.material.SetColor("_Color", C);
+            });
+
+        yield break;
+    }
+
+
+    //Extractor things
+    public void GlobalExtractorControl(CoreExtractor.ExtractorVarEnum whatvar, object var)
+    {
+        
     }
 
 }

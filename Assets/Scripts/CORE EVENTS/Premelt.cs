@@ -51,7 +51,7 @@ public class Premelt : MonoBehaviour
     public IEnumerator PremeltIsHere()
     {
         CM.CoreInEvent = true;
-        CM.Premeltdown = true;
+        CM.Premelt = true;
         CM.CoreToDanger();
         mcfs.ShieldToWarning();
         FAS.GFAS.WriteAnAnnouncement("MCFS", "!SYSTEM COMPROMISED - RESTABILIZE IMMEDIATLY!", 5);
