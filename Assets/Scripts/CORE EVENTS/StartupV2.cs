@@ -117,7 +117,7 @@ public class StartupV2 : MonoBehaviour
 
         CM.ReactorSysLogsScreen.EntryPoint("firing...", Color.yellow);
 
-        CM.LeantweenTemp(12000, 9f);
+        CM.LeantweenTemp(12000, 6.5f);
 
         CM.Stab1.Laser.SetActive(true); CM.Stab2.Laser.SetActive(true); CM.Stab3.Laser.SetActive(true); CM.Stab4.Laser.SetActive(true); CM.Stab5.Laser.SetActive(true); CM.Stab6.Laser.SetActive(true);
         shieldIDLE.startSpeed = -3;

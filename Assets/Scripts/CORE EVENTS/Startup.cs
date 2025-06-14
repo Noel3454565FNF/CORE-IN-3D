@@ -170,7 +170,7 @@ public class Startup : MonoBehaviour
         Stab6.CanGetDamaged = true; Stab6.CanHeat = true; Stab6.CanKys = true; Stab6.StabAdminLock = false;
         Stab1.Power = 50; Stab2.Power = 50; Stab3.Power = 25; Stab4.Power = 25; Stab5.Power = 25; Stab6.Power = 25;
         Stab1.CoolantInput = 30; Stab2.CoolantInput = 30; Stab3.CoolantInput = 30; Stab4.CoolantInput = 30; Stab5.CoolantInput = 30; Stab6.CoolantInput = 30;
-
+        ReactorGrid.instance.StartGridMath();
     }
 
 }

@@ -43,10 +43,6 @@ public class ReactorGrid : MonoBehaviour
     public int CoreMaxPowerProduction;
     public int CoreTotalPowerProduction;
 
-    [Header("Auxiliary Power")]
-    public int AuxGridPowerUsage;
-    public int AuxGridMaxPower;
-    public int AuxGridStability;
 
     [Header("Status")]
     
@@ -64,6 +60,7 @@ public class ReactorGrid : MonoBehaviour
         SURGE
     };
     public int ReactorGridStability = 100;
+    public bool GridActive = false;
 
 
     [Header("Grid events")]
@@ -89,38 +86,10 @@ public class ReactorGrid : MonoBehaviour
         Stab3 = CM.Stab3;
         Stab4 = CM.Stab4;
         //GridMath();
-        Task.Run(GridStatusUpdate);
-        StartGridMath();
+        //StartGridMath();
     }
 
     // Update is called once per frame
-    public async Task GridStatusUpdate()
-    {
-        if (RegenHandler.instance.AppRunning)
-        {
-            if (COREManager.instance.CoreAllowGridEvent)
-            {
-                if (Power < 0 && GridSTS != GridStatus.OUTAGE.ToString())
-                {
-                    //power outage
-                    GridOutageCaller();
-                }
-                if (Power > 23000 && GridSTS != GridStatus.SURGE.ToString())
-                {
-                    //power surge
-                    GridSTS = GridStatus.SURGE.ToString();
-                    Task.Run(GridSurgeFunc);
-                }
-                if (Power < 23000 && GridSTS == GridStatus.SURGE.ToString())
-                {
-                    //bai surge
-                    GridSTS = GridStatus.ONLINE.ToString();
-                }
-                await Task.Delay(0250);
-                Task.Run(GridStatusUpdate);
-            }
-        }
-    }
 
 
     public void StartGridMath()
@@ -202,7 +171,7 @@ public class ReactorGrid : MonoBehaviour
             // Calculate core power production
             if (CM.CoreTemp != 0)
             {
-                beansInTheSheinFactory = (CM.CoreTemp * 100) / CoreMaxTempThing;
+                beansInTheSheinFactory = CM.CoreEnergy;
 
                 if (beansInTheSheinFactory != 0)
                 {

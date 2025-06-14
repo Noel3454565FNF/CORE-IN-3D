@@ -1029,14 +1029,14 @@ MonoBehaviour:
   CoreStabilityDecreasingSpeed: 0.2
   CoreStabilityIncreasingSpeed: 0.1
   CoreTempForStall: 6000
-  CoreTempCauseInstability: 18000
-  CoreShieldDestabilized: 22000
-  MaxProduceblaPower: 43000
+  CoreTempCauseInstability: 0
+  CoreShieldDestabilized: 22
+  MaxProduceblaPower: 43
   CurrentReactorGridPower: 0
-  MaxEnergyByHeat: 42000
-  MaxEnergyByPL: 10000
-  MaxEnergyBySL: 20000
-  MaxEnergyByExtractor: 50000
+  MaxEnergyByHeat: 42
+  MaxEnergyByPL: 10
+  MaxEnergyBySL: 20
+  MaxEnergyByExtractor: 120
   Stab1: {fileID: 993715339}
   Stab2: {fileID: 1509911879}
   Stab3: {fileID: 1069833268}
@@ -1197,11 +1197,9 @@ MonoBehaviour:
   CoreMaxTempThing: 21000
   CoreMaxPowerProduction: 1500
   CoreTotalPowerProduction: 0
-  AuxGridPowerUsage: 0
-  AuxGridMaxPower: 900
-  AuxGridStability: 100
   GridSTS: ONLINE
   ReactorGridStability: 100
+  GridActive: 0
   GridAllowSurge: 1
   beansInTheSheinFactory: 0
   totalPower: 0
@@ -7620,6 +7618,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139338681}
   m_CullTransparentMesh: 1
+--- !u!1 &140420831 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6261809317350456118, guid: 3063f6ec04e6ec2428819f5e8231f2df,
+    type: 3}
+  m_PrefabInstance: {fileID: 1642706959}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &141781685
 GameObject:
   m_ObjectHideFlags: 0
@@ -91676,7 +91680,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6261809317350456118, guid: 3063f6ec04e6ec2428819f5e8231f2df,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1642706961}
   m_SourcePrefab: {fileID: 100100000, guid: 3063f6ec04e6ec2428819f5e8231f2df, type: 3}
 --- !u!4 &1642706960 stripped
 Transform:
@@ -91684,6 +91692,24 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1642706959}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1642706961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140420831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7437383b23bbe4ab254f4158827521, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  status: 0
+  ExtractorName: 0
+  Power: 10
+  MinPower: 10
+  MaxPower: 100
+  Integrity: 100
 --- !u!1 &1644901955
 GameObject:
   m_ObjectHideFlags: 0

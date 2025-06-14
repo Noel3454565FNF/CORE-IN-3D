@@ -264,7 +264,7 @@ public class COREManager : MonoBehaviour
             if (Mathf.Abs(CoreEnergyChange) > 0.1f) // Apply only significant changes
             {
                 // Convert the floating-point result to an integer
-                CoreEnergy += (int)Mathf.Sign(CoreEnergyChange) * Mathf.Min(1, (int)Mathf.Abs(CoreEnergyChange));
+                CoreEnergy = (int)Mathf.Sign(CoreEnergyChange) * Mathf.Min(1, (int)Mathf.Abs(CoreEnergyChange));
 
             }
             else
@@ -349,13 +349,14 @@ public class COREManager : MonoBehaviour
         }
 
         //Power extraction effect
-        CoreTempChange += (MaxHeatByPowerExtraction * (Extractor1.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor2.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor3.Power/100f)) + (MaxHeatByPowerExtraction * (Extractor4.Power/100f));
+        //CoreTempChange += (MaxHeatByPowerExtraction * (Extractor1.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor2.Power / 100f)) + (MaxHeatByPowerExtraction * (Extractor3.Power/100f)) + (MaxHeatByPowerExtraction * (Extractor4.Power/100f));
 
         //Shield cooling logic
         CoreTempChange -= MaxShieldCoolingEfficiency * ((int)MCFS.instance.ShieldIntegrity / 100f);
 
 
         CoreTempChange *= 0.8f; // Damping factor to smooth abrupt changes
+        CoreTempChange = Math.Clamp(CoreTempChange, -170, 170);
 
         // Calculate adjustment speed
         float adjustmentSpeed = Mathf.Abs(CoreTempChange) * changeSpeed * changeSpeedCoreInfluence;

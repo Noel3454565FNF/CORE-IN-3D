@@ -38,7 +38,11 @@ public class CoreExtractor : MonoBehaviour
     }
 
 
+    public IEnumerator extractorPOWERLogics()
+    {
 
+        yield break;
+    }
 
 
 
