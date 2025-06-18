@@ -35,9 +35,9 @@ public class COREManager : MonoBehaviour
 
     public int CoreEnergy = 0;
     public float CoreEnergyChange = 1;
-    public float energyChangeSpeed = 0;
-    public float energyChangeSpeedInfluence = 0f;
-    private float energyTimeAccumulator = 0;
+    public float energyChangeSpeed = 1;
+    public float energyChangeSpeedInfluence = 1f;
+    private float energyTimeAccumulator;
 
 
     public int coreStability = 100;
@@ -68,10 +68,10 @@ public class COREManager : MonoBehaviour
     public int MaxProduceblaPower = 43000;
     public int CurrentReactorGridPower = 0;
 
-    public float MaxEnergyByHeat = 42000;
-    public float MaxEnergyByPL = 10000;
-    public float MaxEnergyBySL = 20000;
-    public float MaxEnergyByExtractor = 50000;
+    public float MaxEnergyByHeat = 42;
+    public float MaxEnergyByPL = 10;
+    public float MaxEnergyBySL = 20;
+    public float MaxEnergyByExtractor = 50;
 
     [Header("Stabs Connection")]
     public STABSLasers Stab1; // Stabilization Unit
@@ -241,14 +241,14 @@ public class COREManager : MonoBehaviour
 
     private void UpdateCoreEnergy()
     {
-
+        //CoreEnergyChange = 0;
         CoreEnergyChange += MaxEnergyByHeat * (CoreTemp / 100f);
 
         CoreEnergyChange += (MaxEnergyByPL * (Stab3.Power/100f)) + (MaxEnergyByPL * (Stab4.Power/100f)) + (MaxEnergyByPL * (Stab5.Power/100f)) + (MaxEnergyByPL * (Stab6.Power/100f));
 
         CoreEnergyChange -= (MaxEnergyBySL * (Stab1.Power/100f)) + (MaxEnergyBySL * (Stab2.Power/100f));
 
-        //CoreEnergyChange -= (MaxEnergyByExtractor * (Extractor1.Power/100f))
+        CoreEnergyChange -= (MaxEnergyByExtractor * (Extractor1.Power / 100f));
 
 
         CoreEnergyChange *= 0.4f; // Damping factor to smooth abrupt changes
@@ -281,6 +281,7 @@ public class COREManager : MonoBehaviour
 
     private void UpdateCoreTemperature()
     {
+        CoreTempChange = 0;
         // Reset CoreTempChange and apply base heating
         CoreTempChange = CAH;
 

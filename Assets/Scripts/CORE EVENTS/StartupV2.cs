@@ -113,7 +113,7 @@ public class StartupV2 : MonoBehaviour
 
 
 
-        yield return new WaitForSeconds(6f);
+        yield return new WaitForSeconds(7.5f);
 
         CM.ReactorSysLogsScreen.EntryPoint("firing...", Color.yellow);
 
