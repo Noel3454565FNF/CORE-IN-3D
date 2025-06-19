@@ -60,10 +60,12 @@ public class Premelt : MonoBehaviour
         yield return new WaitForSeconds(7);
         StartCoroutine(LightsManager.GLM.LevelNeg3LightsControl(1000, 100, Negate3roomsName.CORE_CONTROL_ROOM));
         RSYSlogs.EntryPoint("STAB 1 FAULT!", Color.red);
-        RSYSlogs.EntryPoint("STAB 2 OVERLOADING!", Color.red);
+        RSYSlogs.EntryPoint("STAB 2 FAULT!", Color.red);
         RSYSlogs.EntryPoint("STAB 3 OVERHEATING!", Color.yellow);
         RSYSlogs.EntryPoint("STAB 4 OVERHEATING!", Color.yellow);
-        FAS.GFAS.WriteAnAnnouncement("Administration", "TO ALL CORE OPERATOR, YOU ARE ORDERED TO RESTABILIZE IMMEDIATLY! USAGE OF THE CORE PURGE SYSTEM IS AUTHORIZED.", 5);
+        RSYSlogs.EntryPoint("STAB 5 CONNECTION UNSTABLE!", Color.red);
+        RSYSlogs.EntryPoint("STAB 6 OVERHEATING!", Color.yellow);
+        FAS.GFAS.WriteAnAnnouncement("Administration", "TO ALL CORE OPERATOR, YOU ARE ORDERED TO RESTABILIZE IMMEDIATLY! USAGE OF CONTIGENCY SYSTEMS IS NOW AUTHORIZED.", 5);
         CM.CPSYS.CorePurgeAuth = true;
         yield return new WaitForSeconds(10f);
         RSYSlogs.EntryPoint("REACTOR GRID MALFUNCTION!", Color.red);
@@ -80,11 +82,11 @@ public class Premelt : MonoBehaviour
         }
         else
         {
-            RSYSlogs.EntryPoint("Systems ready for purge!", Color.green);
+            RSYSlogs.EntryPoint("Systems ready for reactor salvation!", Color.green);
             yield return new WaitForSeconds(15f);
-            if (CM.CoreTemp < 15000)
+            if (CM.CoreTemp < 22000)
             {
-                RSYSlogs.EntryPoint("System will now attempt to purge the core...", CM.LineOVERRIDEColor);
+                RSYSlogs.EntryPoint("Automatic reactor salvation now in progress...", CM.LineOVERRIDEColor);
                 if (CPSYS.PurgeCaller() == true)
                 {
                     //Call core purge
@@ -99,10 +101,6 @@ public class Premelt : MonoBehaviour
                     StartCoroutine(ShieldDetonation());
                 }
                 yield return null;
-            }
-            else
-            {
-
             }
         }
         yield return null;

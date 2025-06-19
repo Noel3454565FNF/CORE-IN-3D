@@ -192,7 +192,7 @@ public class MCFS : MonoBehaviour
     {
         Shield.transform.localScale = new Vector3(20, 20, 20);
         Shield.transform.LeanScale(new Vector3(10, 10, 10), 4)
-            .setEaseOutCubic()
+            .setEaseInCirc()
             .setOnUpdate((Vector3 v) =>
             {
                 Shield.transform.localScale = v;

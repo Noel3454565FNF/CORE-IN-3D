@@ -241,7 +241,7 @@ public class COREManager : MonoBehaviour
 
     private void UpdateCoreEnergy()
     {
-        //CoreEnergyChange = 0;
+        CoreEnergyChange = 0;
         CoreEnergyChange += MaxEnergyByHeat * (CoreTemp / 100f);
 
         CoreEnergyChange += (MaxEnergyByPL * (Stab3.Power/100f)) + (MaxEnergyByPL * (Stab4.Power/100f)) + (MaxEnergyByPL * (Stab5.Power/100f)) + (MaxEnergyByPL * (Stab6.Power/100f));
@@ -251,31 +251,9 @@ public class COREManager : MonoBehaviour
         CoreEnergyChange -= (MaxEnergyByExtractor * (Extractor1.Power / 100f));
 
 
-        CoreEnergyChange *= 0.4f; // Damping factor to smooth abrupt changes
-
-        // Calculate adjustment speed
-        float adjustmentSpeed = Mathf.Abs(CoreEnergyChange) * energyChangeSpeed * energyChangeSpeedInfluence;
-
-        // Accumulate time for smooth updates
-        energyTimeAccumulator += Time.deltaTime * adjustmentSpeed;
-
-        while (energyTimeAccumulator >= 1f && CanUpdateEnergy)
+        if (CanUpdateEnergy)
         {
-            if (Mathf.Abs(CoreEnergyChange) > 0.1f) // Apply only significant changes
-            {
-                // Convert the floating-point result to an integer
-                CoreEnergy = (int)Mathf.Sign(CoreEnergyChange) * Mathf.Min(1, (int)Mathf.Abs(CoreEnergyChange));
-
-            }
-            else
-            {
-                UnityEngine.Debug.Log("Core is stable.");
-            }
-
-            // Debug: Log updated CoreTemp value
-
-            //TempText.text = $"{CoreTemp}C°"; // Update temperature text
-            energyTimeAccumulator -= 1f;
+            CoreEnergy = (int)CoreEnergyChange;
         }
     }
 
