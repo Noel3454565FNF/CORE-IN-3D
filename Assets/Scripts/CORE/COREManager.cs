@@ -267,7 +267,7 @@ public class COREManager : MonoBehaviour
         //CoreTempChange -= MasCoreInstabilityEfficiency * (coreStability / 100f);
 
         //Energy effect
-        CoreTempChange += MaxHeatByEnergy * (CoreTemp / 100f);
+        //CoreTempChange += MaxHeatByEnergy * (CoreTemp / 100f);
 
         // Heating unit effect
         if (Stab3.StabCheckForCoreVal())
@@ -321,6 +321,7 @@ public class COREManager : MonoBehaviour
             }
             pumptemp = pumptemp / 4;
             int cooltemp = (int)MaxCoolantEfficiency * (pumptemp / 100);
+            print(cooltemp);
 
             //Coolant canals logic
 
